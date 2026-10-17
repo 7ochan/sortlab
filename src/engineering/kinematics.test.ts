@@ -137,6 +137,12 @@ describe('SCARA forward and inverse kinematics', () => {
     expect(() => inverseKinematics({ x: 0.3, y: 0, z: 0.4, yaw: Number.NaN }, CONFIG)).toThrow(
       /finite/i,
     );
+    expect(() => inverseKinematics({ x: 0.3, y: 0, z: 0.4 } as ToolPose, CONFIG)).toThrow(
+      /pose.yaw/i,
+    );
+    expect(() => forwardKinematics(null as unknown as JointState, CONFIG)).toThrow(
+      /joint state must be an object/i,
+    );
   });
 });
 
@@ -182,5 +188,10 @@ describe('workspace and validated configuration', () => {
     const invalid = structuredClone(CONFIG) as typeof CONFIG;
     (invalid.robot.links as { l1: number; l2: number }).l1 = Number.NaN;
     expect(() => validateConfig(invalid)).toThrow(/robot.links.l1/i);
+    expect(() => validateConfig(null)).toThrow(/configuration must be an object/i);
+    expect(() => validateConfig({ robot: {} })).toThrow(/units must be an object/i);
+    const wrongRoute = structuredClone(CONFIG);
+    (wrongRoute.packages[0] as { destination: 'B1' | 'B2' | 'B3' }).destination = 'B2';
+    expect(() => validateConfig(wrongRoute)).toThrow(/must route to b1/i);
   });
 });

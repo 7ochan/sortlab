@@ -14,7 +14,10 @@ export function angularDifference(a: number, b: number): number {
 }
 
 function assertPose(pose: ToolPose): void {
-  for (const [key, value] of Object.entries(pose)) {
+  if (pose === null || typeof pose !== 'object' || Array.isArray(pose))
+    throw new Error('Pose must be an object containing finite x, y, z, and yaw values.');
+  for (const key of ['x', 'y', 'z', 'yaw'] as const) {
+    const value: unknown = pose[key];
     if (typeof value !== 'number' || !Number.isFinite(value))
       throw new Error(`Pose.${key} must be a finite number.`);
   }

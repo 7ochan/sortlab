@@ -1,9 +1,12 @@
-import { Component, useState, type ReactNode } from 'react';
+import { Component, lazy, Suspense, useState, type ReactNode } from 'react';
 import { CONFIG } from './engineering/config';
-import { Workcell } from './components/Workcell';
 import { StatusPanel } from './components/StatusPanel';
 import type { JointState } from './engineering/types';
 import './styles.css';
+
+const Workcell = lazy(() =>
+  import('./components/Workcell').then((module) => ({ default: module.Workcell })),
+);
 
 class SceneBoundary extends Component<{ children: ReactNode }, { error: string | null }> {
   state = { error: null };
@@ -92,7 +95,9 @@ function App() {
               </div>
             ) : (
               <SceneBoundary>
-                <Workcell joints={joints} />
+                <Suspense fallback={<div className="scene-error">Loading 3D scene…</div>}>
+                  <Workcell joints={joints} />
+                </Suspense>
               </SceneBoundary>
             )}
             {webglSupported && (

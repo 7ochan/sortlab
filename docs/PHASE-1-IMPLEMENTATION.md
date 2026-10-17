@@ -11,6 +11,7 @@
 - An interactive WebGL 2 SCARA preview with baseline stations, a direct-joint inspection panel, and a visible unsupported-WebGL/scene-error state.
 - A bounded Rapier package import + WASM initialization + one empty world tick. No body, package, contact, grip, or sorting code is implemented.
 - Configuration and kinematics tests. The current suite has 11 deterministic tests.
+- Acceptance stabilization: nested/missing configuration objects and package-to-bin mappings now receive explicit validation; malformed poses/joint states fail with actionable messages. The 3D workcell is dynamically imported so its rendering stack does not load in the initial UI bundle.
 
 ## Coordinate and joint convention
 
@@ -84,18 +85,20 @@ For the four FK→requested-branch IK→FK vectors, the test observed maximum po
 
 | Command/check | Outcome |
 |---|---|
-| `npm ci` | Pass: clean install from lockfile; 226 packages installed and npm reported 0 vulnerabilities. npm's install-script policy warned that `esbuild` and `fsevents` scripts were not approved; Vite build and dev-server checks still passed. |
+| `npm ci` | Pass: clean install from lockfile; 226 packages installed. This run did not print an audit summary. npm's install-script policy warned that `esbuild` and `fsevents` scripts were not approved; Vite build and dev-server checks still passed. |
 | `npm run format` / `npm run format:check` | Pass: all application/config files match Prettier. |
 | `npm run lint` | Pass: ESLint reported no errors. |
 | `npm run typecheck` | Pass: app and Vite config TypeScript checks. |
 | `npm test` | Pass: 1 test file, 11 tests. Observed FK/IK errors are listed above. |
 | `npm run verify:rapier-node` | Pass in Node only: Rapier 0.21.0 initialized and one empty 1/60 s step completed. This is not browser verification. |
-| `npm run build` | Pass: Vite 7.3.7 production build. Warning remains: separate lazy Rapier chunk is 4,368.41 kB minified (1,661.43 kB gzip); app JS chunk is 1,132.18 kB minified (314.40 kB gzip). |
+| `npm run build` | Pass: Vite 7.3.7 production build. After lazy loading the workcell, initial app JS is 239.03 kB minified (74.68 kB gzip), workcell/Three/R3F chunk 891.47 kB (238.97 kB gzip), and lazy Rapier chunk 4,368.41 kB (1,661.43 kB gzip). The Rapier chunk warning remains. |
 | Vite development server + HTTP requests | Pass: root, app entry, workcell module, and Rapier module returned HTTP 200. This checks serving/transforms, not browser rendering. |
-| Browser scene / WebGL 2 | Not verified: no Chromium, Chrome, Playwright executable, or Safari application was available in the environment. The app's WebGL2 detection and fallback are implemented but need a supported browser smoke test. |
+| Safari WebDriver / browser scene / WebGL 2 | Not verified: Safari 27.0.1 and `safaridriver` are installed and the WebDriver service started, but `POST /session` failed with Safari's message that “Allow remote automation” is disabled in Safari Settings → Developer. I did not change that system setting. The in-app browser connection reported no available browser, and a desktop capture showed the development interface rather than the Safari page. No page was observed, so WebGL 2, canvas rendering, joint interaction, browser console, failed network requests, and browser Rapier initialization remain unverified. |
+| Arc remote-debugging attempt | Not verified: Arc is installed, but launching with a temporary profile and `--remote-debugging-port=9222` did not expose its local DevTools endpoint; the port refused connections. No browser page was observed through this attempt. |
+| Standalone `npm audit --audit-level=low` | Not verified: the command could not reach the npm audit endpoint because registry DNS resolution failed in the sandbox. The clean install's output did not include an audit summary, so no current audit result is claimed. |
 | Physical robot validation | Not performed; no hardware or measurement is claimed. |
 
-The installed browser modules themselves were not automated in a real browser. The only Rapier runtime check was the Node smoke check above. No physical robot validation has been performed.
+The Vite server and transformed application modules returned HTTP 200, but that is only a server/transform check and not evidence of browser rendering. The installed browser modules themselves were not automated in a real browser. The only Rapier runtime check was the Node smoke check above. No physical robot validation has been performed.
 
 ## Deferred by phase boundary
 

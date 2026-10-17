@@ -22,7 +22,52 @@ function finiteVector2(value: Readonly<{ x: number; y: number }>, label: string)
   finite(value.y, `${label}.y`);
 }
 
-export function validateConfig(input: SortLabConfig): SortLabConfig {
+function requireRecord(value: unknown, label: string): Record<string, unknown> {
+  if (value === null || typeof value !== 'object' || Array.isArray(value))
+    throw new Error(`${label} must be an object.`);
+  return value as Record<string, unknown>;
+}
+
+function requireObjectArray(value: unknown, label: string): Record<string, unknown>[] {
+  if (!Array.isArray(value)) throw new Error(`${label} must be an array.`);
+  return value.map((entry, index) => requireRecord(entry, `${label}[${index}]`));
+}
+
+function assertConfigStructure(value: unknown): asserts value is SortLabConfig {
+  const root = requireRecord(value, 'configuration');
+  requireRecord(root.units, 'units');
+  const robot = requireRecord(root.robot, 'robot');
+  if (robot.mechanism !== 'SCARA') throw new Error('robot.mechanism must be SCARA.');
+  requireRecord(robot.links, 'robot.links');
+  const limits = requireRecord(robot.limits, 'robot.limits');
+  for (const key of ['j1', 'j2', 'j3', 'j4']) requireRecord(limits[key], `robot.limits.${key}`);
+  requireRecord(robot.home, 'robot.home');
+  requireRecord(robot.speedLimits, 'robot.speedLimits');
+  requireRecord(robot.accelerationLimits, 'robot.accelerationLimits');
+  const gripper = requireRecord(robot.gripper, 'robot.gripper');
+  requireRecord(gripper.opening, 'robot.gripper.opening');
+  const cell = requireRecord(root.cell, 'cell');
+  const conveyor = requireRecord(cell.conveyor, 'cell.conveyor');
+  requireRecord(conveyor.center, 'cell.conveyor.center');
+  requireRecord(conveyor.size, 'cell.conveyor.size');
+  const pickup = requireRecord(cell.pickup, 'cell.pickup');
+  requireRecord(pickup.center, 'cell.pickup.center');
+  const destinations = requireObjectArray(cell.destinations, 'cell.destinations');
+  for (const [index, dest] of destinations.entries()) {
+    const label = `cell.destinations[${index}]`;
+    requireRecord(dest.center, `${label}.center`);
+    requireRecord(dest.outside, `${label}.outside`);
+    requireRecord(dest.inside, `${label}.inside`);
+  }
+  const packages = requireObjectArray(root.packages, 'packages');
+  for (const [index, item] of packages.entries())
+    requireRecord(item.dimensions, `packages[${index}].dimensions`);
+  requireRecord(root.performance, 'performance');
+}
+
+export function validateConfig(rawInput: unknown): SortLabConfig {
+  assertConfigStructure(rawInput);
+  const input = rawInput;
   if (input.schemaVersion !== 1)
     throw new Error('Unsupported configuration schemaVersion; expected 1.');
   if (
@@ -73,6 +118,11 @@ export function validateConfig(input: SortLabConfig): SortLabConfig {
   finitePositive(input.cell.tableZ, 'cell.tableZ', true);
   finitePositive(input.cell.baseRadius, 'cell.baseRadius');
   finitePositive(input.cell.transferTcpZ, 'cell.transferTcpZ');
+  if (
+    input.cell.transferTcpZ < input.robot.limits.j3.min ||
+    input.cell.transferTcpZ > input.robot.limits.j3.max
+  )
+    throw new Error('cell.transferTcpZ must lie within the J3 world-Z limits.');
   finitePositive(input.cell.conveyor.size.x, 'cell.conveyor.size.x');
   finitePositive(input.cell.conveyor.size.y, 'cell.conveyor.size.y');
   finiteVector2(input.cell.conveyor.center, 'cell.conveyor.center');
@@ -99,15 +149,26 @@ export function validateConfig(input: SortLabConfig): SortLabConfig {
     finitePositive(dest.lipZ, `${dest.id}.lipZ`);
     if (dest.floorZ >= dest.lipZ) throw new Error(`${dest.id} floorZ must be below lipZ.`);
   }
-  if (input.packages.length !== 3 || new Set(input.packages.map(({ id }) => id)).size !== 3)
-    throw new Error('Exactly three uniquely identified package classes are required.');
+  const expectedRoutes = { S: 'B1', M: 'B2', L: 'B3' } as const;
+  if (
+    input.packages.length !== 3 ||
+    new Set(input.packages.map(({ id }) => id)).size !== 3 ||
+    !(['S', 'M', 'L'] as const).every((id) => input.packages.some((item) => item.id === id))
+  )
+    throw new Error('Exactly package classes S, M, and L are required.');
   for (const item of input.packages) {
+    if (typeof item.name !== 'string' || item.name.length === 0)
+      throw new Error(`${item.id}.name must be a non-empty string.`);
     finitePositive(item.dimensions.length, `${item.id}.dimensions.length`);
     finitePositive(item.dimensions.width, `${item.id}.dimensions.width`);
     finitePositive(item.dimensions.height, `${item.id}.dimensions.height`);
     finitePositive(item.massKg, `${item.id}.massKg`);
-    if (!/^#[0-9a-f]{6}$/i.test(item.displayColor))
+    if (typeof item.displayColor !== 'string' || !/^#[0-9a-f]{6}$/i.test(item.displayColor))
       throw new Error(`${item.id}.displayColor must be a six-digit hex color.`);
+    if (item.destination !== expectedRoutes[item.id])
+      throw new Error(
+        `${item.id} must route to ${expectedRoutes[item.id]} under the approved baseline.`,
+      );
     if (!input.cell.destinations.some(({ id }) => id === item.destination))
       throw new Error(`${item.id} references unknown destination ${item.destination}.`);
   }
@@ -120,6 +181,8 @@ export function validateConfig(input: SortLabConfig): SortLabConfig {
 }
 
 export function validateJointState(state: JointState, config: SortLabConfig): void {
+  if (state === null || typeof state !== 'object' || Array.isArray(state))
+    throw new Error('Joint state must be an object containing finite j1, j2, j3, and j4 values.');
   for (const key of ['j1', 'j2', 'j3', 'j4'] as const) {
     const value: unknown = state[key];
     if (typeof value !== 'number' || !Number.isFinite(value))
