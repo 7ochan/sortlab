@@ -18,6 +18,24 @@
 | Acceleration limits | J1/J2 180°/s²; J3 0.50 m/s²; J4 240°/s² | Initial cubic profile constraints                         |
 | Robot physics       |     Kinematically commanded rigid links | No motor/inertia model or physical robot available        |
 
+## Phase 3 package, gripper, and physics assumptions
+
+The existing route defines the TCP at the package-center grasp pose; there was no physical tool/capture envelope in the earlier baseline. Phase 3 adds the following configurable provisional geometry in `src/engineering/config.ts`:
+
+| Item | Assumption | Rationale / limit |
+|---|---:|---|
+| Palm | 0.075 × 0.040 × 0.018 m; palm center 0.065 m above TCP | Schematic placement clears the package center; not a manufactured tool drawing |
+| Pads | 0.035 m long × 0.008 m thick, contact plane 0.018 m above TCP center | Follows the existing package-center route convention; rigid virtual pads |
+| Grasp tolerance | 0.012 m center distance and 8° yaw error | Provisional simulated capture envelope |
+| Pad contact overlap | 0.001 m | Small geometric sensor overlap to define two-pad contact; not a force/contact-compliance estimate |
+| Package friction / restitution | μ=0.65 / e=0.02 | Simplified common package-to-support material inputs |
+| Static support friction | μ=0.80 | Simplified table/conveyor/bin contact input |
+| Gravity | 9.81 m/s² in −Z | Standard assumed constant gravity |
+
+Package collider mapping is S/carton → axis-aligned cuboid, M/cylinder → vertical cylinder whose diameter is the package width and height is package height, and L/pouch → rounded cuboid with 0.01 m corner radius. The pouch remains a rigid proxy: it has no folding, deformation, fill motion, fabric friction, or pressure distribution. These are model choices, not measured material properties. All values are stored/validated centrally and remain editable only through the typed configuration.
+
+The grip acceptance check uses Rapier sensor-pad overlap on both sides, TCP/package-center distance, wrapped yaw error, jaw width bounds, and the baseline virtual-force calculation. A Rapier fixed joint holds the captured relative pose. This does not model jaw actuator dynamics, pad compliance, force control, slip, crush, or calibrated friction. Physics advances at the configured 1/60 s timestep using a bounded display-frame accumulator; delayed frames may discard excess wall-clock time rather than perform unbounded catch-up.
+
 Planar radial reach: r²=L1²+L2²+2L1L2 cos(q2); ideal minimum 0.05 m at q2=180°, maximum 0.55 m at q2=0°. Limits, base geometry, tool/package envelope and obstacles reduce this range.
 
 ## Workcell coordinates and dimensions
@@ -49,7 +67,7 @@ For B2, cos(q2)=(r²-L1²-L2²)/(2L1L2)≈-0.6327, giving |q2|≈129.3° versus 
 | M   | Medium   | 0.12 × 0.09 × 0.06 m |      0.30 kg | B2          |
 | L   | Large    | 0.16 × 0.12 × 0.08 m |      0.60 kg | B3          |
 
-Nominal rigid axis-aligned boxes with uniform density and centered mass. Values are illustrative, not a warehouse dataset. ID is a deterministic simulated barcode event; colors/labels are presentation only. No physical sensor or vision claim.
+Nominal rigid proxies with centered mass. Values are illustrative, not a warehouse dataset. ID is a deterministic simulated barcode event; colors/labels are presentation only. No physical sensor or vision claim. Phase 3 shape mapping and limitations are specified below.
 
 ## Holding-force estimate
 

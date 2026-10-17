@@ -609,6 +609,57 @@ input[type='range'] {
 .route-actions button:hover {
   filter: brightness(1.08);
 }
+.route-actions button:disabled,
+.joint-control input:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.physics-panel {
+  padding: 16px 18px;
+  border: 1px solid rgba(177, 205, 193, 0.13);
+  border-radius: 6px;
+  background: linear-gradient(145deg, rgba(31, 45, 48, 0.97), rgba(24, 35, 39, 0.98));
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.16);
+}
+.physics-panel .panel-copy {
+  margin-bottom: 12px;
+}
+.physics-actions {
+  grid-template-columns: repeat(2, 1fr);
+  margin-top: 10px;
+}
+.physics-actions button:nth-child(3) {
+  color: #17201e;
+  background: #73b6a2;
+  border-color: rgba(115, 182, 162, 0.45);
+}
+.physics-panel .route-actions + .route-actions {
+  margin-top: 6px;
+}
+.attached-badge {
+  color: #8dcdb4;
+  border-color: rgba(105, 190, 157, 0.3);
+}
+.physics-state {
+  margin-top: 10px;
+  padding: 9px 10px;
+  border-radius: 4px;
+  color: #9caea6;
+  background: rgba(7, 14, 16, 0.34);
+  font:
+    8px 'DM Mono',
+    monospace;
+  line-height: 1.6;
+}
+.physics-state p {
+  margin: 5px 0 0;
+}
+.result-ok {
+  color: #82cbb0;
+}
+.result-error {
+  color: #e0a17e;
+}
 .route-mode {
   margin-top: 8px;
   color: #7f928a;

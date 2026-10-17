@@ -1,6 +1,4 @@
-import { useEffect, useState } from 'react';
 import { CONFIG } from '../engineering/config';
-import { checkRapierInitialization } from '../engineering/rapierCheck';
 import { forwardKinematics } from '../engineering/kinematics';
 import type { JointState } from '../engineering/types';
 
@@ -9,26 +7,13 @@ const toDegrees = (radians: number) => (radians * 180) / Math.PI;
 export function StatusPanel({
   joints,
   onChange,
+  controlsLocked,
 }: {
   joints: JointState;
   onChange: (next: JointState) => void;
+  controlsLocked: boolean;
 }) {
-  const [rapierStatus, setRapierStatus] = useState('Checking Rapier module…');
   const pose = forwardKinematics(joints, CONFIG);
-  useEffect(() => {
-    let active = true;
-    void checkRapierInitialization().then(
-      (message) => {
-        if (active) setRapierStatus(message);
-      },
-      (error: unknown) => {
-        if (active) setRapierStatus(`Initialization unavailable: ${String(error)}`);
-      },
-    );
-    return () => {
-      active = false;
-    };
-  }, []);
 
   const fields = [
     {
@@ -95,6 +80,7 @@ export function StatusPanel({
             <input
               aria-label={field.label}
               type="range"
+              disabled={controlsLocked}
               min={field.min}
               max={field.max}
               step={field.step}
@@ -151,13 +137,9 @@ export function StatusPanel({
           </div>
         ))}
       </div>
-      <div className="integration-check" aria-live="polite">
-        <span className="eyebrow">RAPIER · INITIALIZATION CHECK</span>
-        <p>{rapierStatus}</p>
-      </div>
       <p className="scope-note">
-        Kinematic state only. Package dynamics, grasping, sorting controls, and fault recovery are
-        later-phase work.
+        Kinematic robot model with dynamic package bodies. Link contact, swept-volume checks, and
+        autonomous sorting are not implemented.
       </p>
     </aside>
   );

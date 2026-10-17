@@ -46,6 +46,8 @@ function assertConfigStructure(value: unknown): asserts value is SortLabConfig {
   requireRecord(robot.accelerationLimits, 'robot.accelerationLimits');
   const gripper = requireRecord(robot.gripper, 'robot.gripper');
   requireRecord(gripper.opening, 'robot.gripper.opening');
+  requireRecord(gripper.pad, 'robot.gripper.pad');
+  requireRecord(gripper.palm, 'robot.gripper.palm');
   const cell = requireRecord(root.cell, 'cell');
   const conveyor = requireRecord(cell.conveyor, 'cell.conveyor');
   requireRecord(conveyor.center, 'cell.conveyor.center');
@@ -63,6 +65,9 @@ function assertConfigStructure(value: unknown): asserts value is SortLabConfig {
   for (const [index, item] of packages.entries())
     requireRecord(item.dimensions, `packages[${index}].dimensions`);
   requireRecord(root.performance, 'performance');
+  const physics = requireRecord(root.physics, 'physics');
+  requireRecord(physics.collisionGroups, 'physics.collisionGroups');
+  requireRecord(physics.grasp, 'physics.grasp');
 }
 
 export function validateConfig(rawInput: unknown): SortLabConfig {
@@ -98,6 +103,10 @@ export function validateConfig(rawInput: unknown): SortLabConfig {
   if (input.robot.gripper.opening.min >= input.robot.gripper.opening.max)
     throw new Error('Gripper opening min must be below max.');
   finitePositive(input.robot.gripper.virtualJawCapacityN, 'robot.gripper.virtualJawCapacityN');
+  for (const key of ['width', 'length', 'contactHeight'] as const)
+    finitePositive(input.robot.gripper.pad[key], `robot.gripper.pad.${key}`);
+  for (const key of ['x', 'y', 'z', 'offsetAboveTcp'] as const)
+    finitePositive(input.robot.gripper.palm[key], `robot.gripper.palm.${key}`);
   finitePositive(
     input.robot.gripper.assumedFrictionCoefficient,
     'robot.gripper.assumedFrictionCoefficient',
@@ -163,6 +172,8 @@ export function validateConfig(rawInput: unknown): SortLabConfig {
     finitePositive(item.dimensions.width, `${item.id}.dimensions.width`);
     finitePositive(item.dimensions.height, `${item.id}.dimensions.height`);
     finitePositive(item.massKg, `${item.id}.massKg`);
+    if (!['carton', 'cylinder', 'pouch'].includes(item.shape))
+      throw new Error(`${item.id}.shape must be carton, cylinder, or pouch.`);
     if (typeof item.displayColor !== 'string' || !/^#[0-9a-f]{6}$/i.test(item.displayColor))
       throw new Error(`${item.id}.displayColor must be a six-digit hex color.`);
     if (item.destination !== expectedRoutes[item.id])
@@ -177,6 +188,19 @@ export function validateConfig(rawInput: unknown): SortLabConfig {
     'performance.targetMedianCycleSeconds',
   );
   finitePositive(input.performance.fixedStepSeconds, 'performance.fixedStepSeconds');
+  finitePositive(input.physics.gravityMps2, 'physics.gravityMps2');
+  finitePositive(input.physics.packageFriction, 'physics.packageFriction', true);
+  finitePositive(input.physics.staticFriction, 'physics.staticFriction', true);
+  finitePositive(input.physics.packageRestitution, 'physics.packageRestitution', true);
+  if (input.physics.packageRestitution > 1)
+    throw new Error('physics.packageRestitution must be at most 1.');
+  for (const [name, mask] of Object.entries(input.physics.collisionGroups)) {
+    if (!Number.isInteger(mask) || mask < 1 || mask > 0xffff)
+      throw new Error(`physics.collisionGroups.${name} must be an integer 16-bit group mask.`);
+  }
+  finitePositive(input.physics.grasp.positionToleranceM, 'physics.grasp.positionToleranceM');
+  finitePositive(input.physics.grasp.yawToleranceRad, 'physics.grasp.yawToleranceRad');
+  finitePositive(input.physics.grasp.padContactEpsilonM, 'physics.grasp.padContactEpsilonM');
   return input;
 }
 

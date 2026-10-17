@@ -2,9 +2,16 @@ import { Component, lazy, Suspense, useEffect, useRef, useState, type ReactNode 
 import { CONFIG } from './engineering/config';
 import { planAllDestinationRoutes } from './engineering/routes';
 import { sampleTrajectoryAtTime } from './engineering/trajectory';
+import { forwardKinematics } from './engineering/kinematics';
+import {
+  PackagePhysicsSimulation,
+  type GraspResult,
+  type PackageSnapshot,
+} from './engineering/packagePhysics';
 import { StatusPanel } from './components/StatusPanel';
 import { RoutePanel } from './components/RoutePanel';
-import type { JointState } from './engineering/types';
+import { PackagePanel } from './components/PackagePanel';
+import type { JointState, PackageClass } from './engineering/types';
 import './styles.css';
 
 const Workcell = lazy(() =>
@@ -42,6 +49,12 @@ function App() {
   const playbackTimeRef = useRef(0);
   const [playing, setPlaying] = useState(false);
   const [manualInspection, setManualInspection] = useState(false);
+  const physicsRef = useRef<PackagePhysicsSimulation | null>(null);
+  const [packageClass, setPackageClass] = useState<PackageClass>(CONFIG.packages[0]!);
+  const [packageSnapshot, setPackageSnapshot] = useState<PackageSnapshot | null>(null);
+  const [physicsStatus, setPhysicsStatus] = useState('Initializing fixed-step Rapier world…');
+  const [graspResult, setGraspResult] = useState<GraspResult | null>(null);
+  const [gripperOpen, setGripperOpen] = useState(true);
   const [webglSupported] = useState<boolean>(() => {
     try {
       const canvas = document.createElement('canvas');
@@ -76,7 +89,64 @@ function App() {
     return () => cancelAnimationFrame(frame);
   }, [playing, route]);
 
+  useEffect(() => {
+    let active = true;
+    let simulation: PackagePhysicsSimulation | null = null;
+    let frame = 0;
+    let previous = 0;
+    let accumulator = 0;
+    void PackagePhysicsSimulation.create(CONFIG, packageClass.id)
+      .then((created) => {
+        if (!active) {
+          created.dispose();
+          return;
+        }
+        simulation = created;
+        physicsRef.current = created;
+        setPackageSnapshot(created.stepFixed(0));
+        setPhysicsStatus(
+          `Rapier ${CONFIG.performance.fixedStepSeconds.toFixed(5)} s fixed step · package dynamics active`,
+        );
+        const tick = (now: number) => {
+          if (!active || !simulation) return;
+          const dt = CONFIG.performance.fixedStepSeconds;
+          if (!previous) previous = now;
+          accumulator = Math.min(accumulator + Math.min((now - previous) / 1000, 0.1), dt * 6);
+          previous = now;
+          simulation.setTcp(forwardKinematics(jointsRef.current, CONFIG));
+          let steps = 0;
+          while (accumulator >= dt && steps < 6) {
+            simulation.stepFixed();
+            accumulator -= dt;
+            steps += 1;
+          }
+          if (steps) setPackageSnapshot(simulation.stepFixed(0));
+          frame = requestAnimationFrame(tick);
+        };
+        frame = requestAnimationFrame(tick);
+      })
+      .catch((error: unknown) =>
+        setPhysicsStatus(
+          `Rapier unavailable: ${error instanceof Error ? error.message : String(error)}`,
+        ),
+      );
+    return () => {
+      active = false;
+      cancelAnimationFrame(frame);
+      physicsRef.current = null;
+      simulation?.dispose();
+    };
+    // One world per mounted app; package selection resets the existing body below.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const jointsRef = useRef(joints);
+  useEffect(() => {
+    jointsRef.current = joints;
+  }, [joints]);
+
   const inspectJointState = (next: JointState) => {
+    if (physicsRef.current?.isAttached) return;
     setPlaying(false);
     setManualInspection(true);
     setJoints(next);
@@ -97,6 +167,17 @@ function App() {
   };
 
   const resetRoute = () => scrubTrajectory(0);
+
+  const withPhysics = (action: (simulation: PackagePhysicsSimulation) => void) => {
+    const simulation = physicsRef.current;
+    if (!simulation) return;
+    try {
+      action(simulation);
+      setPackageSnapshot(simulation.stepFixed(0));
+    } catch (error) {
+      setPhysicsStatus(error instanceof Error ? error.message : String(error));
+    }
+  };
 
   const selectDestination = (destination: 'B1' | 'B2' | 'B3') => {
     const selectedRoute = routes.find(({ destinationId }) => destinationId === destination);
@@ -125,7 +206,7 @@ function App() {
         <div className="topbar-context">
           <span>ROBOTICS DIGITAL TWIN</span>
           <span className="context-separator" />
-          PHASE 02 · ROUTES &amp; TRAJECTORIES
+          PHASE 03 · PACKAGE TRANSFER
         </div>
         <div className="topbar-right">
           <span className="connection-indicator">
@@ -165,7 +246,13 @@ function App() {
             ) : (
               <SceneBoundary>
                 <Suspense fallback={<div className="scene-error">Loading 3D scene…</div>}>
-                  <Workcell joints={joints} route={route} />
+                  <Workcell
+                    joints={joints}
+                    route={route}
+                    packageSnapshot={packageSnapshot}
+                    packageClass={packageClass}
+                    gripperOpen={gripperOpen}
+                  />
                 </Suspense>
               </SceneBoundary>
             )}
@@ -206,17 +293,76 @@ function App() {
           </div>
         </div>
         <div className="control-column">
-          <StatusPanel joints={joints} onChange={inspectJointState} />
+          <StatusPanel
+            joints={joints}
+            onChange={inspectJointState}
+            controlsLocked={Boolean(packageSnapshot?.attached)}
+          />
           <RoutePanel
             route={route}
             selectedDestination={selectedDestination}
             playbackTime={playbackTime}
             playing={playing}
             manualInspection={manualInspection}
+            controlsLocked={Boolean(packageSnapshot?.attached)}
             onDestinationChange={selectDestination}
             onPlaybackTimeChange={scrubTrajectory}
             onTogglePlayback={togglePlayback}
             onReset={resetRoute}
+          />
+          <PackagePanel
+            packages={CONFIG.packages}
+            packageId={packageClass.id}
+            status={physicsStatus}
+            snapshot={packageSnapshot}
+            attached={Boolean(packageSnapshot?.attached)}
+            open={gripperOpen}
+            result={graspResult}
+            onSelect={(id) =>
+              withPhysics((sim) => {
+                sim.selectPackage(id);
+                const item = CONFIG.packages.find((p) => p.id === id)!;
+                const destinationRoute = routes.find((r) => r.destinationId === item.destination)!;
+                setPackageClass(item);
+                setSelectedDestination(item.destination);
+                setPlaying(false);
+                setManualInspection(false);
+                setPlaybackTime(0);
+                playbackTimeRef.current = 0;
+                setJoints(destinationRoute.trajectory.samples[0]!.position);
+                setGraspResult(null);
+                setGripperOpen(true);
+              })
+            }
+            onReset={() =>
+              withPhysics((sim) => {
+                sim.reset();
+                setGraspResult(null);
+                setGripperOpen(true);
+              })
+            }
+            onOpen={() =>
+              withPhysics((sim) => {
+                sim.open();
+                setGripperOpen(true);
+                setGraspResult(null);
+              })
+            }
+            onClose={() =>
+              withPhysics((sim) => {
+                sim.close();
+                setGripperOpen(false);
+                setGraspResult(null);
+              })
+            }
+            onGrasp={() => withPhysics((sim) => setGraspResult(sim.attemptGrasp()))}
+            onRelease={() =>
+              withPhysics((sim) => {
+                setGraspResult(sim.release());
+                setGripperOpen(true);
+                sim.open();
+              })
+            }
           />
         </div>
       </section>

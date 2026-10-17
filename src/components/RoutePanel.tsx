@@ -6,6 +6,7 @@ export function RoutePanel({
   playbackTime,
   playing,
   manualInspection,
+  controlsLocked,
   onDestinationChange,
   onPlaybackTimeChange,
   onTogglePlayback,
@@ -16,6 +17,7 @@ export function RoutePanel({
   playbackTime: number;
   playing: boolean;
   manualInspection: boolean;
+  controlsLocked: boolean;
   onDestinationChange: (destination: PlannedRoute['destinationId']) => void;
   onPlaybackTimeChange: (time: number) => void;
   onTogglePlayback: () => void;
@@ -43,6 +45,7 @@ export function RoutePanel({
       <select
         id="route-destination"
         aria-label="Destination bin"
+        disabled={controlsLocked}
         value={selectedDestination}
         onChange={(event) =>
           onDestinationChange(event.currentTarget.value as PlannedRoute['destinationId'])
@@ -92,13 +95,19 @@ export function RoutePanel({
           max={route.trajectory.durationSeconds}
           step={1 / 60}
           value={Math.min(playbackTime, route.trajectory.durationSeconds)}
+          disabled={controlsLocked}
           onChange={(event) => onPlaybackTimeChange(Number(event.currentTarget.value))}
         />
         <div className="route-actions">
           <button type="button" onClick={onTogglePlayback}>
             {playing ? 'Pause' : 'Play preview'}
           </button>
-          <button type="button" className="secondary-button" onClick={onReset}>
+          <button
+            type="button"
+            className="secondary-button"
+            onClick={onReset}
+            disabled={controlsLocked}
+          >
             Return to pickup
           </button>
         </div>

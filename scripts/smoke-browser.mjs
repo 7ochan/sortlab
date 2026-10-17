@@ -83,11 +83,11 @@ try {
   assert.equal(stationRows.filter((text) => text.includes('Destination')).length, 3);
 
   await page.waitForFunction(
-    () => document.querySelector('.integration-check p')?.textContent?.startsWith('Rapier '),
+    () => document.querySelector('.physics-state > span')?.textContent?.includes('fixed step'),
     null,
     { timeout: 45000 },
   );
-  const rapier = (await page.locator('.integration-check p').innerText()).trim();
+  const rapier = (await page.locator('.physics-state > span').innerText()).trim();
 
   const evidenceDir = await mkdtemp(path.join(tmpdir(), 'sortlab-browser-smoke-'));
   const initialScreenshot = path.join(evidenceDir, 'workcell-initial.png');
@@ -263,6 +263,62 @@ try {
     { timeout: 3000 },
   );
 
+  await page.getByLabel('Package category').selectOption('M');
+  await page.waitForTimeout(150);
+  await page.getByRole('button', { name: 'Close', exact: true }).click();
+  await page.getByRole('button', { name: 'Attempt grasp' }).click();
+  await page.getByText('ATTACHED', { exact: true }).waitFor({ state: 'visible', timeout: 5000 });
+  const startPackagePose = await page.getByTestId('package-pose').innerText();
+  const jointSlider = page.getByLabel('J1 · Shoulder');
+  assert.equal(
+    await jointSlider.isDisabled(),
+    true,
+    'Direct joint control should lock while carrying.',
+  );
+  assert.equal(
+    await routeSelect.isDisabled(),
+    true,
+    'Destination changes should lock while carrying.',
+  );
+  assert.equal(
+    await playbackTime.isDisabled(),
+    true,
+    'Trajectory scrubbing should lock while carrying.',
+  );
+  assert.equal(await page.getByRole('button', { name: 'Return to pickup' }).isDisabled(), true);
+  await page.getByRole('button', { name: 'Play preview' }).click();
+  await page.waitForFunction(
+    (start) => {
+      const text = document.querySelector('[data-testid="package-pose"]')?.textContent ?? '';
+      const values = [...text.matchAll(/-?\d+\.\d+/g)].map((match) => Number(match[0]));
+      return values.length === 3 && Math.abs(values[2] - start) > 0.015;
+    },
+    Number.parseFloat(startPackagePose.match(/-?\d+\.\d+/g)?.[2] ?? '0'),
+    { timeout: 5000 },
+  );
+  await page.getByRole('button', { name: 'Pause' }).click();
+  const carriedPose = await page.getByTestId('package-pose').innerText();
+  await page.getByRole('button', { name: 'Release' }).click();
+  await page.getByText('DYNAMIC', { exact: true }).waitFor({ state: 'visible' });
+  const releaseZ = Number.parseFloat(carriedPose.match(/-?\d+\.\d+/g)?.[2] ?? '0');
+  await page.waitForFunction(
+    (start) => {
+      const text = document.querySelector('[data-testid="package-pose"]')?.textContent ?? '';
+      const z = Number.parseFloat(text.match(/-?\d+\.\d+/g)?.[2] ?? '0');
+      return z < start - 0.005;
+    },
+    releaseZ,
+    { timeout: 3000 },
+  );
+  await page.getByRole('button', { name: 'Reset package' }).click();
+  const packageInteraction = {
+    grasped: true,
+    carriedPose,
+    releasedAndFell: true,
+    directJointLocked: true,
+    routeSelectionAndScrubbingLocked: true,
+  };
+
   await viewport.screenshot({ path: finalScreenshot, animations: 'disabled' });
   await page.waitForTimeout(250);
   assert.deepEqual(errors, [], 'Browser console or uncaught page errors were reported.');
@@ -288,6 +344,7 @@ try {
           playedToSeconds: playTime,
           scrubbedToSeconds: destinationTime,
         },
+        packageInteraction,
         consoleErrors: errors,
         failedRequests,
         badResponses,

@@ -40,6 +40,7 @@ export type PackageClass = Readonly<{
   name: string;
   dimensions: Readonly<{ length: number; width: number; height: number }>;
   massKg: number;
+  shape: 'carton' | 'cylinder' | 'pouch';
   destination: SortDestination['id'];
   displayColor: string;
 }>;
@@ -58,6 +59,8 @@ export type SortLabConfig = Readonly<{
       opening: Readonly<{ min: number; max: number }>;
       virtualJawCapacityN: number;
       assumedFrictionCoefficient: number;
+      pad: Readonly<{ width: number; length: number; contactHeight: number }>;
+      palm: Readonly<{ x: number; y: number; z: number; offsetAboveTcp: number }>;
       safetyFactor: number;
       gravityMps2: number;
       verticalAccelerationMps2: number;
@@ -77,4 +80,16 @@ export type SortLabConfig = Readonly<{
   }>;
   packages: readonly PackageClass[];
   performance: Readonly<{ targetMedianCycleSeconds: number; fixedStepSeconds: number }>;
+  physics: Readonly<{
+    gravityMps2: number;
+    packageFriction: number;
+    packageRestitution: number;
+    staticFriction: number;
+    collisionGroups: Readonly<{ packages: number; environment: number }>;
+    grasp: Readonly<{
+      positionToleranceM: number;
+      yawToleranceRad: number;
+      padContactEpsilonM: number;
+    }>;
+  }>;
 }>;

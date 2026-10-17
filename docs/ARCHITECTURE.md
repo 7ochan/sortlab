@@ -1,6 +1,6 @@
 # SortLab Architecture Decision
 
-**Status:** Phase 1 foundation and Phase 2 kinematic trajectory/route preview implemented locally. Package physics and sorting control remain planned.
+**Status:** Phase 1 foundation, Phase 2 trajectory/route preview, and Phase 3 package physics/gripper transfer implemented locally. Autonomous sorting remains planned.
 
 **Date:** 2026-10-17
 
@@ -8,7 +8,7 @@
 
 - TypeScript + React 19 + Vite for application logic, UI, and development server. Phase 1 pins React/React DOM 19.3.0 and Vite 7.3.7.
 - React Three Fiber 9 + Three.js/WebGL 2 for the interactive scene. Phase 1 pins R3F 9.4.2 and Three.js 0.185.0.
-- Rapier 3D JavaScript deterministic compatibility build for later fixed-step package physics, colliders, contact events, and grasp/release constraints. Phase 1 pins 0.21.0 and checks only package/WASM initialization and one empty step.
+- Rapier 3D JavaScript deterministic compatibility build for fixed-step package physics, static support/bin colliders, package contact sensors, and a fixed-joint grasp/release model. Phase 3 uses package 0.21.0; robot links remain kinematic visuals.
 - Application-owned analytic SCARA FK/IK, joint-limit validation, deterministic cubic joint trajectories, and a fixed-cell Cartesian waypoint planner. Swept collision/clearance checks and finite-state sorting control remain future work.
 - Vitest 4.1.12 for engineering unit tests and Playwright Core 1.63.0 for the cached Chromium browser smoke test.
 - Markdown + Mermaid as source documentation; cumulative report export follows the university format.
@@ -17,7 +17,7 @@ Use compatible stable versions pinned in package-lock.json; avoid canary/alpha a
 
 ### Implemented foundation and Phase 2 status
 
-The foundation is separated into `src/engineering` (typed baseline config, boundary validation, FK/IK, workspace, trajectory and route logic), `src/components` (3D workcell, route overlay, and inspection panels), `src/App.tsx` (composition, preview playback, and WebGL fallback), and pure engineering tests. Direct joint inspection and trajectory playback both drive the same `JointState` used by FK and the rendered arm. Rapier stays behind an async import and remains disconnected from the robot/package model. See [`PHASE-1-IMPLEMENTATION.md`](PHASE-1-IMPLEMENTATION.md) and [`PHASE-2-IMPLEMENTATION.md`](PHASE-2-IMPLEMENTATION.md) for conventions, test evidence, and limits.
+The app separates `src/engineering` (typed baseline/config validation, FK/IK, trajectories/routes, and `packagePhysics.ts`), `src/components` (3D workcell and status/route/package panels), and `src/App.tsx` (composition and fixed-step adapter). Direct inspection, route playback, and package attachment use the same joint state and FK convention. Rapier loads asynchronously and its package/gripper state is tested separately from React.
 
 The diagram shows the implemented path from UI through fixed-cell route planning, IK, sampled trajectories, and the rendered arm. Controller, simulation physics, package lifecycle, collision checking, and performance evaluation links remain future contracts. Phase 2 does not implement a collision planner, package physics, sorting flow, or full operations dashboard.
 
@@ -29,7 +29,9 @@ This is a kinematic educational digital twin, not an industrial dynamics twin: r
 
 Webots remains a contingency only if the course expects a dedicated robotics simulator. Gazebo Harmonic + ROS 2 is not selected because official docs describe macOS as best-effort and its GUI as unstable; the extra ROS/native setup is not justified for this fixed four-axis cell. CoppeliaSim adds another app/integration surface. A hand-scripted Three.js-only animation is a fallback if physics integration fails. General RRT/MoveIt is unnecessary for three fixed stations: use a bounded waypoint graph with complete collision checks. [Gazebo support caveats](https://gazebosim.org/docs/harmonic/install/), [macOS behavior](https://gazebosim.org/docs/harmonic/getstarted/).
 
-## Architecture and module contracts
+## Target architecture and module contracts
+
+The controller, scenarios, collision guard, placement accounting, and evaluation links below are future architecture; Phase 3 does not implement them.
 
 ```mermaid
 flowchart LR
@@ -63,7 +65,7 @@ flowchart LR
 | Route planner      | **Phase 2:** fixed-cell named TCP waypoints, analytic IK, continuous elbow branch, route failure                        | Typed waypoint route and sampled Cartesian trajectory; no collision margin |
 | Trajectory         | **Phase 2:** cubic joint profile with analytic bounds; Cartesian waypoint timing with sampled speed/acceleration checks | Deterministic timestamped joint states and FK poses                        |
 | Controller         | State transitions, ID routing, retries, timeouts, fault latch, event generation                                         | Typed commands/events                                                      |
-| Simulation adapter | Fixed clock, Rapier world, arm transforms, package lifecycle, grasp/release and contact reporting                       | Simulated observations to controller                                       |
+| Simulation adapter | **Phase 3:** fixed-step Rapier package/environment bodies, sensor-pad grasp gate, fixed-joint carry, dynamic release. Robot remains kinematic in React/Three. | Package pose/status to UI; controller contract remains future |
 | Presentation       | Scene geometry, camera, UI controls and read-only state display                                                         | Commands to controller; events/metrics from controller                     |
 | Evaluation         | Seeded scenario sets, run definitions, aggregation and export of raw simulated results                                  | Versioned JSON/CSV run data                                                |
 | Documentation      | Requirement mapping, assumptions, calculations, diagrams, cumulative report history                                     | Evidence traceability                                                      |
@@ -75,11 +77,11 @@ flowchart LR
 3. FK/IK checks pose, joint limits, and branches. The Phase 2 route builder tests both elbow branches for the fixed elevated-corridor waypoints and selects the fastest feasible continuous route.
 4. Phase 2 verifies joint-space cubic extrema analytically and checks Cartesian route velocity/acceleration on the deterministic 1/60 s sample grid. It does not test links/packages against conveyor or bins; Phase 2 path clearance is not established.
 5. Control and physics advance on a fixed 1/60 s tick with capped catch-up. Rendering interpolates state separately at display refresh; frame rate never defines cycle time. Pause/step act on simulation ticks.
-6. Kinematic robot links are updated from joint state. Rapier advances package bodies and reports contacts. Collision guard checks every fixed tick and latches a stop on unsafe contact; physics does not stop the kinematic arm by itself.
-7. Grasp qualifies only when package center/contact is within capture tolerance, jaw opening fits, force demand is below configured virtual capacity, and route/pose checks pass. A fixed constraint attaches the package for transport; release removes the constraint and returns the package to dynamic physics.
-8. Placement is counted only when the package settles inside the assigned bin. Every transition has an event and timeout. Cycle time is pick-cycle start through verified release and return-ready in simulated seconds.
+6. **Phase 3:** React/Three updates the kinematic robot from joint state and Rapier advances package bodies at fixed ticks. Package sensor-pad intersections gate the manual grasp and a fixed joint carries the package. There is no robot collision guard, collision-triggered stop, controller event, or automatic placement confirmation yet.
+7. A future controller should call the tested Phase 3 gripper operations only after its route and fault policies are defined. Phase 3 itself has no automatic retry or transfer state machine.
+8. Future placement accounting should require the package to settle inside the assigned bin; Phase 3 does not award sorting credit or calculate cycle metrics.
 
-The browser animation loop is not the simulation clock. Use an accumulator with a fixed 1/60-second control/physics step and a documented cap on catch-up steps. Pause and single-step operate on simulation ticks.
+The browser animation loop is not the physics timestep. Phase 3 uses the configured 1/60 s accumulator and caps catch-up to six steps per rendered frame; excess delayed wall time is discarded. When carrying, direct joint controls and route selection/scrubbing are disabled to avoid teleporting the attached body. This is not an industrial servo controller.
 
 ## State machine and fault behavior
 
@@ -96,13 +98,13 @@ Idle → Validate → Identify → PlanApproach → Approach → Grip → Verify
 
 The Phase 2 planner is fixed-cell rather than general warehouse navigation. It checks sampled TCP IK continuity, joint limits, and configured speed/acceleration constraints for an elevated corridor. It does not check link/package envelopes, bin entry collision, or swept volume. Alternate elbow branches are tried. Future collision checks must be completed before treating a route as safe to execute.
 
-Current Phase 2 UI: 3D cell and TCP route overlay; destination selector; waypoint coordinates; planned duration; play/pause/scrub/return-to-pickup controls; direct joint pose inspection; explicit kinematic-only scope. Operating state, package ID, scenario/fault controls, event history, sort counts, and performance dashboard remain planned.
+Current Phase 3 UI: 3D cell and route overlay; route selection/playback; direct joint inspection; package category/reset; open/close/grasp/release; package pose/state; and control lockout while carrying. Autonomous ID routing, scenario/fault controls, event history, sort counts, and performance dashboard remain planned.
 
 Metrics: correct-sort fraction, wrong-bin count, retry rate, faults/recoveries, cycle-time distribution, packages per simulated minute, unreachable-route count, and minimum path clearance. Each metric records denominator, run length, config version, seed, timestep, software lockfile and runtime.
 
 ## Verification
 
-- Vitest: FK/IK round trips and branches, limits/singularities, workspace, cubic coefficients/boundaries/derivatives, route reachability and continuity, sampled constraints, and playback selection. Force/clearance formulae, controller transitions and metric arithmetic remain future tests.
+- Vitest: FK/IK, workspace, cubic trajectories/routes, Rapier initialization/fixed steps/reset, all package proxies, contact-gated grasp, rejected alignment, carry coordination, release/fall, and repeated lifecycle cleanup. Swept collision clearance and autonomous controller behavior remain future tests.
 - Scenario tests: all three nominal package types plus each injected fault; expected terminal state and exact item counts.
 - Playwright: load, start/pause/step/reset, scenario/fault controls, visible transfer, UI/event/count agreement.
 - Engineering review: independently recompute representative kinematics and grip force; review clearance and diagrams.

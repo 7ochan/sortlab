@@ -4,9 +4,9 @@
 
 ## Current phase
 
-**Phase 2: Trajectory and route planning.** SortLab now includes the Phase 1 TypeScript/React/Vite foundation, validated engineering baseline, SCARA FK/IK and workspace analysis, constraint-checked cubic joint trajectories, fixed-cell Cartesian waypoint routes to all three bins, an interactive 3D route overlay, route selection, playback/scrubbing, and direct joint inspection. The preview is kinematic only: it does not sort or transfer packages and does not validate collision clearance.
+**Phase 3: Package physics and gripper transfer.** SortLab includes the Phase 1 foundation and Phase 2 FK/IK, cubic trajectories and fixed-cell routes, plus a fixed-step Rapier world with one selectable dynamic package, static workcell support/bin colliders, simulated jaw contact checks, fixed-joint carry and dynamic release. The existing route preview moves a grasped package kinematically with the TCP; autonomous sorting, robot-link collision checks and physical validation are not implemented.
 
-The course brief was not available in the inspected workspace. Course-specific dates, marks, formatting, physical-hardware obligations, and AI policy remain unverified; see [the Mission 0 plan](docs/MISSION-0-PLAN.md). Phase boundaries remain in force; Phase 3 requires explicit owner approval.
+The course brief was not available in the inspected workspace. Course-specific dates, marks, formatting, physical-hardware obligations, and AI policy remain unverified; see [the Mission 0 plan](docs/MISSION-0-PLAN.md). Phase boundaries remain in force; Phase 4 requires explicit owner approval.
 
 ## Requirements
 
@@ -28,7 +28,7 @@ npm run format:check  # formatting verification
 npm run lint          # ESLint
 npm run typecheck     # browser and Vite configuration TypeScript checks
 npm test              # deterministic Vitest unit tests
-npm run verify:rapier-node # bounded Rapier package/WASM initialization check in Node
+npm run verify:rapier-node # Rapier package/WASM initialization check in Node
 npm run smoke:browser # Playwright smoke test against a running Vite URL
 npm run build         # type checks and production bundle
 npm run preview       # serve the production bundle locally
@@ -41,7 +41,7 @@ npm run dev -- --host 127.0.0.1
 SORTLAB_URL=http://127.0.0.1:5173/ npm run smoke:browser
 ```
 
-The smoke test uses pinned Playwright Core 1.63.0 and its matching cached Chromium revision 1243; it does not download or install a browser. It checks WebGL 2, the rendered workcell, joint controls and FK readouts, all three route selections, playback/scrubbing, browser errors/network failures, and the bounded Rapier initialization result.
+The smoke test uses pinned Playwright Core 1.63.0 and its matching cached Chromium revision 1243; it does not download or install a browser. It checks WebGL 2, the rendered workcell, joint controls and FK readouts, all three route selections, playback/scrubbing, browser errors/network failures, package grasp/carry/release and free fall.
 
 Use `npm run format` to format application/config source. No course report export is generated yet.
 
@@ -57,5 +57,6 @@ World frame W is right-handed: X forward, Y lateral, Z up; positive revolute rot
 - [GitHub workflow and current access status](docs/GITHUB-WORKFLOW.md)
 - [Phase 1 implementation and verification record](docs/PHASE-1-IMPLEMENTATION.md)
 - [Phase 2 trajectory and route implementation](docs/PHASE-2-IMPLEMENTATION.md)
+- [Phase 3 package physics and gripper transfer](docs/PHASE-3-IMPLEMENTATION.md)
 
-Phase 2 adds fixed-cell kinematic route planning and trajectory preview. Collision-checked swept paths, package dynamics, grasp and release behavior, sorting control, fault scenarios, performance campaigns, and the operational dashboard remain future work. No physical test or validated hardware performance is claimed.
+Phase 3 package handling is a simplified educational model. Swept-link collision checking, autonomous sorting, recovery/fault scenarios, performance campaigns, and the operational dashboard remain future work. No physical test or validated hardware performance is claimed.

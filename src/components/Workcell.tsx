@@ -5,12 +5,13 @@ import { CONFIG } from '../engineering/config';
 import { forwardKinematics } from '../engineering/kinematics';
 import type { PlannedRoute } from '../engineering/routes';
 import type { JointState, SortDestination } from '../engineering/types';
+import type { PackageSnapshot } from '../engineering/packagePhysics';
+import type { PackageClass } from '../engineering/types';
 
 const linkWidth = 0.055; // Rendering aid only; not an engineering collision envelope.
 const jointRadius = 0.043; // Rendering aid only; the baseline's base footprint remains 0.08 m.
 const armPlaneOffset = 0.21; // Rendering datum only; the approved baseline has no structural Z offset.
-const gripperPadWidth = 0.008;
-const gripperDisplayOpening = CONFIG.robot.gripper.opening.max;
+const gripperPadWidth = CONFIG.robot.gripper.pad.width;
 
 function Link({ length, color }: { length: number; color: string }) {
   return (
@@ -65,7 +66,15 @@ function DestinationBin({ destination }: { destination: SortDestination }) {
   );
 }
 
-function Robot({ joints }: { joints: JointState }) {
+function Robot({
+  joints,
+  gripperOpen,
+  packageClass,
+}: {
+  joints: JointState;
+  gripperOpen: boolean;
+  packageClass: PackageClass;
+}) {
   const { l1, l2 } = CONFIG.robot.links;
   const tcp = useMemo(() => forwardKinematics(joints, CONFIG), [joints]);
   const sliderTravel = joints.j3 - (CONFIG.cell.tableZ + armPlaneOffset);
@@ -89,16 +98,44 @@ function Robot({ joints }: { joints: JointState }) {
                 <meshStandardMaterial color="#d5a75f" metalness={0.46} roughness={0.3} />
               </mesh>
               <group position={[0, 0, sliderTravel]} rotation={[0, 0, joints.j4]}>
-                <mesh castShadow>
-                  <boxGeometry args={[0.075, 0.04, 0.018]} />
+                <mesh position={[0, 0, CONFIG.robot.gripper.palm.offsetAboveTcp]} castShadow>
+                  <boxGeometry
+                    args={[
+                      CONFIG.robot.gripper.palm.x,
+                      CONFIG.robot.gripper.palm.y,
+                      CONFIG.robot.gripper.palm.z,
+                    ]}
+                  />
                   <meshStandardMaterial color="#ecb768" metalness={0.38} roughness={0.38} />
                 </mesh>
-                <mesh position={[0, gripperDisplayOpening / 2 + gripperPadWidth / 2, -0.014]}>
-                  <boxGeometry args={[0.035, gripperPadWidth, 0.045]} />
+                <mesh
+                  position={[
+                    0,
+                    (gripperOpen
+                      ? CONFIG.robot.gripper.opening.max
+                      : packageClass.dimensions.width -
+                        2 * CONFIG.physics.grasp.padContactEpsilonM) /
+                      2 +
+                      gripperPadWidth / 2,
+                    CONFIG.robot.gripper.pad.contactHeight,
+                  ]}
+                >
+                  <boxGeometry args={[CONFIG.robot.gripper.pad.length, gripperPadWidth, 0.045]} />
                   <meshStandardMaterial color="#eff0dc" metalness={0.1} roughness={0.7} />
                 </mesh>
-                <mesh position={[0, -gripperDisplayOpening / 2 - gripperPadWidth / 2, -0.014]}>
-                  <boxGeometry args={[0.035, gripperPadWidth, 0.045]} />
+                <mesh
+                  position={[
+                    0,
+                    -(gripperOpen
+                      ? CONFIG.robot.gripper.opening.max
+                      : packageClass.dimensions.width -
+                        2 * CONFIG.physics.grasp.padContactEpsilonM) /
+                      2 -
+                      gripperPadWidth / 2,
+                    CONFIG.robot.gripper.pad.contactHeight,
+                  ]}
+                >
+                  <boxGeometry args={[CONFIG.robot.gripper.pad.length, gripperPadWidth, 0.045]} />
                   <meshStandardMaterial color="#eff0dc" metalness={0.1} roughness={0.7} />
                 </mesh>
               </group>
@@ -157,7 +194,50 @@ function PlannedPath({ route }: { route: PlannedRoute }) {
   );
 }
 
-function Cell({ joints, route }: { joints: JointState; route: PlannedRoute }) {
+function PackageBody({ item, snapshot }: { item: PackageClass; snapshot: PackageSnapshot | null }) {
+  if (!snapshot || snapshot.id !== item.id) return null;
+  const { length, width, height } = item.dimensions;
+  return (
+    <mesh
+      position={[snapshot.position.x, snapshot.position.y, snapshot.position.z]}
+      rotation={
+        item.shape === 'cylinder'
+          ? [Math.PI / 2, 0, snapshot.position.yaw]
+          : [0, 0, snapshot.position.yaw]
+      }
+      castShadow
+      receiveShadow
+      data-testid="physics-package"
+    >
+      {item.shape === 'cylinder' ? (
+        <cylinderGeometry
+          args={[Math.min(length, width) / 2, Math.min(length, width) / 2, height, 24]}
+        />
+      ) : (
+        <boxGeometry args={[length, width, height]} />
+      )}
+      <meshStandardMaterial
+        color={item.displayColor}
+        roughness={item.shape === 'pouch' ? 0.9 : 0.55}
+        metalness={0.04}
+      />
+    </mesh>
+  );
+}
+
+function Cell({
+  joints,
+  route,
+  packageSnapshot,
+  packageClass,
+  gripperOpen,
+}: {
+  joints: JointState;
+  route: PlannedRoute;
+  packageSnapshot: PackageSnapshot | null;
+  packageClass: PackageClass;
+  gripperOpen: boolean;
+}) {
   return (
     <>
       <color attach="background" args={['#151f24']} />
@@ -198,7 +278,8 @@ function Cell({ joints, route }: { joints: JointState; route: PlannedRoute }) {
         <DestinationBin key={destination.id} destination={destination} />
       ))}
       <PlannedPath route={route} />
-      <Robot joints={joints} />
+      <PackageBody item={packageClass} snapshot={packageSnapshot} />
+      <Robot joints={joints} packageClass={packageClass} gripperOpen={gripperOpen} />
       <mesh position={[0.3, 0, 0.61]} rotation={[Math.PI / 2, 0, 0]}>
         <torusGeometry args={[0.055, 0.0025, 8, 48]} />
         <meshBasicMaterial color="#d6a563" />
@@ -207,7 +288,19 @@ function Cell({ joints, route }: { joints: JointState; route: PlannedRoute }) {
   );
 }
 
-export function Workcell({ joints, route }: { joints: JointState; route: PlannedRoute }) {
+export function Workcell({
+  joints,
+  route,
+  packageSnapshot,
+  packageClass,
+  gripperOpen,
+}: {
+  joints: JointState;
+  route: PlannedRoute;
+  packageSnapshot: PackageSnapshot | null;
+  packageClass: PackageClass;
+  gripperOpen: boolean;
+}) {
   return (
     <Canvas
       shadows
@@ -224,7 +317,13 @@ export function Workcell({ joints, route }: { joints: JointState; route: Planned
         </div>
       }
     >
-      <Cell joints={joints} route={route} />
+      <Cell
+        joints={joints}
+        route={route}
+        packageSnapshot={packageSnapshot}
+        packageClass={packageClass}
+        gripperOpen={gripperOpen}
+      />
     </Canvas>
   );
 }
