@@ -29,9 +29,19 @@ npm run lint          # ESLint
 npm run typecheck     # browser and Vite configuration TypeScript checks
 npm test              # deterministic Vitest unit tests
 npm run verify:rapier-node # bounded Rapier package/WASM initialization check in Node
+npm run smoke:browser # Playwright smoke test against a running Vite URL
 npm run build         # type checks and production bundle
 npm run preview       # serve the production bundle locally
 ```
+
+For browser smoke testing, start Vite and pass the URL it prints:
+
+```sh
+npm run dev -- --host 127.0.0.1
+SORTLAB_URL=http://127.0.0.1:5173/ npm run smoke:browser
+```
+
+The smoke test uses pinned Playwright Core 1.63.0 and its matching cached Chromium revision 1243; it does not download or install a browser. The run also checks WebGL 2, the rendered workcell, joint controls and FK readouts, browser errors/network failures, and the bounded Rapier initialization result.
 
 Use `npm run format` to format application/config source. No course report export is generated yet.
 

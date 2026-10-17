@@ -12,6 +12,7 @@
 - A bounded Rapier package import + WASM initialization + one empty world tick. No body, package, contact, grip, or sorting code is implemented.
 - Configuration and kinematics tests. The current suite has 11 deterministic tests.
 - Acceptance stabilization: nested/missing configuration objects and package-to-bin mappings now receive explicit validation; malformed poses/joint states fail with actionable messages. The 3D workcell is dynamically imported so its rendering stack does not load in the initial UI bundle.
+- A minimal repeatable browser smoke test using pinned `playwright-core` 1.63.0 and the already-cached Chromium revision 1243. The test is separate from unit tests, launches the cached browser, checks WebGL 2/scene startup, all four joint controls, FK readouts, browser errors/network failures, and the bounded browser Rapier initialization message.
 
 ## Coordinate and joint convention
 
@@ -85,23 +86,26 @@ For the four FK→requested-branch IK→FK vectors, the test observed maximum po
 
 | Command/check | Outcome |
 |---|---|
-| `npm ci` | Pass: clean install from lockfile; 226 packages installed. This run did not print an audit summary. npm's install-script policy warned that `esbuild` and `fsevents` scripts were not approved; Vite build and dev-server checks still passed. |
 | `npm run format` / `npm run format:check` | Pass: all application/config files match Prettier. |
 | `npm run lint` | Pass: ESLint reported no errors. |
 | `npm run typecheck` | Pass: app and Vite config TypeScript checks. |
 | `npm test` | Pass: 1 test file, 11 tests. Observed FK/IK errors are listed above. |
 | `npm run verify:rapier-node` | Pass in Node only: Rapier 0.21.0 initialized and one empty 1/60 s step completed. This is not browser verification. |
 | `npm run build` | Pass: Vite 7.3.7 production build. After lazy loading the workcell, initial app JS is 239.03 kB minified (74.68 kB gzip), workcell/Three/R3F chunk 891.47 kB (238.97 kB gzip), and lazy Rapier chunk 4,368.41 kB (1,661.43 kB gzip). The Rapier chunk warning remains. |
-| Vite development server + HTTP requests | Pass: root, app entry, workcell module, and Rapier module returned HTTP 200. This checks serving/transforms, not browser rendering. |
-| Chrome / Playwright | Not verified (checked 2026-10-17): no Google Chrome application was found at the standard system or user Applications locations; `google-chrome`, Chromium, and Playwright executables are absent from PATH; `npm ls playwright @playwright/test playwright-core --depth=0` reports no installed packages. No browser automation connection is available in the browser runtime. |
-| Arc | Not verified: `/Applications/Arc.app` is installed. Its prior launch with a temporary profile and `--remote-debugging-port=9222` did not expose its local DevTools endpoint; the port refused connections. The current browser runtime reports no available connection, so no reliable automation surface for Arc is available. |
-| Safari WebDriver / browser scene / WebGL 2 | Not verified (last checked 2026-10-17): the prior single `POST /session` attempt failed with HTTP 500: `Could not create a session: You must enable 'Allow remote automation' in the Developer section of Safari Settings to control Safari via WebDriver.` Safari automation was not retried in this mission, and no setting was changed or bypassed. The owner reports the application is visible in Safari; this is not contradicted, but was not independently observed or automated here. WebGL 2, canvas rendering, joint interaction, browser console, failed network requests, and browser Rapier initialization remain unverified. |
-| Local Vite URL | `npm run dev -- --host 127.0.0.1` started Vite at `http://127.0.0.1:5173/`; the root returned HTTP 200. This confirms the local server responds only; it does not establish browser rendering. |
+| Clean install | Pass: `npm ci --cache /private/tmp/sortlab-npm-cache` installed 227 packages from the lockfile. npm warned that `esbuild` and `fsevents` install scripts were not approved; the subsequent build passed. This run emitted no audit summary. |
+| Browser smoke test | Pass: `SORTLAB_URL=http://127.0.0.1:5174/ npm run smoke:browser`, using Playwright Core 1.63.0 with cached Chrome for Testing 153.0.8010.12 (Chromium revision 1243). Vite selected port 5174 because 5173 was already occupied. |
+| Page, workcell, and bins | Pass: page title `SortLab — SCARA Workcell`, expected SCARA heading, visible 1001×620 canvas, legend entries for the SCARA and bins B1/B2/B3, and three destination rows. The captured initial scene screenshot was visually reviewed; it shows the SCARA links/gripper and all three bins. |
+| WebGL 2 | Pass: canvas returned `WebGL 2.0 (OpenGL ES 3.0 Chromium)` with drawing buffer 1001×620. The test used Chromium's SwiftShader software renderer; this does not validate a physical GPU or browser hardware acceleration. |
+| Joint controls and FK | Pass: each J1–J4 slider was advanced one step. Each change altered the viewport screenshot pixels. Readouts matched FK computed independently by the smoke script from the slider values within the UI's display rounding. Resulting readouts `(x,y,z,yaw°)` were J1 `(0.5499,0.0096,0.5600,1)`, J2 `(0.5498,0.0140,0.5600,2)`, J3 `(0.5498,0.0140,0.5650,2)`, J4 `(0.5498,0.0140,0.5650,3)`. |
+| Browser console and requests | Pass: no console errors or uncaught page errors; no failed requests and no HTTP responses ≥400 were observed during the test. |
+| Rapier in browser | Pass: status panel reported `Rapier 0.21.0 initialized and stepped one empty 1/60 s world tick.` No bodies or package physics were added. |
+| Screenshots | Pass: initial and post-control viewport screenshots were written to a temporary directory by the smoke test; the initial screenshot was visually reviewed. These ephemeral captures are not committed. |
+| Arc and Safari | Not used for this run. Chrome for Testing from the existing Playwright cache provided a working automation path. No Safari settings were changed. |
 | Standalone `npm audit --audit-level=low` | Not verified: the command could not reach the npm audit endpoint because registry DNS resolution failed in the sandbox. The clean install's output did not include an audit summary, so no current audit result is claimed. |
-| GitHub repository / push | Not verified (rechecked 2026-10-17): `gh auth status` reports the saved credential for account `7ochan` is invalid. `git remote -v` shows no configured remote. I did not create a repository or push because authenticated account access, repository ownership, and private visibility could not be verified. Run `gh auth login -h github.com`, then check `gh auth status` before retrying repository setup. |
+| GitHub repository / push | Blocked: `gh auth status` reports the saved credential for account `7ochan` is invalid. `git remote -v` shows no configured remote. I did not create a repository or push because account access, repository ownership, and privacy could not be verified. Run `gh auth login -h github.com`, then check `gh auth status` before retrying repository setup. |
 | Physical robot validation | Not performed; no hardware or measurement is claimed. |
 
-The Vite server and transformed application modules returned HTTP 200, but that is only a server/transform check and not evidence of browser rendering. The installed browser modules themselves were not automated in a real browser. The only Rapier runtime check was the Node smoke check above. No physical robot validation has been performed.
+The browser evidence above applies to cached Chromium 153.0.8010.12 with SwiftShader software rendering. It does not establish hardware-accelerated WebGL behavior or physical robot performance. No physical robot validation has been performed.
 
 ## Deferred by phase boundary
 
