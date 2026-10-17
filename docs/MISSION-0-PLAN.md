@@ -9,7 +9,7 @@ SortLab is fixed as an advanced warehouse robotics digital twin: a four-axis SCA
 
 The source DOCX is still absent; only course-specific metadata and any requirements outside the supplied project context remain unverified. Node 26.9, npm, Git and the Apple M2 Pro/Mac were observed, and official documentation supports the proposed runtime version ranges. No local package installation, browser check, prototype, test, physical result or simulation benchmark is claimed.
 
-Project folder: ~/Desktop/SortLab. Local Git is on main with no commits and no remote. GitHub CLI reports an invalid saved token, so no GitHub repository has been verified or created. See [GitHub workflow](GITHUB-WORKFLOW.md).
+Project folder: ~/Desktop/SortLab. Local Git has the planning root commit on main and a clean worktree; no remote is configured. GitHub CLI reports an invalid saved token, so no GitHub repository has been verified or created. See [GitHub workflow](GITHUB-WORKFLOW.md).
 
 ### Evidence labels
 
@@ -119,7 +119,7 @@ All numbers are **provisional assumptions**, not assignment values or measured s
 - Link lengths L1=0.30 m, L2=0.25 m. Ideal radial workspace 0.05–0.55 m before joint limits, body envelopes, self-collision and access. This is not the verified workspace.
 - Provisional limits: J1 ±150°, J2 ±160°, TCP world-Z range 0.30–0.58 m (0.28 m travel), J4 ±180°. The center-bin point is near the folded-arm boundary.
 - Table plane z=0.25 m; input belt support z=0.35 m; bin floor z=0.30 m and lip z=0.46 m; transfer TCP z=0.54 m; home TCP near (0.30, 0, 0.56) m.
-- Pick center (0.30, 0.00) m. Bin centers: B1 (-0.15, 0.25), B2 (-0.15, 0.00), B3 (-0.15, -0.25) m. Bin support z=0.30 m. Points fit the ideal annulus but limits and clearances are unverified.
+- Pick center (0.30, 0.00) m. Bin centers: B1 (-0.24, 0.25), B2 (-0.24, 0.00), B3 (-0.24, -0.25) m. Bin support z=0.30 m. Targets fit the ideal annulus; joint margins and clearances are recorded for Phase 1 verification.
 - Gripper opening 0.03–0.16 m and virtual capacity 25 N per jaw; simple jaw pads; side-face grasp; no deformable packages or selected physical actuator.
 
 ### Package classes and simulated ID
@@ -183,7 +183,7 @@ Effort is a rough estimate in focused person-days (about 5–6 hours/day); sched
 
 | Phase | Deliverables and dependencies | Acceptance criteria | Risks | Estimate |
 |---|---|---|---|---:|
-| **0 Plan and repository (current)** | Architecture, engineering baseline, checklist, Git workflow and research. Product architecture does not depend on the unavailable DOCX; private push needs valid GitHub authentication. | Four planning docs reviewed; user-supplied requirements mapped; private main push verified when authentication is restored. Current blocker: invalid token. | Push unavailable yet | 1–2 d |
+| **0 Plan and repository (current)** | Architecture, engineering baseline, checklist, Git workflow and research. Product architecture does not depend on the unavailable DOCX; private push needs valid GitHub authentication. | Four planning docs committed on main; user-supplied requirements mapped; private remote/push to verify after authentication. Current blocker: invalid token. | Push unavailable yet | 1–2 d |
 | **1 Foundation and kinematics** | After explicit approval: scaffold Vite/React/TypeScript; pin compatible dependencies; validate config; render workcell/articulated SCARA; implement pure FK/IK/workspace and tests. | Repeatable clean dependency install; WebGL2 scene shows arm and all bins; FK→IK→FK errors ≤1e-6 m and ≤1e-6 rad on references; rejects invalid/limit cases; tests pass. | Peer/WebGL/coordinate errors | 4–6 d |
 | **2 Trajectory and route planning** | Cubic joint profiles; approach/lift/transfer/place/home waypoint graph; branch selection and sampled swept clearance. Requires Phase 1. | Endpoints and derivative tests pass; no speed/acceleration bound is exceeded; all nominal route samples meet clearance; blocked route fails before movement. | Clearance/layout conflict | 4–6 d |
 | **3 Physics and gripper transfer** | Fixed-step Rapier package world, cell colliders, virtual jaw/grasp criteria, attach/release and contact guard. Requires Phase 2. | Fixed tick independent of render frame; each item grasps/releases; release is dynamic; contact stop latches; no object duplicates/disappears. | Physics/contact tuning | 4–6 d |

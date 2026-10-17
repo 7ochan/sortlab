@@ -8,6 +8,6 @@ Engineering plan finalized from the requirements in the project conversation. Th
 
 See the [Mission 0 plan](docs/MISSION-0-PLAN.md), [architecture decision](docs/ARCHITECTURE.md), [engineering baseline](docs/ENGINEERING-BASELINE.md), and [GitHub workflow](docs/GITHUB-WORKFLOW.md).
 
-The local Git repository is initialized on main with no commits yet. The intended GitHub repository is SortLab (private), but GitHub CLI currently has an invalid saved token. No remote is configured, and no push has occurred.
+The local Git repository has the planning commit on main. The intended GitHub repository is SortLab (private), but GitHub CLI currently has an invalid saved token. No remote is configured, and no push has occurred.
 
 No application work begins until the owner reviews and explicitly approves the phase plan.

@@ -8,7 +8,7 @@
 - Primary branch: main
 - Intended URL after creation: https://github.com/7ochan/SortLab
 
-As checked on 2026-10-17, this URL is only a target: no remote is configured and no GitHub repository was verified or created. Local Git is initialized on main but has no commit yet. GitHub CLI reports its saved github.com token is invalid. No credentials are stored in the project.
+As checked on 2026-10-17, this URL is only a target: no remote is configured and no GitHub repository was verified or created. Local Git has the planning commit on main and a clean worktree. GitHub CLI reports its saved github.com token is invalid. No credentials are stored in the project.
 
 ## Secure recovery
 
@@ -20,9 +20,8 @@ After authentication is valid:
 
 1. Check whether SortLab already exists and inspect its owner, visibility and contents before attaching.
 2. If absent, create it as private without a remote README: `gh repo create 7ochan/SortLab --private --source=. --remote=origin`.
-3. Inspect status and staged diff; verify .gitignore; review staged paths for secrets, local caches, generated builds and personal files.
-4. Commit the planning documents coherently on local main. Do not include dependencies, browser binaries, logs or machine-specific output.
-5. Push main, then verify `git remote -v`, `git ls-remote --heads origin main` and `gh repo view 7ochan/SortLab --json name,visibility,url,defaultBranchRef`. Claim completion only if repository visibility is private and remote main is present.
+3. The initial planning commit is already on local main. Confirm status is clean and inspect its file list for secrets, local caches, generated builds and personal files.
+4. Push main, then verify `git remote -v`, `git ls-remote --heads origin main` and `gh repo view 7ochan/SortLab --json name,visibility,url,defaultBranchRef`. Claim completion only if repository visibility is private and remote main is present.
 
 This create/push sequence is gated on a successful auth check. Never publish public as fallback.
 

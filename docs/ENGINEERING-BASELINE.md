@@ -29,17 +29,17 @@ Origin is shoulder axis; assumed tabletop plane z=0.25 m.
 | Base | (0,0) XY | Column footprint radius 0.08 m; model full height/arm offsets |
 | Input conveyor | Center near (+0.34,0) | 0.45 m along X × 0.20 m along Y; belt/support z=0.35 m |
 | Pick | (+0.30,0) XY | One package presented at a time |
-| B1 / B2 / B3 | (-0.15,+0.25), (-0.15,0), (-0.15,-0.25) XY | Exterior 0.24 × 0.22 m; interior 0.20 × 0.18 m; lip z=0.46 m; floor z=0.30 m |
+| B1 / B2 / B3 | (-0.24,+0.25), (-0.24,0), (-0.24,-0.25) XY | Exterior 0.24 × 0.22 m; interior 0.20 × 0.18 m; lip z=0.46 m; floor z=0.30 m |
 | Transfer height | TCP z=0.54 m | 0.08 m above bin lip; arm links still require checking |
 | Home target | (+0.30,0,0.56) m | Above pickup/conveyor; full swept path must be checked |
 
-The bin pitch is 0.25 m across Y and exterior width 0.22 m, leaving 0.03 m nominal gaps. Largest package footprint is 0.16 × 0.12 m, leaving 0.02/0.03 m margin inside the bin when aligned. This is tight and requires orientation/clearance checks.
+The bin pitch is 0.25 m across Y and exterior width 0.22 m, leaving 0.03 m nominal gaps. The middle bin's nearest outer face is x=-0.12 m, 0.04 m beyond the assumed base-column radius of 0.08 m. The conveyor begins at x=0.115 m, 0.035 m beyond that radius on the opposite side. Largest package footprint is 0.16 × 0.12 m, leaving 0.02/0.03 m margin inside the bin when aligned. These margins are tight and still require full 3D collision checks.
 
 ## Preliminary XY reach arithmetic
 
-Pick P=(+0.30,0), r=0.300 m. B1/B3 radius = sqrt(0.15²+0.25²)=0.292 m. Center bin B2 radius=0.150 m. These fall inside the ideal 0.05–0.55 m annulus.
+Pick P=(+0.30,0), r=0.300 m. B1/B3 radius = sqrt(0.24²+0.25²)=0.347 m. Center bin B2 radius=0.240 m. These fall inside the ideal 0.05–0.55 m annulus.
 
-For B2, cos(q2)=(r²-L1²-L2²)/(2L1L2)≈-0.8667, giving |q2|≈150.1° versus the provisional 160° stop, only about 9.9° margin. Shoulder branch, package/tool pose, J3 mapping and collision clearance are not yet verified; this radius check does not prove route reachability.
+For B2, cos(q2)=(r²-L1²-L2²)/(2L1L2)≈-0.6327, giving |q2|≈129.3° versus the provisional 160° stop, about 30.7° margin. This moves the bins far enough to leave a nominal gap from the base column. Shoulder branch, package/tool pose, J3 mapping and collision clearance are not yet verified; this radius check does not prove route reachability.
 
 ## Package classes and simulated identification
 
