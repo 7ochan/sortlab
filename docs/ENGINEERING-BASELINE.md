@@ -1,0 +1,85 @@
+# SortLab Engineering Baseline
+
+**Status:** Provisional design inputs for feasibility checks. Nothing below is measured or a purchased hardware specification. Use SI; X forward, Y lateral, Z up; angles in radians internally.
+
+## Robot and operating envelope
+
+| Parameter | Baseline | Rationale / status |
+|---|---:|---|
+| Mechanism | 4-axis SCARA-like | Fixed tabletop pick/place, explainable analytic planar IK |
+| J1 | Shoulder revolute about Z, ±150° | Provisional limit |
+| J2 | Elbow revolute about parallel Z, ±160° | Allows near-folded center bin, with limited margin |
+| Link lengths | L1=0.30 m, L2=0.25 m | Compact assumed cell; ideal radial reach 0.05–0.55 m |
+| J3 | TCP world Z 0.30–0.58 m; 0.28 m travel | Includes supports, package centers, transfer/home |
+| J4 | Tool yaw about Z, ±180° | Align parallel jaws to package sides |
+| Gripper | Parallel jaws, 0.03–0.16 m opening | Assumed 0.06–0.12 m package width |
+| Virtual jaw force | 25 N per jaw | Design capacity assumption, not actuator rating |
+| Speed limits | J1/J2 90°/s; J3 0.25 m/s; J4 120°/s | Initial trajectory constraints |
+| Acceleration limits | J1/J2 180°/s²; J3 0.50 m/s²; J4 240°/s² | Initial cubic profile constraints |
+| Robot physics | Kinematically commanded rigid links | No motor/inertia model or physical robot available |
+
+Planar radial reach: r²=L1²+L2²+2L1L2 cos(q2); ideal minimum 0.05 m at q2=180°, maximum 0.55 m at q2=0°. Limits, base geometry, tool/package envelope and obstacles reduce this range.
+
+## Workcell coordinates and dimensions
+
+Origin is shoulder axis; assumed tabletop plane z=0.25 m.
+
+| Element | Center/height | Assumed size |
+|---|---|---|
+| Base | (0,0) XY | Column footprint radius 0.08 m; model full height/arm offsets |
+| Input conveyor | Center near (+0.34,0) | 0.45 m along X × 0.20 m along Y; belt/support z=0.35 m |
+| Pick | (+0.30,0) XY | One package presented at a time |
+| B1 / B2 / B3 | (-0.15,+0.25), (-0.15,0), (-0.15,-0.25) XY | Exterior 0.24 × 0.22 m; interior 0.20 × 0.18 m; lip z=0.46 m; floor z=0.30 m |
+| Transfer height | TCP z=0.54 m | 0.08 m above bin lip; arm links still require checking |
+| Home target | (+0.30,0,0.56) m | Above pickup/conveyor; full swept path must be checked |
+
+The bin pitch is 0.25 m across Y and exterior width 0.22 m, leaving 0.03 m nominal gaps. Largest package footprint is 0.16 × 0.12 m, leaving 0.02/0.03 m margin inside the bin when aligned. This is tight and requires orientation/clearance checks.
+
+## Preliminary XY reach arithmetic
+
+Pick P=(+0.30,0), r=0.300 m. B1/B3 radius = sqrt(0.15²+0.25²)=0.292 m. Center bin B2 radius=0.150 m. These fall inside the ideal 0.05–0.55 m annulus.
+
+For B2, cos(q2)=(r²-L1²-L2²)/(2L1L2)≈-0.8667, giving |q2|≈150.1° versus the provisional 160° stop, only about 9.9° margin. Shoulder branch, package/tool pose, J3 mapping and collision clearance are not yet verified; this radius check does not prove route reachability.
+
+## Package classes and simulated identification
+
+| ID | Category | L × W × H | Assumed mass | Destination |
+|---|---|---:|---:|---|
+| S | Small | 0.08 × 0.06 × 0.04 m | 0.10 kg | B1 |
+| M | Medium | 0.12 × 0.09 × 0.06 m | 0.30 kg | B2 |
+| L | Large | 0.16 × 0.12 × 0.08 m | 0.60 kg | B3 |
+
+Nominal rigid axis-aligned boxes with uniform density and centered mass. Values are illustrative, not a warehouse dataset. ID is a deterministic simulated barcode event; colors/labels are presentation only. No physical sensor or vision claim.
+
+## Holding-force estimate
+
+Symmetric friction grip with equal jaw normal force N:
+
+2 μ N >= S m (g + a_z); therefore N_required=S m (g+a_z)/(2 μ).
+
+For m=0.60 kg, safety factor S=2.0, g=9.81 m/s², vertical acceleration a_z=0.30 m/s²:
+
+- Assumed μ=0.50: 12.13 N required per jaw.
+- Sensitivity μ=0.30: 20.22 N required per jaw.
+- Assumed virtual capacity 25 N/jaw: margins 2.06× and 1.24× over those safety-factored requirements.
+
+This is a virtual grasp qualification limit, not a selected actuator. Model excludes crushing, pressure distribution, pad compliance, offset grasp, jerk and torsional slip. Any physical build needs measured friction/crush limits and sourced actuator data.
+
+## Performance and safety assumptions
+
+- Piecewise cubic joint profiles with endpoint conditions; fixed 1/60 s simulation/control tick.
+- Target median cycle <=12 simulated seconds from accepted pick start through verified release and return-ready. Report median and 95th percentile; target is not a result.
+- Nominal acceptance goal: >=95% correct sorting over at least 100 seeded cycles; report failures/raw denominator.
+- Virtual stop pauses commands and latches a fault. It is not a safety-rated emergency stop and does not demonstrate human-safe operation.
+- Collision checks use sampled swept geometry and Rapier runtime contact queries. Kinematic links do not react physically to contacts; application guard must stop them.
+
+## Phase 1 feasibility checks
+
+1. FK/IK every approach, grasp, lift, transfer, place, retreat and home pose; record branches, limit margin and singularity.
+2. Verify J3 world-Z mapping covers package centers and z=0.54–0.56 m.
+3. Check sampled link/tool/package sweeps against base, conveyor, bins and neighbors; record minimum clearance and adjust layout if required.
+4. Derive cubic coefficients and verify continuity, velocities, acceleration, duration and joint bounds.
+5. Recompute force sensitivity; later select motors only from sourced ratings and explicit link-mass/inertia assumptions.
+6. Validate all nominal/fault scenario outcomes in automated simulation tests before using measurements in the report.
+
+Every changed value must stay aligned across configuration, calculations, diagrams, simulation and report.
