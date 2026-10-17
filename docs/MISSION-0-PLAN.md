@@ -9,7 +9,7 @@ SortLab is fixed as an advanced warehouse robotics digital twin: a four-axis SCA
 
 The source DOCX is still absent; only course-specific metadata and any requirements outside the supplied project context remain unverified. Node 26.9, npm, Git and the Apple M2 Pro/Mac were observed, and official documentation supports the proposed runtime version ranges. No local package installation, browser check, prototype, test, physical result or simulation benchmark is claimed.
 
-Project folder: ~/Desktop/SortLab. Local Git has the planning root commit on main and a clean worktree; no remote is configured. GitHub CLI reports an invalid saved token, so no GitHub repository has been verified or created. See [GitHub workflow](GITHUB-WORKFLOW.md).
+Project folder: ~/Desktop/SortLab. Local Git preserves the planning history on main; Phase 1 is now implemented locally. No remote is configured. The latest `gh auth status` check still reports an invalid saved credential, so no GitHub repository has been verified or created and no push has occurred. See [GitHub workflow](GITHUB-WORKFLOW.md).
 
 ### Evidence labels
 
@@ -184,7 +184,7 @@ Effort is a rough estimate in focused person-days (about 5–6 hours/day); sched
 | Phase | Deliverables and dependencies | Acceptance criteria | Risks | Estimate |
 |---|---|---|---|---:|
 | **0 Plan and repository (current)** | Architecture, engineering baseline, checklist, Git workflow and research. Product architecture does not depend on the unavailable DOCX; private push needs valid GitHub authentication. | Four planning docs committed on main; user-supplied requirements mapped; private remote/push to verify after authentication. Current blocker: invalid token. | Push unavailable yet | 1–2 d |
-| **1 Foundation and kinematics** | After explicit approval: scaffold Vite/React/TypeScript; pin compatible dependencies; validate config; render workcell/articulated SCARA; implement pure FK/IK/workspace and tests. | Repeatable clean dependency install; WebGL2 scene shows arm and all bins; FK→IK→FK errors ≤1e-6 m and ≤1e-6 rad on references; rejects invalid/limit cases; tests pass. | Peer/WebGL/coordinate errors | 4–6 d |
+| **1 Foundation and kinematics** | Approved and implemented locally: scaffold Vite/React/TypeScript; pin compatible dependencies; validate config; render workcell/articulated SCARA; implement pure FK/IK/workspace and tests; bounded Rapier initialization check. | Unit tests/type/lint/build pass; numerical round-trip errors recorded in PHASE-1-IMPLEMENTATION.md. Clean `npm ci` and browser/WebGL2 scene still require final environment verification; private push is blocked by GitHub authentication. | Browser not installed; auth invalid | 4–6 d |
 | **2 Trajectory and route planning** | Cubic joint profiles; approach/lift/transfer/place/home waypoint graph; branch selection and sampled swept clearance. Requires Phase 1. | Endpoints and derivative tests pass; no speed/acceleration bound is exceeded; all nominal route samples meet clearance; blocked route fails before movement. | Clearance/layout conflict | 4–6 d |
 | **3 Physics and gripper transfer** | Fixed-step Rapier package world, cell colliders, virtual jaw/grasp criteria, attach/release and contact guard. Requires Phase 2. | Fixed tick independent of render frame; each item grasps/releases; release is dynamic; contact stop latches; no object duplicates/disappears. | Physics/contact tuning | 4–6 d |
 | **4 Sorting controller and full cycle** | Finite-state machine, simulated barcode ID, retries, timeout, recovery, visible nominal cycles. Requires Phases 1–3. | All three classes reach assigned bins and return; item counts reconcile; every fault reaches bounded safe state; faulted items never count sorted. | State/physics races | 4–6 d |
@@ -219,21 +219,13 @@ Follow exact required naming, format, reference style, limits, medium and dates 
 | Simulated measurements presented as real | Low / critical | Label every result; retain raw counts/run metadata; physical claims need physical tests. |
 | Report polish delays required work | Medium / high | Build evidence in rubric order; maintain cumulative report incrementally. |
 
-## 10. Immediate next step — proposed Phase 1, not authorized yet
+## 10. Phase 1 execution status and next gate
 
-**Prerequisites:** owner explicitly approves Phase 1. The supplied mission defines the product baseline; incorporate any additional constraints if the course DOCX becomes available. Restore GitHub CLI authentication to push the planning milestone privately.
+Mission 2 authorized Phase 1, which has now been implemented locally. Exact files, mathematical conventions, measured test outputs, limitations, and command outcomes are recorded in [Phase 1 implementation notes](PHASE-1-IMPLEMENTATION.md). Final acceptance review remains with the owner. The official course DOCX remains absent; this did not block implementation of the supplied baseline.
 
-**Scope:** scaffold Vite + TypeScript + React with stable pinned dependencies; validate one cell configuration; implement the SCARA joint hierarchy and pure analytic FK/IK/workspace functions; render the static workcell and articulated arm in WebGL 2; add kinematics/config tests; run a bounded WebGL 2 and Rapier deterministic-compat initialization check. Do not implement sorting control, package physics, gripper transfer, the full dashboard or fault scenarios in Phase 1.
+The acceptance gate remains: reproducible clean install and checks; WebGL2 rendering in a supported browser; unit FK/IK/workspace limits; Rapier package initialization check; no fabricated hardware or performance claim; and private push to verified GitHub main. Browser/WebGL verification and GitHub push must be explicitly labeled if the current machine or authentication prevents them. Do not begin Phase 2 until the owner explicitly approves it.
 
-**Completion criteria:**
-
-1. A clean dependency install and documented dev command work on the owner's Mac with pinned lockfile versions.
-2. Browser shows the labeled cell, robot and four arm joints; all values use documented SI frames.
-3. Unit tests cover known FK, both IK branches, round-trip error ≤1e-6 m/1e-6 rad, unreachable/invalid targets, joint limits and malformed config.
-4. Pick/bin targets each have a valid in-limit IK branch and recorded joint-limit margin; route clearance is deferred to Phase 2.
-5. WebGL 2 renders and Rapier deterministic-compat initializes/steps in the bounded spike; record exact versions and actual output.
-6. No physical or unverified performance claim is made. Push the Phase 1 milestone to private main if GitHub auth is working.
-7. Owner reviews Phase 1 evidence and explicitly approves Phase 2.
+Phase 1 excluded sorting control, package physics, gripper transfer, route/collision planning, trajectories, fault scenarios, full dashboard, and performance campaigns.
 
 ## 11. Research register
 
@@ -252,8 +244,8 @@ Official/project-maintained documentation checked 2026-10-17. It supports the ci
 
 ## Owner review and approval gates
 
-1. Restore GitHub authentication so the intended private SortLab remote can be created and planning documents pushed to main.
+1. Restore GitHub authentication to push the project privately to verified `main`.
 2. Optionally provide the course DOCX to fill institution-specific dates, marks, formatting and policy text; it does not change the selected product architecture absent a genuine conflicting requirement.
-3. Explicitly approve Phase 1 before implementation begins.
+3. Review Phase 1 acceptance evidence and explicitly approve Phase 2 before implementation begins.
 
-**Mission 1 planning is complete. No Phase 1 implementation is authorized by this plan.**
+**Mission 1 planning is complete. Phase 1 implementation has been executed under Mission 2 authorization. Phase 2 has not been authorized.**

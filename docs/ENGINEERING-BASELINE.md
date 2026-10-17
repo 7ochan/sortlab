@@ -82,4 +82,8 @@ This is a virtual grasp qualification limit, not a selected actuator. Model excl
 5. Recompute force sensitivity; later select motors only from sourced ratings and explicit link-mass/inertia assumptions.
 6. Validate all nominal/fault scenario outcomes in automated simulation tests before using measurements in the report.
 
+### Phase 1 implementation evidence
+
+Phase 1 checked the configured home FK reference, the four station centers (pickup and B1/B2/B3) at transfer height and yaw 0, both nonsingular elbow branches, joint limits, the outer singularity and round-trip tolerances. The implemented workspace distinguishes the ideal 0.05–0.55 m link-only envelope from the configured-J2 radial range of approximately 0.10747–0.55 m. These are mathematical/unit-test checks, not swept-path or collision evidence. The remaining items above—including full approach/grasp/place waypoint analysis, link/tool/package clearance, cubic profiles, physical actuator selection, and package/fault scenarios—remain deferred to their later phases. See [Phase 1 implementation notes](PHASE-1-IMPLEMENTATION.md).
+
 Every changed value must stay aligned across configuration, calculations, diagrams, simulation and report.

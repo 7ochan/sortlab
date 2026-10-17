@@ -1,19 +1,25 @@
 # SortLab Architecture Decision
 
-**Status:** selected planning baseline; not implemented or locally tested
+**Status:** Phase 1 foundation implemented locally; later-phase simulation architecture remains planned, not implemented.
 
 **Date:** 2026-10-17
 
 ## Selected stack
 
-- TypeScript + React 19 + Vite for application logic, UI, and development server.
-- React Three Fiber 9 + Three.js/WebGL 2 for the interactive scene.
-- Rapier 3D JavaScript deterministic compatibility build for fixed-step package physics, colliders, contact events, and grasp/release constraints.
+- TypeScript + React 19 + Vite for application logic, UI, and development server. Phase 1 pins React/React DOM 19.3.0 and Vite 7.3.7.
+- React Three Fiber 9 + Three.js/WebGL 2 for the interactive scene. Phase 1 pins R3F 9.4.2 and Three.js 0.185.0.
+- Rapier 3D JavaScript deterministic compatibility build for later fixed-step package physics, colliders, contact events, and grasp/release constraints. Phase 1 pins 0.21.0 and checks only package/WASM initialization and one empty step.
 - Application-owned analytic SCARA FK/IK, collision/clearance checks, cubic joint trajectories, and finite-state sorting controller.
-- Vitest for unit and deterministic scenario tests; Playwright for browser end-to-end checks.
+- Vitest 4.1.12 for unit and deterministic scenario tests; Playwright remains planned for browser end-to-end checks after a browser runner is available.
 - Markdown + Mermaid as source documentation; cumulative report export follows the university format.
 
-Use compatible stable versions pinned in package-lock.json; avoid canary/alpha and unpinned latest. React 19.3 is listed as current, and R3F v9 pairs with React 19. Vite's documented Node floor is 20.19 or 22.12; Playwright supports Node 22/24/26 and macOS 14+. Observed Node 26.9 and macOS 27.0.1 satisfy those stated floors. Browser/WebGL and exact peer compatibility remain a Phase 1 local check, not a claim of tested installation. [React versions](https://react.dev/versions), [R3F compatibility](https://r3f.docs.pmnd.rs/getting-started/installation), [Vite requirements](https://vite.dev/guide/), [Playwright requirements](https://playwright.dev/docs/next/intro).
+Use compatible stable versions pinned in package-lock.json; avoid canary/alpha and unpinned latest. React docs list 19.3.0; R3F v9 pairs with React 19. Vite 8 was first pinned but npm correctly rejected it with plugin-react 5.1.2 (whose peer range ends at Vite 7), so the compatible Vite 7.3.7 release is used. Both documented Vite majors require Node 20.19+ or 22.12+; the observed Node 26.9 satisfies the floor. React/R3F and Vite requirements were checked against official docs on 2026-10-17. [React versions](https://react.dev/versions), [R3F compatibility](https://r3f.docs.pmnd.rs/getting-started/installation), [Vite requirements](https://vite.dev/guide/), [Vite 8 Node support](https://vite.dev/blog/announcing-vite8.html).
+
+### Phase 1 implementation status
+
+The implemented foundation is separated into `src/engineering` (typed baseline config, boundary validation, FK/IK and workspace), `src/components` (3D workcell and inspector), `src/App.tsx` (composition and WebGL fallback), and engineering unit tests alongside the pure math. The joint inspector and rendered SCARA share one `JointState`. Rapier stays behind an async import; it is not connected to the robot or package model. See [`PHASE-1-IMPLEMENTATION.md`](PHASE-1-IMPLEMENTATION.md) for the exact conventions, configuration values, test results and limits.
+
+The architecture diagram and downstream controller/planner/trajectory/physics sections below describe **future phases**. They are intended contracts, not capabilities currently present in the app. No collision planner, simulation controller, package physics, sorting flow or dashboard is implemented in Phase 1.
 
 ### Rationale and scope
 

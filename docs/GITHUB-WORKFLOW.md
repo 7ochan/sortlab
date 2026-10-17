@@ -8,11 +8,11 @@
 - Primary branch: main
 - Intended URL after creation: https://github.com/7ochan/SortLab
 
-As checked on 2026-10-17, this URL is only a target: no remote is configured and no GitHub repository was verified or created. Local Git has the planning commit on main and a clean worktree. GitHub CLI reports its saved github.com token is invalid. No credentials are stored in the project.
+As checked on 2026-10-17, this URL is only a target: no remote is configured and no GitHub repository was verified or created. `gh auth status` reports the saved github.com credential for account `7ochan` is invalid. No credential value was read, printed, changed, or stored in the project. Local `main` preserves the planning history; Phase 1 work is local and not yet published. No push has occurred.
 
 ## Secure recovery
 
-Run `gh auth login -h github.com` in a terminal and complete the browser login for the intended account. Do not paste a token, password, device code or credential into chat or project files. Then run `gh auth status`. If login succeeds but creation is denied, confirm personal-account ownership or organization permissions. The invalid saved credential was not read, printed, revoked or changed here.
+Run `gh auth login -h github.com` in a terminal and complete the browser login for the intended account. Do not paste a token, password, device code or credential into chat or project files. Then run `gh auth status`. If login succeeds but repository access is denied, confirm personal-account ownership or organization permissions. The invalid saved credential was not read, printed, revoked or changed here.
 
 ## Initial private push
 
