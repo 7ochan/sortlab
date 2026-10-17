@@ -4,9 +4,9 @@
 
 ## Current phase
 
-**Phase 1: Foundation and kinematics.** The repository contains the TypeScript/React/Vite application foundation, validated baseline configuration, application-owned SCARA FK/IK and workspace functions, a joint-inspection 3D workcell, unit tests, and a bounded Rapier initialization check. This is an interactive kinematic preview. It does not yet sort packages or simulate package dynamics.
+**Phase 2: Trajectory and route planning.** SortLab now includes the Phase 1 TypeScript/React/Vite foundation, validated engineering baseline, SCARA FK/IK and workspace analysis, constraint-checked cubic joint trajectories, fixed-cell Cartesian waypoint routes to all three bins, an interactive 3D route overlay, route selection, playback/scrubbing, and direct joint inspection. The preview is kinematic only: it does not sort or transfer packages and does not validate collision clearance.
 
-The course brief was not available in the inspected workspace. Course-specific dates, marks, formatting, physical-hardware obligations, and AI policy remain unverified; see [the Mission 0 plan](docs/MISSION-0-PLAN.md). Phase boundaries remain in force; Phase 2 requires explicit owner approval.
+The course brief was not available in the inspected workspace. Course-specific dates, marks, formatting, physical-hardware obligations, and AI policy remain unverified; see [the Mission 0 plan](docs/MISSION-0-PLAN.md). Phase boundaries remain in force; Phase 3 requires explicit owner approval.
 
 ## Requirements
 
@@ -41,7 +41,7 @@ npm run dev -- --host 127.0.0.1
 SORTLAB_URL=http://127.0.0.1:5173/ npm run smoke:browser
 ```
 
-The smoke test uses pinned Playwright Core 1.63.0 and its matching cached Chromium revision 1243; it does not download or install a browser. The run also checks WebGL 2, the rendered workcell, joint controls and FK readouts, browser errors/network failures, and the bounded Rapier initialization result.
+The smoke test uses pinned Playwright Core 1.63.0 and its matching cached Chromium revision 1243; it does not download or install a browser. It checks WebGL 2, the rendered workcell, joint controls and FK readouts, all three route selections, playback/scrubbing, browser errors/network failures, and the bounded Rapier initialization result.
 
 Use `npm run format` to format application/config source. No course report export is generated yet.
 
@@ -56,5 +56,6 @@ World frame W is right-handed: X forward, Y lateral, Z up; positive revolute rot
 - [Engineering baseline](docs/ENGINEERING-BASELINE.md)
 - [GitHub workflow and current access status](docs/GITHUB-WORKFLOW.md)
 - [Phase 1 implementation and verification record](docs/PHASE-1-IMPLEMENTATION.md)
+- [Phase 2 trajectory and route implementation](docs/PHASE-2-IMPLEMENTATION.md)
 
-Phase 1 deliberately excludes trajectory generation, route/collision planning, package dynamics, grasp and release behavior, sorting control, fault scenarios, performance campaigns, and the operational dashboard. No physical test or validated hardware performance is claimed.
+Phase 2 adds fixed-cell kinematic route planning and trajectory preview. Collision-checked swept paths, package dynamics, grasp and release behavior, sorting control, fault scenarios, performance campaigns, and the operational dashboard remain future work. No physical test or validated hardware performance is claimed.

@@ -156,7 +156,7 @@ export function StatusPanel({
         <p>{rapierStatus}</p>
       </div>
       <p className="scope-note">
-        Kinematic preview only. Package dynamics, grasping, route planning and sorting controls are
+        Kinematic state only. Package dynamics, grasping, sorting controls, and fault recovery are
         later-phase work.
       </p>
     </aside>

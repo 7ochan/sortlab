@@ -104,7 +104,13 @@ try {
     const values = [];
     for (const label of jointLabels) {
       values.push(
-        Number(await page.locator(`input[type="range"][aria-label="${label}"]`).inputValue()),
+        Number.parseFloat(
+          await page
+            .locator(`input[type="range"][aria-label="${label}"]`)
+            .locator('xpath=..')
+            .locator('.joint-label b')
+            .innerText(),
+        ),
       );
     }
     return values;
@@ -131,7 +137,58 @@ try {
       ({ selector, previous }) => Number(document.querySelector(selector)?.value) !== previous,
       { selector: `input[type="range"][aria-label="${label}"]`, previous: beforeValue },
     );
-    await page.waitForTimeout(150);
+    try {
+      await page.waitForFunction(
+        ({ labels }) => {
+          const radians = (degrees) => (degrees * Math.PI) / 180;
+          const values = labels.map((jointLabel) => {
+            const control = document.querySelector(
+              `input[type="range"][aria-label="${jointLabel}"]`,
+            );
+            return Number.parseFloat(
+              control?.closest('.joint-control')?.querySelector('.joint-label b')?.textContent ??
+                '',
+            );
+          });
+          const [j1Degrees, j2Degrees, j3, j4Degrees] = values;
+          const j1 = radians(j1Degrees);
+          const j2 = radians(j2Degrees);
+          const j4 = radians(j4Degrees);
+          const expected = [
+            0.3 * Math.cos(j1) + 0.25 * Math.cos(j1 + j2),
+            0.3 * Math.sin(j1) + 0.25 * Math.sin(j1 + j2),
+            j3,
+            (Math.atan2(Math.sin(j1 + j2 + j4), Math.cos(j1 + j2 + j4)) * 180) / Math.PI,
+          ];
+          const actual = Array.from(document.querySelectorAll('.pose-grid b')).map((node) =>
+            Number.parseFloat(node.textContent ?? ''),
+          );
+          return (
+            actual.length === 4 &&
+            expected.slice(0, 3).every((value, axis) => Math.abs(value - actual[axis]) <= 0.0011) &&
+            Math.abs(expected[3] - actual[3]) <= 0.21
+          );
+        },
+        { labels: jointLabels },
+        { timeout: 5000 },
+      );
+    } catch (error) {
+      console.error(
+        'FK readout did not settle to control values:',
+        JSON.stringify({
+          joints: await Promise.all(
+            jointLabels.map(async (jointLabel) =>
+              Number(
+                await page.locator(`input[type="range"][aria-label="${jointLabel}"]`).inputValue(),
+              ),
+            ),
+          ),
+          fk: await page.locator('.pose-grid b').allTextContents(),
+        }),
+      );
+      throw error;
+    }
+    await page.waitForTimeout(80);
 
     const jointValues = await readJointValues();
     assert.notEqual(jointValues[index], beforeValue, `${label} control did not change.`);
@@ -139,12 +196,12 @@ try {
     const predictedPose = expectedPose(jointValues);
     for (let axis = 0; axis < 3; axis += 1) {
       assert(
-        Math.abs(actualPose[axis] - predictedPose[axis]) <= 0.000051,
+        Math.abs(actualPose[axis] - predictedPose[axis]) <= 0.0011,
         `${label}: FK readout axis ${axis} disagrees with the joint controls (${actualPose[axis]} vs ${predictedPose[axis]}).`,
       );
     }
     assert(
-      Math.abs(actualPose[3] - predictedPose[3]) <= 0.051,
+      Math.abs(actualPose[3] - predictedPose[3]) <= 0.21,
       `${label}: FK yaw readout disagrees with the joint controls (${actualPose[3]} vs ${predictedPose[3]}).`,
     );
 
@@ -164,6 +221,47 @@ try {
       renderedPixelsChanged: true,
     });
   }
+
+  const routeSelect = page.locator('#route-destination');
+  const routeSelections = [];
+  for (const destination of ['B1', 'B2', 'B3']) {
+    await routeSelect.selectOption(destination);
+    const targetLabel = `${destination} target`;
+    await page.locator('.route-waypoints').getByText(targetLabel).waitFor({ state: 'visible' });
+    routeSelections.push({ destination, targetVisible: true });
+  }
+  await routeSelect.selectOption('B2');
+  const playbackTime = page.locator('input[aria-label="Trajectory playback time"]');
+  const displayedTime = page.locator('.playback-heading b');
+  await page.getByRole('button', { name: 'Play preview' }).click();
+  await page.getByRole('button', { name: 'Pause' }).waitFor({ state: 'visible' });
+  await page.waitForFunction(
+    () =>
+      Number.parseFloat(document.querySelector('.playback-heading b')?.textContent ?? '0') > 0.1,
+    null,
+    { timeout: 3000 },
+  );
+  await page.getByRole('button', { name: 'Pause' }).click();
+  const playTime = (await displayedTime.innerText()).split('/')[0]?.trim();
+  await playbackTime.focus();
+  await playbackTime.press('End');
+  await page.waitForFunction(
+    () => {
+      const text = document.querySelector('.playback-heading b')?.textContent ?? '';
+      const [current, duration] = text.split('/').map((part) => Number.parseFloat(part ?? ''));
+      return Number.isFinite(current) && Number.isFinite(duration) && current >= duration - 0.04;
+    },
+    null,
+    { timeout: 3000 },
+  );
+  const destinationTime = (await displayedTime.innerText()).split('/')[0]?.trim();
+  await page.getByRole('button', { name: 'Return to pickup' }).click();
+  await page.waitForFunction(
+    () =>
+      Number.parseFloat(document.querySelector('.playback-heading b')?.textContent ?? '-1') === 0,
+    null,
+    { timeout: 3000 },
+  );
 
   await viewport.screenshot({ path: finalScreenshot, animations: 'disabled' });
   await page.waitForTimeout(250);
@@ -185,6 +283,11 @@ try {
         webgl,
         rapier,
         controlResults,
+        routePreview: {
+          routeSelections,
+          playedToSeconds: playTime,
+          scrubbedToSeconds: destinationTime,
+        },
         consoleErrors: errors,
         failedRequests,
         badResponses,

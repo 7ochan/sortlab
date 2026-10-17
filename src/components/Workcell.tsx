@@ -1,8 +1,9 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { Canvas } from '@react-three/fiber';
 import * as THREE from 'three';
 import { CONFIG } from '../engineering/config';
 import { forwardKinematics } from '../engineering/kinematics';
+import type { PlannedRoute } from '../engineering/routes';
 import type { JointState, SortDestination } from '../engineering/types';
 
 const linkWidth = 0.055; // Rendering aid only; not an engineering collision envelope.
@@ -113,7 +114,50 @@ function Robot({ joints }: { joints: JointState }) {
   );
 }
 
-function Cell({ joints }: { joints: JointState }) {
+function PlannedPath({ route }: { route: PlannedRoute }) {
+  const line = useMemo(() => {
+    const points = route.trajectory.samples.map(
+      ({ pose }) => new THREE.Vector3(pose.x, pose.y, pose.z + 0.005),
+    );
+    const geometry = new THREE.BufferGeometry().setFromPoints(points);
+    const material = new THREE.LineBasicMaterial({
+      color: '#e4b36f',
+      transparent: true,
+      opacity: 0.88,
+    });
+    return new THREE.Line(geometry, material);
+  }, [route]);
+  useEffect(
+    () => () => {
+      line.geometry.dispose();
+      (line.material as THREE.Material).dispose();
+    },
+    [line],
+  );
+  const colors: Record<PlannedRoute['waypoints'][number]['kind'], string> = {
+    pickup: '#e4a963',
+    clearance: '#e6cf9d',
+    transit: '#e4b36f',
+    approach: '#92c8b7',
+    destination: '#62baa0',
+  };
+  return (
+    <group>
+      <primitive object={line} />
+      {route.waypoints.map((waypoint) => (
+        <mesh
+          key={waypoint.id}
+          position={[waypoint.pose.x, waypoint.pose.y, waypoint.pose.z + 0.009]}
+        >
+          <sphereGeometry args={[0.014, 16, 12]} />
+          <meshBasicMaterial color={colors[waypoint.kind]} />
+        </mesh>
+      ))}
+    </group>
+  );
+}
+
+function Cell({ joints, route }: { joints: JointState; route: PlannedRoute }) {
   return (
     <>
       <color attach="background" args={['#151f24']} />
@@ -153,6 +197,7 @@ function Cell({ joints }: { joints: JointState }) {
       {CONFIG.cell.destinations.map((destination) => (
         <DestinationBin key={destination.id} destination={destination} />
       ))}
+      <PlannedPath route={route} />
       <Robot joints={joints} />
       <mesh position={[0.3, 0, 0.61]} rotation={[Math.PI / 2, 0, 0]}>
         <torusGeometry args={[0.055, 0.0025, 8, 48]} />
@@ -162,7 +207,7 @@ function Cell({ joints }: { joints: JointState }) {
   );
 }
 
-export function Workcell({ joints }: { joints: JointState }) {
+export function Workcell({ joints, route }: { joints: JointState; route: PlannedRoute }) {
   return (
     <Canvas
       shadows
@@ -179,7 +224,7 @@ export function Workcell({ joints }: { joints: JointState }) {
         </div>
       }
     >
-      <Cell joints={joints} />
+      <Cell joints={joints} route={route} />
     </Canvas>
   );
 }

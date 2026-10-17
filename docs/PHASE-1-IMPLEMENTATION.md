@@ -1,6 +1,6 @@
-# Phase 1 — Foundation and Kinematics
+# Phase 1 — Foundation and Kinematics (Historical Acceptance Record)
 
-**Status:** Implemented locally; acceptance review pending. No Phase 2 work has started.
+**Status:** Phase 1 implementation and its original acceptance record. Phase 2 work is documented separately in [PHASE-2-IMPLEMENTATION.md](PHASE-2-IMPLEMENTATION.md).
 **Verification date:** 2026-10-17.
 
 ## Delivered scope
@@ -47,18 +47,18 @@ FK throws an actionable error for non-finite or out-of-limit joint input; IK thr
 
 ## Baseline values applied
 
-| Item | Value used |
-|---|---|
-| Links | L1 0.30 m, L2 0.25 m |
-| Joint limits | J1 ±150°, J2 ±160°, J3 TCP world-Z 0.30–0.58 m, J4 ±180° |
-| Home | `(q1,q2,q3,q4) = (0,0,0.56,0)` |
-| Speeds | J1/J2 90°/s, J3 0.25 m/s, J4 120°/s |
-| Accelerations | J1/J2 180°/s², J3 0.50 m/s², J4 240°/s² |
+| Item                | Value used                                                                                                                    |
+| ------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| Links               | L1 0.30 m, L2 0.25 m                                                                                                          |
+| Joint limits        | J1 ±150°, J2 ±160°, J3 TCP world-Z 0.30–0.58 m, J4 ±180°                                                                      |
+| Home                | `(q1,q2,q3,q4) = (0,0,0.56,0)`                                                                                                |
+| Speeds              | J1/J2 90°/s, J3 0.25 m/s, J4 120°/s                                                                                           |
+| Accelerations       | J1/J2 180°/s², J3 0.50 m/s², J4 240°/s²                                                                                       |
 | Gripper assumptions | Opening 0.03–0.16 m; virtual capacity 25 N/jaw; μ=0.50; safety factor 2; g=9.81 m/s²; assumed vertical acceleration 0.30 m/s² |
-| Cell | Table z=0.25 m; base radius 0.08 m; conveyor center (+0.34,0) m and size 0.45×0.20 m, support z=0.35 m; pickup (+0.30,0) m |
-| Destinations | B1 (-0.24,+0.25), B2 (-0.24,0), B3 (-0.24,-0.25) m; exterior 0.24×0.22 m, interior 0.20×0.18 m, floor z=0.30 m, lip z=0.46 m |
-| Packages | S 0.08×0.06×0.04 m / 0.10 kg → B1; M 0.12×0.09×0.06 m / 0.30 kg → B2; L 0.16×0.12×0.08 m / 0.60 kg → B3 |
-| Operating targets | Transfer TCP z=0.54 m; target median cycle 12 s (not measured); fixed step 1/60 s |
+| Cell                | Table z=0.25 m; base radius 0.08 m; conveyor center (+0.34,0) m and size 0.45×0.20 m, support z=0.35 m; pickup (+0.30,0) m    |
+| Destinations        | B1 (-0.24,+0.25), B2 (-0.24,0), B3 (-0.24,-0.25) m; exterior 0.24×0.22 m, interior 0.20×0.18 m, floor z=0.30 m, lip z=0.46 m  |
+| Packages            | S 0.08×0.06×0.04 m / 0.10 kg → B1; M 0.12×0.09×0.06 m / 0.30 kg → B2; L 0.16×0.12×0.08 m / 0.60 kg → B3                       |
+| Operating targets   | Transfer TCP z=0.54 m; target median cycle 12 s (not measured); fixed step 1/60 s                                             |
 
 Values are provisional assumptions as specified in the approved baseline, not selected hardware ratings or physical measurements.
 
@@ -84,29 +84,29 @@ For the four FK→requested-branch IK→FK vectors, the test observed maximum po
 
 ### Commands run and observed outcomes
 
-| Command/check | Outcome |
-|---|---|
-| `npm run format` / `npm run format:check` | Pass: all application/config files match Prettier. |
-| `npm run lint` | Pass: ESLint reported no errors. |
-| `npm run typecheck` | Pass: app and Vite config TypeScript checks. |
-| `npm test` | Pass: 1 test file, 11 tests. Observed FK/IK errors are listed above. |
-| `npm run verify:rapier-node` | Pass in Node only: Rapier 0.21.0 initialized and one empty 1/60 s step completed. This is not browser verification. |
-| `npm run build` | Pass: Vite 7.3.7 production build. After lazy loading the workcell, initial app JS is 239.03 kB minified (74.68 kB gzip), workcell/Three/R3F chunk 891.47 kB (238.97 kB gzip), and lazy Rapier chunk 4,368.41 kB (1,661.43 kB gzip). The Rapier chunk warning remains. |
-| Clean install | Pass: `npm ci --cache /private/tmp/sortlab-npm-cache` installed 227 packages from the lockfile. npm warned that `esbuild` and `fsevents` install scripts were not approved; the subsequent build passed. This run emitted no audit summary. |
-| Browser smoke test | Pass: `SORTLAB_URL=http://127.0.0.1:5174/ npm run smoke:browser`, using Playwright Core 1.63.0 with cached Chrome for Testing 153.0.8010.12 (Chromium revision 1243). Vite selected port 5174 because 5173 was already occupied. |
-| Page, workcell, and bins | Pass: page title `SortLab — SCARA Workcell`, expected SCARA heading, visible 1001×620 canvas, legend entries for the SCARA and bins B1/B2/B3, and three destination rows. The captured initial scene screenshot was visually reviewed; it shows the SCARA links/gripper and all three bins. |
-| WebGL 2 | Pass: canvas returned `WebGL 2.0 (OpenGL ES 3.0 Chromium)` with drawing buffer 1001×620. The test used Chromium's SwiftShader software renderer; this does not validate a physical GPU or browser hardware acceleration. |
-| Joint controls and FK | Pass: each J1–J4 slider was advanced one step. Each change altered the viewport screenshot pixels. Readouts matched FK computed independently by the smoke script from the slider values within the UI's display rounding. Resulting readouts `(x,y,z,yaw°)` were J1 `(0.5499,0.0096,0.5600,1)`, J2 `(0.5498,0.0140,0.5600,2)`, J3 `(0.5498,0.0140,0.5650,2)`, J4 `(0.5498,0.0140,0.5650,3)`. |
-| Browser console and requests | Pass: no console errors or uncaught page errors; no failed requests and no HTTP responses ≥400 were observed during the test. |
-| Rapier in browser | Pass: status panel reported `Rapier 0.21.0 initialized and stepped one empty 1/60 s world tick.` No bodies or package physics were added. |
-| Screenshots | Pass: initial and post-control viewport screenshots were written to a temporary directory by the smoke test; the initial screenshot was visually reviewed. These ephemeral captures are not committed. |
-| Arc and Safari | Not used for this run. Chrome for Testing from the existing Playwright cache provided a working automation path. No Safari settings were changed. |
-| Standalone `npm audit --audit-level=low` | Not verified: the command could not reach the npm audit endpoint because registry DNS resolution failed in the sandbox. The clean install's output did not include an audit summary, so no current audit result is claimed. |
-| GitHub repository / push | Blocked: `gh auth status` reports the saved credential for account `7ochan` is invalid. `git remote -v` shows no configured remote. I did not create a repository or push because account access, repository ownership, and privacy could not be verified. Run `gh auth login -h github.com`, then check `gh auth status` before retrying repository setup. |
-| Physical robot validation | Not performed; no hardware or measurement is claimed. |
+| Command/check                             | Outcome                                                                                                                                                                                                                                                                                                                                                                                       |
+| ----------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `npm run format` / `npm run format:check` | Pass: all application/config files match Prettier.                                                                                                                                                                                                                                                                                                                                            |
+| `npm run lint`                            | Pass: ESLint reported no errors.                                                                                                                                                                                                                                                                                                                                                              |
+| `npm run typecheck`                       | Pass: app and Vite config TypeScript checks.                                                                                                                                                                                                                                                                                                                                                  |
+| `npm test`                                | Pass: 1 test file, 11 tests. Observed FK/IK errors are listed above.                                                                                                                                                                                                                                                                                                                          |
+| `npm run verify:rapier-node`              | Pass in Node only: Rapier 0.21.0 initialized and one empty 1/60 s step completed. This is not browser verification.                                                                                                                                                                                                                                                                           |
+| `npm run build`                           | Pass: Vite 7.3.7 production build. After lazy loading the workcell, initial app JS is 239.03 kB minified (74.68 kB gzip), workcell/Three/R3F chunk 891.47 kB (238.97 kB gzip), and lazy Rapier chunk 4,368.41 kB (1,661.43 kB gzip). The Rapier chunk warning remains.                                                                                                                        |
+| Clean install                             | Pass: `npm ci --cache /private/tmp/sortlab-npm-cache` installed 227 packages from the lockfile. npm warned that `esbuild` and `fsevents` install scripts were not approved; the subsequent build passed. This run emitted no audit summary.                                                                                                                                                   |
+| Browser smoke test                        | Pass: `SORTLAB_URL=http://127.0.0.1:5174/ npm run smoke:browser`, using Playwright Core 1.63.0 with cached Chrome for Testing 153.0.8010.12 (Chromium revision 1243). Vite selected port 5174 because 5173 was already occupied.                                                                                                                                                              |
+| Page, workcell, and bins                  | Pass: page title `SortLab — SCARA Workcell`, expected SCARA heading, visible 1001×620 canvas, legend entries for the SCARA and bins B1/B2/B3, and three destination rows. The captured initial scene screenshot was visually reviewed; it shows the SCARA links/gripper and all three bins.                                                                                                   |
+| WebGL 2                                   | Pass: canvas returned `WebGL 2.0 (OpenGL ES 3.0 Chromium)` with drawing buffer 1001×620. The test used Chromium's SwiftShader software renderer; this does not validate a physical GPU or browser hardware acceleration.                                                                                                                                                                      |
+| Joint controls and FK                     | Pass: each J1–J4 slider was advanced one step. Each change altered the viewport screenshot pixels. Readouts matched FK computed independently by the smoke script from the slider values within the UI's display rounding. Resulting readouts `(x,y,z,yaw°)` were J1 `(0.5499,0.0096,0.5600,1)`, J2 `(0.5498,0.0140,0.5600,2)`, J3 `(0.5498,0.0140,0.5650,2)`, J4 `(0.5498,0.0140,0.5650,3)`. |
+| Browser console and requests              | Pass: no console errors or uncaught page errors; no failed requests and no HTTP responses ≥400 were observed during the test.                                                                                                                                                                                                                                                                 |
+| Rapier in browser                         | Pass: status panel reported `Rapier 0.21.0 initialized and stepped one empty 1/60 s world tick.` No bodies or package physics were added.                                                                                                                                                                                                                                                     |
+| Screenshots                               | Pass: initial and post-control viewport screenshots were written to a temporary directory by the smoke test; the initial screenshot was visually reviewed. These ephemeral captures are not committed.                                                                                                                                                                                        |
+| Arc and Safari                            | Not used for this run. Chrome for Testing from the existing Playwright cache provided a working automation path. No Safari settings were changed.                                                                                                                                                                                                                                             |
+| Standalone `npm audit --audit-level=low`  | Not verified: the command could not reach the npm audit endpoint because registry DNS resolution failed in the sandbox. The clean install's output did not include an audit summary, so no current audit result is claimed.                                                                                                                                                                   |
+| GitHub repository / push                  | Blocked: `gh auth status` reports the saved credential for account `7ochan` is invalid. `git remote -v` shows no configured remote. I did not create a repository or push because account access, repository ownership, and privacy could not be verified. Run `gh auth login -h github.com`, then check `gh auth status` before retrying repository setup.                                   |
+| Physical robot validation                 | Not performed; no hardware or measurement is claimed.                                                                                                                                                                                                                                                                                                                                         |
 
 The browser evidence above applies to cached Chromium 153.0.8010.12 with SwiftShader software rendering. It does not establish hardware-accelerated WebGL behavior or physical robot performance. No physical robot validation has been performed.
 
 ## Deferred by phase boundary
 
-Phase 2 owns cubic trajectories, waypoint routes, and collision/clearance planning. Phase 3 owns package dynamics, grasp/release/contact behavior. Later phases own sorting state machine, retries and faults, operating dashboard, scenario campaigns, throughput/cycle metrics, report export, demonstration, and viva preparation. No package physics or sort cycle is represented by the current scene.
+At the original Phase 1 boundary, cubic trajectories and waypoint routes were deferred to Phase 2; these are now implemented in [the Phase 2 record](PHASE-2-IMPLEMENTATION.md). Collision/clearance planning remains future work. Phase 3 owns package dynamics, grasp/release/contact behavior. Later phases own sorting state machine, retries and faults, operating dashboard, scenario campaigns, throughput/cycle metrics, report export, demonstration, and viva preparation. No package physics or sort cycle is represented by the current scene.

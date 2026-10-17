@@ -302,6 +302,18 @@ h1 {
 .legend-bin.three {
   background: #8ea89c;
 }
+.legend-route {
+  width: 13px !important;
+  height: 2px !important;
+  border-radius: 2px !important;
+  background: #e4b36f;
+}
+.control-column {
+  display: grid;
+  align-content: start;
+  gap: 12px;
+  min-width: 0;
+}
 .inspector {
   padding: 17px 17px 15px;
 }
@@ -460,6 +472,148 @@ input[type='range'] {
   font-size: 9px;
   line-height: 1.55;
 }
+.route-panel {
+  overflow: hidden;
+  padding: 16px 17px 15px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: rgba(26, 37, 41, 0.94);
+  box-shadow: 0 14px 38px #00000014;
+}
+.route-badge {
+  color: #d8b17a;
+  border-color: rgba(223, 168, 94, 0.24);
+}
+.route-badge i {
+  background: var(--accent);
+  box-shadow: 0 0 10px #dfa85e55;
+}
+.route-select-label {
+  display: block;
+  margin-top: 15px;
+  margin-bottom: 6px;
+  color: #aab9b2;
+  font-size: 9px;
+}
+.route-panel select {
+  width: 100%;
+  height: 33px;
+  padding: 0 9px;
+  border: 1px solid rgba(184, 208, 196, 0.18);
+  border-radius: 4px;
+  color: #e3ece6;
+  background: #131d21;
+  font-size: 10px;
+}
+.route-summary {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 11px;
+  color: #8fa19a;
+  font-size: 9px;
+}
+.route-summary b {
+  color: #d5e2db;
+  font:
+    10px 'DM Mono',
+    monospace;
+}
+.route-waypoints {
+  display: grid;
+  gap: 10px;
+  margin: 14px 0 0;
+  padding: 13px 0 0;
+  border-top: 1px solid var(--line);
+  list-style: none;
+}
+.route-waypoints li {
+  display: grid;
+  grid-template-columns: 8px minmax(0, 1fr);
+  gap: 8px;
+  align-items: start;
+}
+.route-step {
+  width: 7px;
+  height: 7px;
+  margin-top: 2px;
+  border-radius: 50%;
+  background: #e4b36f;
+  box-shadow: 0 0 7px #e4b36f44;
+}
+.route-step-pickup {
+  background: #e4a963;
+}
+.route-step-clearance {
+  background: #e6cf9d;
+}
+.route-step-approach {
+  background: #92c8b7;
+}
+.route-step-destination {
+  background: #62baa0;
+}
+.route-waypoints span {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+.route-waypoints strong {
+  color: #bdcbc4;
+  font-size: 9px;
+  font-weight: 500;
+}
+.route-waypoints small {
+  color: #788a84;
+  font:
+    8px 'DM Mono',
+    monospace;
+}
+.playback-controls {
+  margin-top: 15px;
+  padding-top: 13px;
+  border-top: 1px solid var(--line);
+}
+.playback-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 7px;
+  align-items: center;
+}
+.playback-heading b {
+  color: #d5e2db;
+  font:
+    9px 'DM Mono',
+    monospace;
+}
+.route-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 7px;
+  margin-top: 8px;
+}
+.route-actions button {
+  min-height: 30px;
+  border: 1px solid rgba(223, 168, 94, 0.34);
+  border-radius: 4px;
+  color: #191f1e;
+  background: #dfa85e;
+  font-size: 9px;
+  font-weight: 650;
+  cursor: pointer;
+}
+.route-actions .secondary-button {
+  border-color: rgba(184, 208, 196, 0.2);
+  color: #bac9c1;
+  background: #202d31;
+}
+.route-actions button:hover {
+  filter: brightness(1.08);
+}
+.route-mode {
+  margin-top: 8px;
+  color: #7f928a;
+  font-size: 8px;
+}
 .footer {
   display: flex;
   justify-content: space-between;
@@ -509,6 +663,9 @@ input[type='range'] {
   .integration-check,
   .scope-note {
     grid-column: 1 / -1;
+  }
+  .control-column {
+    grid-template-columns: 1fr;
   }
   .joint-controls {
     grid-template-columns: 1fr 1fr;
