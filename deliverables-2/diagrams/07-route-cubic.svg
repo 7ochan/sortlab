@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="520" viewBox="0 0 1280 520">
+<defs><marker id="arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0 0 L10 4 L0 8 Z" fill="#246A8A"/></marker><marker id="tealArrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0 0 L10 4 L0 8 Z" fill="#168C8C"/></marker></defs>
+<rect width="100%" height="100%" fill="#FFFFFF"/>
+<style>text{font-family:Arial,sans-serif;fill:#24313D}.title{font-size:25px;font-weight:700;fill:#17324D}.label{font-size:18px}.small{font-size:15px}.tiny{font-size:13px}.axis{stroke:#5C6B78;stroke-width:2}.arm{stroke:#246A8A;stroke-width:16;stroke-linecap:round}.joint{fill:#FFFFFF;stroke:#17324D;stroke-width:4}.path{fill:none;stroke:#168C8C;stroke-width:5;stroke-dasharray:12 8}.solid{fill:#EAF2F5;stroke:#246A8A;stroke-width:2}.concept{fill:#F8FAFB;stroke:#738594;stroke-width:2;stroke-dasharray:8 6}.bin{fill:#EAF2F5;stroke:#246A8A;stroke-width:3}.package{fill:#E5A842;stroke:#9A6722;stroke-width:2}.muted{fill:#5C6B78}.good{fill:#168C8C}.bad{fill:#B45A4A}</style>
+<text x="38" y="42" class="title">Route logic and rest-to-rest cubic example</text>
+<text x="55" y="92" class="label">XY route projection (not a swept collision check)</text>
+<rect x="85" y="350" width="175" height="70" rx="8" fill="#EAF2F5" stroke="#246A8A" stroke-width="3"/><text x="112" y="390" class="small">Pickup support</text>
+<rect x="930" y="310" width="205" height="110" rx="8" fill="#EAF2F5" stroke="#246A8A" stroke-width="3"/><text x="990" y="368" class="small">Target bin</text>
+<path d="M210 350 L320 230 L510 120 L850 120 L1010 310" class="path" marker-end="url(#tealArrow)"/>
+<circle cx="210" cy="350" r="12" fill="#E5A842"/><circle cx="320" cy="230" r="10" fill="#246A8A"/><circle cx="510" cy="120" r="10" fill="#168C8C"/><circle cx="850" cy="120" r="10" fill="#246A8A"/>
+<text x="160" y="338" class="tiny">Pick (.30,0)</text><text x="275" y="210" class="tiny">Clear z=.56</text><text x="450" y="95" class="tiny">Corridor x=.12, y=±.40</text><text x="810" y="95" class="tiny">Approach above lip</text><text x="860" y="455" class="tiny">Bins at (−.24, ±.25 / 0); target TCP z=.54 m</text>
+<line x1="65" y1="476" x2="655" y2="476" stroke="#C5D1D8" stroke-width="2"/><text x="720" y="112" class="label">J1 example, T=2 s</text>
+<rect x="770" y="145" width="400" height="220" fill="#F8FAFB" stroke="#C5D1D8"/>
+<line x1="770" y1="365" x2="1170" y2="365" class="axis"/><line x1="770" y1="145" x2="770" y2="365" class="axis"/>
+<polyline points="770.0,365.0 776.7,364.8 783.3,364.3 790.0,363.4 796.7,362.2 803.3,360.7 810.0,358.8 816.7,356.7 823.3,354.3 830.0,351.6 836.7,348.7 843.3,345.5 850.0,342.1 856.7,338.5 863.3,334.7 870.0,330.6 876.7,326.4 883.3,322.0 890.0,317.5 896.7,312.8 903.3,308.0 910.0,303.0 916.7,298.0 923.3,292.8 930.0,287.6 936.7,282.2 943.3,276.9 950.0,271.4 956.7,266.0 963.3,260.5 970.0,255.0 976.7,249.5 983.3,244.0 990.0,238.6 996.7,233.1 1003.3,227.8 1010.0,222.4 1016.7,217.2 1023.3,212.0 1030.0,207.0 1036.7,202.0 1043.3,197.2 1050.0,192.5 1056.7,188.0 1063.3,183.6 1070.0,179.4 1076.7,175.3 1083.3,171.5 1090.0,167.9 1096.7,164.5 1103.3,161.3 1110.0,158.4 1116.7,155.7 1123.3,153.3 1130.0,151.2 1136.7,149.3 1143.3,147.8 1150.0,146.6 1156.7,145.7 1163.3,145.2 1170.0,145.0" fill="none" stroke="#168C8C" stroke-width="5"/>
+<circle cx="970.0" cy="255.0" r="8" fill="#E5A842"/>
+<text x="984.0" y="247.0" class="small">t=1 s → 15°</text>
+<text x="772" y="390" class="tiny">0 s · q₀=0°</text>
+<text x="1080" y="390" class="tiny">2 s · qf=30°</text>
+<text x="720" y="415" class="small">q=q₀+Δq(3u²−2u³), u=t/T</text>
+<text x="720" y="449" class="small">vmax=.3927 rad/s; amax=.7854 rad/s²</text>
+<text x="720" y="483" class="tiny">Below configured J1 caps 1.5708 rad/s and 3.1416 rad/s².</text>
+</svg>
