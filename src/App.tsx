@@ -273,8 +273,7 @@ function App() {
     const scenario = SCENARIOS.find(({ id }) => id === selectedScenario);
     if (!controller || !simulation || !scenario || controller.snapshot.active) return;
     setPlaying(false);
-    if (controller.snapshot.state !== 'idle') controller.reset();
-    else controller.reset();
+    if (!controller.reset()) return;
     if (simulation.packageClass.id !== scenario.packageId)
       simulation.selectPackage(scenario.packageId);
     const item = CONFIG.packages.find(({ id }) => id === scenario.packageId)!;
@@ -588,6 +587,12 @@ function App() {
         simulationTick={simulationTick}
         fixedStepSeconds={CONFIG.performance.fixedStepSeconds}
         physicsStatus={physicsStatus}
+        tcpPose={forwardKinematics(joints, CONFIG)}
+        selectedDestination={selectedDestination}
+        previewTime={playbackTime}
+        previewDuration={route.trajectory.durationSeconds}
+        paused={Boolean(controllerRef.current?.isPaused)}
+        previewPlaying={playing}
         selectedScenario={selectedScenario}
         scenarioOutcome={scenarioOutcome}
         onScenarioChange={setSelectedScenario}

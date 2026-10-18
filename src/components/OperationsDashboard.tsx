@@ -13,6 +13,12 @@ export function OperationsDashboard({
   simulationTick,
   fixedStepSeconds,
   physicsStatus,
+  tcpPose,
+  selectedDestination,
+  previewTime,
+  previewDuration,
+  paused,
+  previewPlaying,
   selectedScenario,
   scenarioOutcome,
   onScenarioChange,
@@ -27,6 +33,12 @@ export function OperationsDashboard({
   simulationTick: number;
   fixedStepSeconds: number;
   physicsStatus: string;
+  tcpPose: Readonly<{ x: number; y: number; z: number; yaw: number }>;
+  selectedDestination: 'B1' | 'B2' | 'B3';
+  previewTime: number;
+  previewDuration: number;
+  paused: boolean;
+  previewPlaying: boolean;
   selectedScenario: ScenarioId;
   scenarioOutcome: Readonly<{ scenarioId: ScenarioId; passed: boolean; summary: string }> | null;
   onScenarioChange: (id: ScenarioId) => void;
@@ -95,16 +107,25 @@ export function OperationsDashboard({
           </div>
           <div className="telemetry-grid">
             <div>
-              <span>Joint angles</span>
+              <span>Robot joints</span>
               <b>
                 J1 {((joints.j1 * 180) / Math.PI).toFixed(1)}° · J2{' '}
-                {((joints.j2 * 180) / Math.PI).toFixed(1)}° · J4{' '}
+                {((joints.j2 * 180) / Math.PI).toFixed(1)}° · J3 {joints.j3.toFixed(3)} m · J4{' '}
                 {((joints.j4 * 180) / Math.PI).toFixed(1)}°
               </b>
             </div>
             <div>
-              <span>TCP height</span>
-              <b>{joints.j3.toFixed(3)} m</b>
+              <span>TCP pose · W</span>
+              <b>
+                X {tcpPose.x.toFixed(3)} m · Y {tcpPose.y.toFixed(3)} m · Z {tcpPose.z.toFixed(3)} m
+                · yaw {((tcpPose.yaw * 180) / Math.PI).toFixed(1)}°
+              </b>
+            </div>
+            <div>
+              <span>Selected preview route</span>
+              <b>
+                {selectedDestination} · {previewTime.toFixed(2)} / {previewDuration.toFixed(2)} s
+              </b>
             </div>
             <div>
               <span>Controller / action</span>
@@ -128,6 +149,26 @@ export function OperationsDashboard({
             <div>
               <span>Physics</span>
               <b>{physicsStatus}</b>
+            </div>
+            <div>
+              <span>Playback / pause</span>
+              <b>
+                {paused
+                  ? 'Autonomous simulation paused'
+                  : snapshot.active
+                    ? 'Autonomous simulation running'
+                    : previewPlaying
+                      ? 'Route preview playing'
+                      : 'Simulation ready / preview stopped'}
+              </b>
+            </div>
+            <div>
+              <span>Reset readiness</span>
+              <b>
+                {snapshot.active
+                  ? 'Reset locked during active cycle'
+                  : 'Reset / recovery available'}
+              </b>
             </div>
             <div>
               <span>Grasp</span>

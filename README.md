@@ -6,7 +6,7 @@
 
 **Phase 5: Dashboard, scenarios and performance metrics.** SortLab includes a responsive live engineering dashboard, repeatable nominal S/M/L and controlled fault scenarios, event-derived session metrics, and JSON export. The Phase 4 deterministic fixed-tick controller continues to use the existing SCARA routes, Rapier package physics, gripper attachment, and simulated bin placement verification. Routes do not have swept robot-link/tool collision checks; no physical robot or sensor validation is claimed.
 
-The course brief was not available in the inspected workspace. Course-specific dates, marks, formatting, physical-hardware obligations, and AI policy remain unverified; see [the Mission 0 plan](docs/MISSION-0-PLAN.md). Phase boundaries remain in force; Phase 5 requires explicit owner approval.
+The course brief was not available in the inspected workspace. Course-specific dates, marks, formatting, physical-hardware obligations, and AI policy remain unverified; see [the Mission 0 plan](docs/MISSION-0-PLAN.md). Phase boundaries remain in force; Phase 6 requires explicit owner approval.
 
 ## Requirements
 
