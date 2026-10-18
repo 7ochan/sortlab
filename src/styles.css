@@ -621,6 +621,85 @@ input[type='range'] {
   background: linear-gradient(145deg, rgba(31, 45, 48, 0.97), rgba(24, 35, 39, 0.98));
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.16);
 }
+.autonomous-panel {
+  padding: 16px 18px;
+  border: 1px solid rgba(112, 197, 167, 0.25);
+  border-radius: 6px;
+  background: linear-gradient(145deg, rgba(27, 42, 42, 0.98), rgba(22, 34, 38, 0.98));
+}
+.autonomous-panel.has-fault {
+  border-color: rgba(224, 130, 102, 0.48);
+}
+.autonomous-panel select {
+  width: 100%;
+  height: 33px;
+  padding: 0 9px;
+  border: 1px solid rgba(184, 208, 196, 0.18);
+  border-radius: 4px;
+  color: #e3ece6;
+  background: #131d21;
+  font-size: 10px;
+}
+.autonomous-panel .route-summary {
+  align-items: start;
+  gap: 12px;
+}
+.autonomous-panel .route-summary b {
+  max-width: 64%;
+  text-align: right;
+  line-height: 1.5;
+}
+.controller-progress {
+  height: 4px;
+  margin-top: 13px;
+  overflow: hidden;
+  border-radius: 4px;
+  background: #10191c;
+}
+.controller-progress i {
+  display: block;
+  height: 100%;
+  background: #70c5a7;
+  transition: width 100ms linear;
+}
+.fault-badge {
+  color: #f0a28a;
+  border-color: rgba(224, 130, 102, 0.42);
+}
+.fault-badge i {
+  background: #e08368;
+  box-shadow: 0 0 9px #e0836844;
+}
+.complete-badge {
+  color: #8bc5ad;
+  border-color: rgba(112, 197, 167, 0.3);
+}
+.controller-actions {
+  grid-template-columns: 1fr 1fr;
+}
+.controller-actions button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.controller-log {
+  display: grid;
+  gap: 6px;
+  max-height: 132px;
+  overflow: auto;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+.controller-log p {
+  color: #8fa19a;
+  font:
+    8px 'DM Mono',
+    monospace;
+  line-height: 1.45;
+}
+.controller-fault {
+  color: #f0a28a !important;
+}
 .physics-panel .panel-copy {
   margin-bottom: 12px;
 }

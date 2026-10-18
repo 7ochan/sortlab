@@ -12,6 +12,8 @@ import { StatusPanel } from './components/StatusPanel';
 import { RoutePanel } from './components/RoutePanel';
 import { PackagePanel } from './components/PackagePanel';
 import type { JointState, PackageClass } from './engineering/types';
+import { SortingController } from './engineering/sortingController';
+import { AutonomousPanel } from './components/AutonomousPanel';
 import './styles.css';
 
 const Workcell = lazy(() =>
@@ -50,11 +52,26 @@ function App() {
   const [playing, setPlaying] = useState(false);
   const [manualInspection, setManualInspection] = useState(false);
   const physicsRef = useRef<PackagePhysicsSimulation | null>(null);
+  const controllerRef = useRef<SortingController | null>(null);
   const [packageClass, setPackageClass] = useState<PackageClass>(CONFIG.packages[0]!);
   const [packageSnapshot, setPackageSnapshot] = useState<PackageSnapshot | null>(null);
   const [physicsStatus, setPhysicsStatus] = useState('Initializing fixed-step Rapier world…');
   const [graspResult, setGraspResult] = useState<GraspResult | null>(null);
   const [gripperOpen, setGripperOpen] = useState(true);
+  const [controllerSnapshot, setControllerSnapshot] = useState<SortingController['snapshot']>(
+    () =>
+      new SortingController({
+        setJoints: () => {},
+        getJoints: () => CONFIG.robot.home,
+        getSnapshot: () => null,
+        open: () => {},
+        close: () => {},
+        attemptGrasp: () => ({ success: false, reason: 'Physics is not ready.' }),
+        release: () => ({ success: false, reason: 'Physics is not ready.' }),
+        resetPackage: () => {},
+        stepPhysics: () => null,
+      }).snapshot,
+  );
   const [webglSupported] = useState<boolean>(() => {
     try {
       const canvas = document.createElement('canvas');
@@ -103,6 +120,40 @@ function App() {
         }
         simulation = created;
         physicsRef.current = created;
+        controllerRef.current = new SortingController({
+          setJoints: (next) => {
+            jointsRef.current = next;
+            setJoints(next);
+            created.setTcp(forwardKinematics(next, CONFIG));
+          },
+          getJoints: () => jointsRef.current,
+          getSnapshot: () => created.stepFixed(0),
+          open: () => {
+            created.open();
+            setGripperOpen(true);
+          },
+          close: () => {
+            created.close();
+            setGripperOpen(false);
+          },
+          attemptGrasp: () => {
+            const result = created.attemptGrasp();
+            setGraspResult(result);
+            return result;
+          },
+          release: () => {
+            const result = created.release();
+            setGraspResult(result);
+            return result;
+          },
+          resetPackage: () => {
+            created.reset();
+            setGripperOpen(true);
+            setGraspResult(null);
+          },
+          stepPhysics: () => created.stepFixed(1),
+        });
+        setControllerSnapshot(controllerRef.current.snapshot);
         setPackageSnapshot(created.stepFixed(0));
         setPhysicsStatus(
           `Rapier ${CONFIG.performance.fixedStepSeconds.toFixed(5)} s fixed step · package dynamics active`,
@@ -116,11 +167,19 @@ function App() {
           simulation.setTcp(forwardKinematics(jointsRef.current, CONFIG));
           let steps = 0;
           while (accumulator >= dt && steps < 6) {
-            simulation.stepFixed();
+            const controller = controllerRef.current;
+            if (controller?.snapshot.active) {
+              if (!controller.isPaused) controller.tick(dt);
+            } else {
+              simulation.stepFixed();
+            }
             accumulator -= dt;
             steps += 1;
           }
-          if (steps) setPackageSnapshot(simulation.stepFixed(0));
+          if (steps) {
+            setPackageSnapshot(simulation.stepFixed(0));
+            if (controllerRef.current) setControllerSnapshot(controllerRef.current.snapshot);
+          }
           frame = requestAnimationFrame(tick);
         };
         frame = requestAnimationFrame(tick);
@@ -134,6 +193,7 @@ function App() {
       active = false;
       cancelAnimationFrame(frame);
       physicsRef.current = null;
+      controllerRef.current = null;
       simulation?.dispose();
     };
     // One world per mounted app; package selection resets the existing body below.
@@ -146,7 +206,7 @@ function App() {
   }, [joints]);
 
   const inspectJointState = (next: JointState) => {
-    if (physicsRef.current?.isAttached) return;
+    if (physicsRef.current?.isAttached || controllerRef.current?.snapshot.active) return;
     setPlaying(false);
     setManualInspection(true);
     setJoints(next);
@@ -169,6 +229,7 @@ function App() {
   const resetRoute = () => scrubTrajectory(0);
 
   const withPhysics = (action: (simulation: PackagePhysicsSimulation) => void) => {
+    if (controllerRef.current?.snapshot.active) return;
     const simulation = physicsRef.current;
     if (!simulation) return;
     try {
@@ -296,7 +357,7 @@ function App() {
           <StatusPanel
             joints={joints}
             onChange={inspectJointState}
-            controlsLocked={Boolean(packageSnapshot?.attached)}
+            controlsLocked={Boolean(packageSnapshot?.attached) || controllerSnapshot.active}
           />
           <RoutePanel
             route={route}
@@ -304,7 +365,12 @@ function App() {
             playbackTime={playbackTime}
             playing={playing}
             manualInspection={manualInspection}
-            controlsLocked={Boolean(packageSnapshot?.attached)}
+            controlsLocked={Boolean(packageSnapshot?.attached) || controllerSnapshot.active}
+            playbackLocked={
+              controllerSnapshot.active ||
+              (controllerSnapshot.state === 'recoverable-fault' &&
+                Boolean(packageSnapshot?.attached))
+            }
             onDestinationChange={selectDestination}
             onPlaybackTimeChange={scrubTrajectory}
             onTogglePlayback={togglePlayback}
@@ -316,6 +382,7 @@ function App() {
             status={physicsStatus}
             snapshot={packageSnapshot}
             attached={Boolean(packageSnapshot?.attached)}
+            controlsLocked={controllerSnapshot.active}
             open={gripperOpen}
             result={graspResult}
             onSelect={(id) =>
@@ -363,6 +430,61 @@ function App() {
                 sim.open();
               })
             }
+          />
+          <AutonomousPanel
+            snapshot={controllerSnapshot}
+            packages={CONFIG.packages}
+            selectedPackage={packageClass.id}
+            ready={Boolean(physicsRef.current)}
+            packageAttached={Boolean(packageSnapshot?.attached)}
+            paused={Boolean(controllerRef.current?.isPaused)}
+            onPackageChange={(id) => {
+              withPhysics((sim) => {
+                sim.selectPackage(id);
+                const item = CONFIG.packages.find((p) => p.id === id)!;
+                const destinationRoute = routes.find((r) => r.destinationId === item.destination)!;
+                setPackageClass(item);
+                setSelectedDestination(item.destination);
+                setPlaying(false);
+                setManualInspection(false);
+                playbackTimeRef.current = 0;
+                setPlaybackTime(0);
+                jointsRef.current = destinationRoute.trajectory.samples[0]!.position;
+                setJoints(jointsRef.current);
+                setGraspResult(null);
+                setGripperOpen(true);
+              });
+            }}
+            onStart={() => {
+              setPlaying(false);
+              controllerRef.current?.start(packageClass.id);
+              if (controllerRef.current) setControllerSnapshot(controllerRef.current.snapshot);
+            }}
+            onPause={() => {
+              const controller = controllerRef.current;
+              controller?.setPaused(!controller.isPaused);
+              if (controller) setControllerSnapshot(controller.snapshot);
+            }}
+            onAbort={() => {
+              controllerRef.current?.abort();
+              if (controllerRef.current) setControllerSnapshot(controllerRef.current.snapshot);
+              if (physicsRef.current) setPackageSnapshot(physicsRef.current.stepFixed(0));
+            }}
+            onReset={() => {
+              const controller = controllerRef.current;
+              if (controller?.reset()) {
+                const selectedRoute = routes.find(
+                  (r) => r.destinationId === packageClass.destination,
+                )!;
+                jointsRef.current = selectedRoute.trajectory.samples[0]!.position;
+                setJoints(jointsRef.current);
+                setSelectedDestination(packageClass.destination);
+                setPlaybackTime(0);
+                playbackTimeRef.current = 0;
+                setPackageSnapshot(physicsRef.current?.stepFixed(0) ?? null);
+                setControllerSnapshot(controller.snapshot);
+              }
+            }}
           />
         </div>
       </section>

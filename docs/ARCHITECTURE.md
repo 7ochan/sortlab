@@ -1,6 +1,6 @@
 # SortLab Architecture Decision
 
-**Status:** Phase 1 foundation, Phase 2 trajectory/route preview, and Phase 3 package physics/gripper transfer implemented locally. Autonomous sorting remains planned.
+**Status:** Phases 1–4 implemented locally. Phase 4 adds a deterministic autonomous controller over the existing route and Rapier/gripper APIs. Swept collision validation, scenario campaigns, and physical validation remain unimplemented.
 
 **Date:** 2026-10-17
 
@@ -9,7 +9,7 @@
 - TypeScript + React 19 + Vite for application logic, UI, and development server. Phase 1 pins React/React DOM 19.3.0 and Vite 7.3.7.
 - React Three Fiber 9 + Three.js/WebGL 2 for the interactive scene. Phase 1 pins R3F 9.4.2 and Three.js 0.185.0.
 - Rapier 3D JavaScript deterministic compatibility build for fixed-step package physics, static support/bin colliders, package contact sensors, and a fixed-joint grasp/release model. Phase 3 uses package 0.21.0; robot links remain kinematic visuals.
-- Application-owned analytic SCARA FK/IK, joint-limit validation, deterministic cubic joint trajectories, and a fixed-cell Cartesian waypoint planner. Swept collision/clearance checks and finite-state sorting control remain future work.
+- Application-owned analytic SCARA FK/IK, joint-limit validation, deterministic cubic joint trajectories, and a fixed-cell Cartesian waypoint planner. The Phase 4 finite-state controller executes sampled routes; swept collision/clearance checks remain future work.
 - Vitest 4.1.12 for engineering unit tests and Playwright Core 1.63.0 for the cached Chromium browser smoke test.
 - Markdown + Mermaid as source documentation; cumulative report export follows the university format.
 
@@ -19,7 +19,7 @@ Use compatible stable versions pinned in package-lock.json; avoid canary/alpha a
 
 The app separates `src/engineering` (typed baseline/config validation, FK/IK, trajectories/routes, and `packagePhysics.ts`), `src/components` (3D workcell and status/route/package panels), and `src/App.tsx` (composition and fixed-step adapter). Direct inspection, route playback, and package attachment use the same joint state and FK convention. Rapier loads asynchronously and its package/gripper state is tested separately from React.
 
-The diagram shows the implemented path from UI through fixed-cell route planning, IK, sampled trajectories, and the rendered arm. Controller, simulation physics, package lifecycle, collision checking, and performance evaluation links remain future contracts. Phase 2 does not implement a collision planner, package physics, sorting flow, or full operations dashboard.
+The diagram shows the implemented route, controller, fixed-step simulation, package lifecycle and presentation path. Swept collision checking and performance evaluation remain future work. Route execution is simulated and is not collision-safe.
 
 ### Rationale and scope
 
@@ -31,7 +31,7 @@ Webots remains a contingency only if the course expects a dedicated robotics sim
 
 ## Target architecture and module contracts
 
-The controller, scenarios, collision guard, placement accounting, and evaluation links below are future architecture; Phase 3 does not implement them.
+Phase 4 implements the controller, placement accounting and event display. Scenario campaigns and a collision guard remain future architecture.
 
 ```mermaid
 flowchart LR
@@ -64,49 +64,48 @@ flowchart LR
 | Kinematics         | FK/IK, elbow branches, wrist yaw, singularities and limit margins                                                       | Pose ↔ joint solution with explicit failure reason                        |
 | Route planner      | **Phase 2:** fixed-cell named TCP waypoints, analytic IK, continuous elbow branch, route failure                        | Typed waypoint route and sampled Cartesian trajectory; no collision margin |
 | Trajectory         | **Phase 2:** cubic joint profile with analytic bounds; Cartesian waypoint timing with sampled speed/acceleration checks | Deterministic timestamped joint states and FK poses                        |
-| Controller         | State transitions, ID routing, retries, timeouts, fault latch, event generation                                         | Typed commands/events                                                      |
-| Simulation adapter | **Phase 3:** fixed-step Rapier package/environment bodies, sensor-pad grasp gate, fixed-joint carry, dynamic release. Robot remains kinematic in React/Three. | Package pose/status to UI; controller contract remains future |
+| Controller         | **Phase 4:** state transitions, configured package/bin mapping, route validation, bounded grasp retry, cancellation, placement verification and event generation | Typed start/pause/abort/reset operations and snapshot |
+| Simulation adapter | **Phase 3/4:** fixed-step Rapier package/environment bodies, sensor-pad grasp gate, fixed-joint carry, dynamic release, package pose and velocity. Robot remains kinematic in React/Three. | Fixed tick steps coordinated with controller commands |
 | Presentation       | Scene geometry, camera, UI controls and read-only state display                                                         | Commands to controller; events/metrics from controller                     |
 | Evaluation         | Seeded scenario sets, run definitions, aggregation and export of raw simulated results                                  | Versioned JSON/CSV run data                                                |
 | Documentation      | Requirement mapping, assumptions, calculations, diagrams, cumulative report history                                     | Evidence traceability                                                      |
 
 ## Simulation loop and data flow
 
-1. For the current Phase 2 preview, a destination selection chooses a validated fixed-cell route. A future typed start command will select a versioned configuration and seeded scenario.
-2. The controller consumes a simulated barcode ID (not camera vision), resolves its bin, requests approach/grasp/lift/transfer/place/retreat/home targets.
+1. Manual preview selects an existing fixed-cell route; autonomous start resolves the selected package's configured destination and validates the route and return-home cubic before commanding motion.
+2. Package identity is operator-selected; there is no camera or barcode sensor. The controller coordinates pickup, grasp, lift, route transport, release, placement verification and return home.
 3. FK/IK checks pose, joint limits, and branches. The Phase 2 route builder tests both elbow branches for the fixed elevated-corridor waypoints and selects the fastest feasible continuous route.
 4. Phase 2 verifies joint-space cubic extrema analytically and checks Cartesian route velocity/acceleration on the deterministic 1/60 s sample grid. It does not test links/packages against conveyor or bins; Phase 2 path clearance is not established.
 5. Control and physics advance on a fixed 1/60 s tick with capped catch-up. Rendering interpolates state separately at display refresh; frame rate never defines cycle time. Pause/step act on simulation ticks.
-6. **Phase 3:** React/Three updates the kinematic robot from joint state and Rapier advances package bodies at fixed ticks. Package sensor-pad intersections gate the manual grasp and a fixed joint carries the package. There is no robot collision guard, collision-triggered stop, controller event, or automatic placement confirmation yet.
-7. A future controller should call the tested Phase 3 gripper operations only after its route and fault policies are defined. Phase 3 itself has no automatic retry or transfer state machine.
-8. Future placement accounting should require the package to settle inside the assigned bin; Phase 3 does not award sorting credit or calculate cycle metrics.
+6. The Phase 4 controller commands sampled joint states and derives the TCP before each fixed Rapier step. The package follows the robot only while the Phase 3 fixed-joint attachment is active.
+7. Start resolves the selected package's configured destination, plans and validates motion before execution, verifies the actual grasp result, and releases dynamically at the route target. Lost attachment faults the cycle.
+8. Placement accounting checks package-size-shrunk bin interior bounds and Rapier linear/angular velocity for a 0.25 s settling window. It awards a sort only for the configured destination. This pose-based simulated check is not camera or hardware sensing.
 
 The browser animation loop is not the physics timestep. Phase 3 uses the configured 1/60 s accumulator and caps catch-up to six steps per rendered frame; excess delayed wall time is discarded. When carrying, direct joint controls and route selection/scrubbing are disabled to avoid teleporting the attached body. This is not an industrial servo controller.
 
 ## State machine and fault behavior
 
-Idle → Validate → Identify → PlanApproach → Approach → Grip → VerifyGrip → Lift → PlanTransfer → Transfer → Place → Release → VerifyPlacement → ReturnHome → Complete.
+Idle → Selecting → Planning → MovingToPickup → AligningAndGrasping → Lifting → Transporting → Releasing → VerifyingPlacement → ReturningHome → Completed.
 
 - Unknown ID: hold at pickup, log, await operator reset; never guess destination.
-- Missed grasp: one controlled retry; second miss enters failed/recovery with no success count.
+- Missed grasp: one controlled retry; second miss enters a recoverable fault with no success count.
 - Full/blocked bin or no valid route: stop before entry and wait/report.
 - Collision guard, trajectory timeout or simulated emergency stop: stop commanded motion, latch a fault; checked home/reset is operator initiated.
-- Failed placement check: no sort credit; pause for recovery.
+- Wrong-bin/outside-bin placement, timeout, release failure or lost attachment: no sort credit; latch a typed fault with package, destination, simulation time and explanation.
 - Reset must preserve one clear owner for each package so it cannot duplicate or vanish.
 
 ## Planning, UI and metrics
 
 The Phase 2 planner is fixed-cell rather than general warehouse navigation. It checks sampled TCP IK continuity, joint limits, and configured speed/acceleration constraints for an elevated corridor. It does not check link/package envelopes, bin entry collision, or swept volume. Alternate elbow branches are tried. Future collision checks must be completed before treating a route as safe to execute.
 
-Current Phase 3 UI: 3D cell and route overlay; route selection/playback; direct joint inspection; package category/reset; open/close/grasp/release; package pose/state; and control lockout while carrying. Autonomous ID routing, scenario/fault controls, event history, sort counts, and performance dashboard remain planned.
+Current UI: 3D cell and route overlay; route selection/playback; direct joint inspection; package category/reset; open/close/grasp/release; package pose/state; and an autonomous panel with start, pause/resume, abort, reset/recover, state/action, package/destination, progress, grasp/placement result, elapsed simulation time and recent event/fault log. Manual controls lock during an autonomous cycle. Autonomous barcode sensing, scenario injection, sort counts and performance dashboards are not implemented.
 
 Metrics: correct-sort fraction, wrong-bin count, retry rate, faults/recoveries, cycle-time distribution, packages per simulated minute, unreachable-route count, and minimum path clearance. Each metric records denominator, run length, config version, seed, timestep, software lockfile and runtime.
 
 ## Verification
 
-- Vitest: FK/IK, workspace, cubic trajectories/routes, Rapier initialization/fixed steps/reset, all package proxies, contact-gated grasp, rejected alignment, carry coordination, release/fall, and repeated lifecycle cleanup. Swept collision clearance and autonomous controller behavior remain future tests.
-- Scenario tests: all three nominal package types plus each injected fault; expected terminal state and exact item counts.
-- Playwright: load, start/pause/step/reset, scenario/fault controls, visible transfer, UI/event/count agreement.
+- Vitest: FK/IK, workspace, cubic trajectories/routes, Rapier initialization/fixed steps/reset, all package proxies, contact-gated grasp, carry/release, full S/M/L autonomous Rapier cycles, controller transitions/recovery, placement acceptance/rejection and reset lifecycle. Swept collision clearance remains untested and unimplemented.
+- Playwright: load, WebGL render, manual controls/routes/grasp/release, and one full autonomous cycle through visible terminal placement status.
 - Engineering review: independently recompute representative kinematics and grip force; review clearance and diagrams.
 - Evaluation: at least 100 nominal cycles plus repeated fault cases. All outputs labeled simulated.
 

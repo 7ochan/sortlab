@@ -9,11 +9,14 @@ export type PackageSnapshot = Readonly<{
   id: PackageClass['id'];
   position: ToolPose;
   attached: boolean;
+  linearVelocity: Readonly<{ x: number; y: number; z: number }>;
+  angularVelocity: number;
 }>;
 export type GraspResult = Readonly<{ success: boolean; reason: string }>;
 
 const rotation = (yaw: number) => ({ x: 0, y: 0, z: Math.sin(yaw / 2), w: Math.cos(yaw / 2) });
 const identity = { x: 0, y: 0, z: 0, w: 1 };
+let rapierInitialization: Promise<void> | null = null;
 
 /** Rapier fixed-step adapter and package lifecycle. Robot links remain kinematic visuals. */
 export class PackagePhysicsSimulation {
@@ -45,14 +48,26 @@ export class PackagePhysicsSimulation {
     packageId: PackageClass['id'] = 'S',
   ): Promise<PackagePhysicsSimulation> {
     const { default: RAPIER } = await import('@dimforge/rapier3d-deterministic-compat');
-    await RAPIER.init();
+    rapierInitialization ??= RAPIER.init();
+    try {
+      await rapierInitialization;
+    } catch (error) {
+      rapierInitialization = null;
+      throw error;
+    }
     const world = new RAPIER.World({ x: 0, y: 0, z: -config.physics.gravityMps2 });
     world.timestep = config.performance.fixedStepSeconds;
     world.integrationParameters.numSolverIterations = 8;
     const fixedBody = (x: number, y: number, z: number, hx: number, hy: number, hz: number) => {
       const body = world.createRigidBody(RAPIER.RigidBodyDesc.fixed().setTranslation(x, y, z));
       world.createCollider(
-        RAPIER.ColliderDesc.cuboid(hx, hy, hz).setFriction(config.physics.staticFriction),
+        RAPIER.ColliderDesc.cuboid(hx, hy, hz)
+          .setFriction(config.physics.staticFriction)
+          .setCollisionGroups(
+            (config.physics.collisionGroups.environment << 16) |
+              (config.physics.collisionGroups.environment |
+                config.physics.collisionGroups.packages),
+          ),
         body,
       );
     };
@@ -68,13 +83,14 @@ export class PackagePhysicsSimulation {
     for (const bin of config.cell.destinations) {
       const wall = 0.012;
       const height = bin.lipZ - bin.floorZ;
+      const floorThickness = 0.04;
       fixedBody(
         bin.center.x,
         bin.center.y,
-        bin.floorZ - wall / 2,
+        bin.floorZ - floorThickness / 2,
         bin.inside.x / 2,
         bin.inside.y / 2,
-        wall / 2,
+        floorThickness / 2,
       );
       fixedBody(
         bin.center.x,
@@ -214,7 +230,6 @@ export class PackagePhysicsSimulation {
   get colliderCount(): number {
     return this.world.colliders.len();
   }
-
   selectPackage(packageId: PackageClass['id']): void {
     if (this.attached)
       throw new Error('Release the grasped package before selecting another package.');
@@ -401,6 +416,12 @@ export class PackagePhysicsSimulation {
       id: this.selected.id,
       position: { x: p.x, y: p.y, z: p.z, yaw: wrapAngle(2 * Math.atan2(r.z, r.w)) },
       attached: this.attached,
+      linearVelocity: { ...this.packageBody.linvel() },
+      angularVelocity: Math.hypot(
+        this.packageBody.angvel().x,
+        this.packageBody.angvel().y,
+        this.packageBody.angvel().z,
+      ),
     };
   }
 

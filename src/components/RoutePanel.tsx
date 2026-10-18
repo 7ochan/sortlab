@@ -7,6 +7,7 @@ export function RoutePanel({
   playing,
   manualInspection,
   controlsLocked,
+  playbackLocked,
   onDestinationChange,
   onPlaybackTimeChange,
   onTogglePlayback,
@@ -18,6 +19,7 @@ export function RoutePanel({
   playing: boolean;
   manualInspection: boolean;
   controlsLocked: boolean;
+  playbackLocked: boolean;
   onDestinationChange: (destination: PlannedRoute['destinationId']) => void;
   onPlaybackTimeChange: (time: number) => void;
   onTogglePlayback: () => void;
@@ -99,7 +101,7 @@ export function RoutePanel({
           onChange={(event) => onPlaybackTimeChange(Number(event.currentTarget.value))}
         />
         <div className="route-actions">
-          <button type="button" onClick={onTogglePlayback}>
+          <button type="button" onClick={onTogglePlayback} disabled={playbackLocked}>
             {playing ? 'Pause' : 'Play preview'}
           </button>
           <button

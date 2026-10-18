@@ -4,9 +4,9 @@
 
 ## Current phase
 
-**Phase 3: Package physics and gripper transfer.** SortLab includes the Phase 1 foundation and Phase 2 FK/IK, cubic trajectories and fixed-cell routes, plus a fixed-step Rapier world with one selectable dynamic package, static workcell support/bin colliders, simulated jaw contact checks, fixed-joint carry and dynamic release. The existing route preview moves a grasped package kinematically with the TCP; autonomous sorting, robot-link collision checks and physical validation are not implemented.
+**Phase 4: Autonomous sorting controller.** SortLab includes the Phase 1 foundation, Phase 2 FK/IK and fixed-cell routes, Phase 3 Rapier package/gripper model, and a deterministic fixed-tick controller for one selected package per cycle. It resolves S→B1, M→B2, L→B3, confirms simulated attachment before carry, verifies a settled package inside the target bin region, and reports recoverable faults/abort in the UI. Routes do not have swept robot-link/tool collision checks; no physical robot or sensor validation is claimed.
 
-The course brief was not available in the inspected workspace. Course-specific dates, marks, formatting, physical-hardware obligations, and AI policy remain unverified; see [the Mission 0 plan](docs/MISSION-0-PLAN.md). Phase boundaries remain in force; Phase 4 requires explicit owner approval.
+The course brief was not available in the inspected workspace. Course-specific dates, marks, formatting, physical-hardware obligations, and AI policy remain unverified; see [the Mission 0 plan](docs/MISSION-0-PLAN.md). Phase boundaries remain in force; Phase 5 requires explicit owner approval.
 
 ## Requirements
 
@@ -41,7 +41,7 @@ npm run dev -- --host 127.0.0.1
 SORTLAB_URL=http://127.0.0.1:5173/ npm run smoke:browser
 ```
 
-The smoke test uses pinned Playwright Core 1.63.0 and its matching cached Chromium revision 1243; it does not download or install a browser. It checks WebGL 2, the rendered workcell, joint controls and FK readouts, all three route selections, playback/scrubbing, browser errors/network failures, package grasp/carry/release and free fall.
+The smoke test uses pinned Playwright Core 1.63.0 and its matching cached Chromium revision 1243; it does not download or install a browser. It checks WebGL 2, the rendered workcell, joint controls and FK readouts, all three route selections, playback/scrubbing, browser errors/network failures, package grasp/carry/release and free fall, and one autonomous cycle through terminal placement verification.
 
 Use `npm run format` to format application/config source. No course report export is generated yet.
 
@@ -59,4 +59,4 @@ World frame W is right-handed: X forward, Y lateral, Z up; positive revolute rot
 - [Phase 2 trajectory and route implementation](docs/PHASE-2-IMPLEMENTATION.md)
 - [Phase 3 package physics and gripper transfer](docs/PHASE-3-IMPLEMENTATION.md)
 
-Phase 3 package handling is a simplified educational model. Swept-link collision checking, autonomous sorting, recovery/fault scenarios, performance campaigns, and the operational dashboard remain future work. No physical test or validated hardware performance is claimed.
+Phase 3 package handling and Phase 4 placement verification are simplified educational models. Swept-link collision checking, seeded performance campaigns, hardware validation, and the final university report remain future work. See [Phase 4 implementation notes](docs/PHASE-4-IMPLEMENTATION.md). No physical test or validated hardware performance is claimed.

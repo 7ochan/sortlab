@@ -233,15 +233,16 @@ try {
   await routeSelect.selectOption('B2');
   const playbackTime = page.locator('input[aria-label="Trajectory playback time"]');
   const displayedTime = page.locator('.playback-heading b');
-  await page.getByRole('button', { name: 'Play preview' }).click();
-  await page.getByRole('button', { name: 'Pause' }).waitFor({ state: 'visible' });
+  const routeControls = page.locator('.route-panel');
+  await routeControls.getByRole('button', { name: 'Play preview' }).click();
+  await routeControls.getByRole('button', { name: 'Pause' }).waitFor({ state: 'visible' });
   await page.waitForFunction(
     () =>
       Number.parseFloat(document.querySelector('.playback-heading b')?.textContent ?? '0') > 0.1,
     null,
     { timeout: 3000 },
   );
-  await page.getByRole('button', { name: 'Pause' }).click();
+  await routeControls.getByRole('button', { name: 'Pause' }).click();
   const playTime = (await displayedTime.innerText()).split('/')[0]?.trim();
   await playbackTime.focus();
   await playbackTime.press('End');
@@ -286,7 +287,7 @@ try {
     'Trajectory scrubbing should lock while carrying.',
   );
   assert.equal(await page.getByRole('button', { name: 'Return to pickup' }).isDisabled(), true);
-  await page.getByRole('button', { name: 'Play preview' }).click();
+  await routeControls.getByRole('button', { name: 'Play preview' }).click();
   await page.waitForFunction(
     (start) => {
       const text = document.querySelector('[data-testid="package-pose"]')?.textContent ?? '';
@@ -296,7 +297,7 @@ try {
     Number.parseFloat(startPackagePose.match(/-?\d+\.\d+/g)?.[2] ?? '0'),
     { timeout: 5000 },
   );
-  await page.getByRole('button', { name: 'Pause' }).click();
+  await routeControls.getByRole('button', { name: 'Pause' }).click();
   const carriedPose = await page.getByTestId('package-pose').innerText();
   await page.getByRole('button', { name: 'Release' }).click();
   await page.getByText('DYNAMIC', { exact: true }).waitFor({ state: 'visible' });
@@ -311,6 +312,34 @@ try {
     { timeout: 3000 },
   );
   await page.getByRole('button', { name: 'Reset package' }).click();
+  await page.getByLabel('Autonomous package').selectOption('M');
+  await page.getByRole('button', { name: 'Start autonomous sort' }).click();
+  const autonomousPanel = page.getByTestId('autonomous-panel');
+  await autonomousPanel.getByRole('button', { name: 'Pause' }).click();
+  const pausedSimulationTime = await page.getByTestId('controller-time').innerText();
+  await page.waitForTimeout(150);
+  assert.equal(
+    await page.getByTestId('controller-time').innerText(),
+    pausedSimulationTime,
+    'Pause should freeze controller simulation time.',
+  );
+  await autonomousPanel.getByRole('button', { name: 'Resume' }).click();
+  await page.waitForFunction(
+    () =>
+      document.querySelector('[data-testid="controller-state"]')?.textContent?.trim() ===
+      'COMPLETED',
+    null,
+    { timeout: 60000 },
+  );
+  const autonomousOperation = {
+    state: (await page.getByTestId('controller-state').innerText()).trim(),
+    placement: await page.locator('.autonomous-panel .physics-state p').nth(1).innerText(),
+    elapsedSimulationTime: await page.getByTestId('controller-time').innerText(),
+  };
+  assert(
+    autonomousOperation.placement.includes('settled inside its configured B2'),
+    'Autonomous cycle did not visibly verify correct-bin placement.',
+  );
   const packageInteraction = {
     grasped: true,
     carriedPose,
@@ -345,6 +374,7 @@ try {
           scrubbedToSeconds: destinationTime,
         },
         packageInteraction,
+        autonomousOperation,
         consoleErrors: errors,
         failedRequests,
         badResponses,

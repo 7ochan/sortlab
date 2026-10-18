@@ -138,8 +138,8 @@ export function StatusPanel({
         ))}
       </div>
       <p className="scope-note">
-        Kinematic robot model with dynamic package bodies. Link contact, swept-volume checks, and
-        autonomous sorting are not implemented.
+        Kinematic robot model with dynamic package bodies. Autonomous routes have no link or
+        swept-volume collision checks.
       </p>
     </aside>
   );

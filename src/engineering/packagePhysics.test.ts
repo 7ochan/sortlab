@@ -100,6 +100,18 @@ describe('Rapier package dynamics and gripper state', () => {
     expect([sim.bodyCount, sim.colliderCount]).toEqual(counts);
   });
 
+  it('allows package selection after extended fixed-step route preview motion', async () => {
+    const sim = await create();
+    const route = planDestinationRoute('B2', CONFIG);
+    for (const sample of route.trajectory.samples) {
+      sim.setTcp(sample.pose);
+      sim.stepFixed(1);
+    }
+    sim.selectPackage('M');
+    expect(sim.packageClass.id).toBe('M');
+    expect(sim.bodyCount).toBeGreaterThan(0);
+  });
+
   it('completes repeated grasp/release/reset cycles without stale joints', async () => {
     const sim = await create();
     const counts = [sim.bodyCount, sim.colliderCount];

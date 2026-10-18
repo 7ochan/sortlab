@@ -7,6 +7,7 @@ export function PackagePanel({
   packageId,
   status,
   attached,
+  controlsLocked,
   open,
   result,
   snapshot,
@@ -21,6 +22,7 @@ export function PackagePanel({
   packageId: PackageClass['id'];
   status: string;
   attached: boolean;
+  controlsLocked: boolean;
   open: boolean;
   result: GraspResult | null;
   snapshot: PackageSnapshot | null;
@@ -55,7 +57,7 @@ export function PackagePanel({
         aria-label="Package category"
         value={packageId}
         onChange={(e) => onSelect(e.currentTarget.value as PackageClass['id'])}
-        disabled={attached}
+        disabled={attached || controlsLocked}
       >
         {packages.map((item) => (
           <option value={item.id} key={item.id}>
@@ -64,21 +66,31 @@ export function PackagePanel({
         ))}
       </select>
       <div className="route-actions physics-actions">
-        <button type="button" onClick={onOpen} disabled={open || attached}>
+        <button type="button" onClick={onOpen} disabled={open || attached || controlsLocked}>
           Open
         </button>
-        <button type="button" onClick={onClose} disabled={!open || attached}>
+        <button type="button" onClick={onClose} disabled={!open || attached || controlsLocked}>
           Close
         </button>
-        <button type="button" onClick={onGrasp} disabled={attached}>
+        <button type="button" onClick={onGrasp} disabled={attached || controlsLocked}>
           Attempt grasp
         </button>
-        <button type="button" className="secondary-button" onClick={onRelease} disabled={!attached}>
+        <button
+          type="button"
+          className="secondary-button"
+          onClick={onRelease}
+          disabled={!attached || controlsLocked}
+        >
           Release
         </button>
       </div>
       <div className="route-actions">
-        <button type="button" className="secondary-button" onClick={onReset}>
+        <button
+          type="button"
+          className="secondary-button"
+          onClick={onReset}
+          disabled={controlsLocked}
+        >
           Reset package
         </button>
       </div>
