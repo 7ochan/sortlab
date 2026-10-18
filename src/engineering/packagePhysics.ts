@@ -299,6 +299,18 @@ export class PackagePhysicsSimulation {
     this.tcp = pose;
   }
 
+  /** Controlled fault setup for validation campaigns; interactive UI never calls this. */
+  setPackagePoseForValidation(pose: ToolPose): void {
+    if (this.attached) throw new Error('Release the package before validation pose injection.');
+    if (![pose.x, pose.y, pose.z, pose.yaw].every(Number.isFinite))
+      throw new Error('Validation package pose must contain finite world-frame values.');
+    this.packageBody.setTranslation({ x: pose.x, y: pose.y, z: pose.z }, true);
+    this.packageBody.setRotation(rotation(pose.yaw), true);
+    this.packageBody.setLinvel({ x: 0, y: 0, z: 0 }, true);
+    this.packageBody.setAngvel({ x: 0, y: 0, z: 0 }, true);
+    this.packageBody.wakeUp();
+  }
+
   attemptGrasp(): GraspResult {
     if (this.attached) return { success: false, reason: 'Package is already attached.' };
     if (this.graspOpen)

@@ -1,0 +1,16 @@
+{
+  "campaignId": "nominal-100-v1",
+  "attemptCount": 100,
+  "distribution": { "S": 34, "M": 33, "L": 33 },
+  "ordering": "S, M, L repeated 33 times, then S",
+  "fixedStepSeconds": 0.016666666666666666,
+  "placementAcceptance": {
+    "positionMarginM": 0.005,
+    "linearSettledMps": 0.04,
+    "angularSettledRadps": 0.12,
+    "requiredSettlingSeconds": 0.25,
+    "placementTimeoutSeconds": 8
+  },
+  "successTarget": 0.95,
+  "determinism": "Fixed package pose, zeroed body state, fixed category order, fixed 1/60 s steps, deterministic Rapier JS/WASM build; no random inputs."
+}

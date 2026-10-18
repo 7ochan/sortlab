@@ -166,6 +166,7 @@ function App() {
             setGraspResult(null);
           },
           stepPhysics: () => created.stepFixed(1),
+          getPhysicsStepCount: () => created.fixedSteps,
         });
         setControllerSnapshot(controllerRef.current.snapshot);
         setPackageSnapshot(created.stepFixed(0));

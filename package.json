@@ -10,11 +10,12 @@
     "typecheck": "tsc --noEmit && tsc -p tsconfig.node.json --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
+    "validate:campaign": "vitest run --config vitest.validation.config.ts",
     "smoke:browser": "node scripts/smoke-browser.mjs",
     "verify:rapier-node": "node scripts/check-rapier-node.mjs",
     "lint": "eslint .",
-    "format": "prettier --write \"src/**/*.{ts,tsx,css}\" \"scripts/**/*.mjs\" \"*.{json,js,ts,html}\"",
-    "format:check": "prettier --check \"src/**/*.{ts,tsx,css}\" \"scripts/**/*.mjs\" \"*.{json,js,ts,html}\""
+    "format": "prettier --write \"src/**/*.{ts,tsx,css}\" \"scripts/**/*.mjs\" \"validation/*.{ts,json}\" \"*.{json,js,ts,html}\"",
+    "format:check": "prettier --check \"src/**/*.{ts,tsx,css}\" \"scripts/**/*.mjs\" \"validation/*.{ts,json}\" \"*.{json,js,ts,html}\""
   },
   "dependencies": {
     "@dimforge/rapier3d-deterministic-compat": "0.21.0",

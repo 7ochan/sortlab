@@ -1,0 +1,83 @@
+{
+  "fixedStepSeconds": 0.016666666666666666,
+  "repeatedTraceSteps": 120,
+  "repeatedTraceEqual": true,
+  "bodyCount": 19,
+  "colliderCount": 20,
+  "graspAlignment": {
+    "success": true,
+    "configuredPositionToleranceM": 0.012,
+    "configuredYawToleranceRad": 0.13962634015954636
+  },
+  "misalignedGraspRejected": true,
+  "misalignmentDistanceM": 0.022,
+  "carryTrackingPositionErrorM": 8.038032653960808e-8,
+  "releaseDetached": true,
+  "placementBoundaryCases": {
+    "center": {
+      "status": "accepted",
+      "binId": "B2",
+      "message": "M settled inside its configured B2 acceptance region."
+    },
+    "acceptedEdgeX": {
+      "status": "accepted",
+      "binId": "B2",
+      "message": "M settled inside its configured B2 acceptance region."
+    },
+    "rejectedPastEdgeX": {
+      "status": "outside-bin",
+      "binId": null,
+      "message": "Package center is outside all package-size-adjusted bin acceptance regions."
+    },
+    "acceptedEdgeY": {
+      "status": "accepted",
+      "binId": "B2",
+      "message": "M settled inside its configured B2 acceptance region."
+    },
+    "rejectedPastEdgeY": {
+      "status": "outside-bin",
+      "binId": null,
+      "message": "Package center is outside all package-size-adjusted bin acceptance regions."
+    },
+    "acceptedFloorTolerance": {
+      "status": "accepted",
+      "binId": "B2",
+      "message": "M settled inside its configured B2 acceptance region."
+    },
+    "rejectedBelowFloorTolerance": {
+      "status": "outside-bin",
+      "binId": null,
+      "message": "Package center is outside all package-size-adjusted bin acceptance regions."
+    },
+    "acceptedLipTolerance": {
+      "status": "accepted",
+      "binId": "B2",
+      "message": "M settled inside its configured B2 acceptance region."
+    },
+    "rejectedAboveLipTolerance": {
+      "status": "outside-bin",
+      "binId": null,
+      "message": "Package center is outside all package-size-adjusted bin acceptance regions."
+    },
+    "belowLinearSettlingLimit": {
+      "status": "accepted",
+      "binId": "B2",
+      "message": "M settled inside its configured B2 acceptance region."
+    },
+    "atLinearSettlingLimit": {
+      "status": "settling",
+      "binId": "B2",
+      "message": "Package is still moving (0.040 m/s)."
+    },
+    "wrongBin": {
+      "status": "incorrect-bin",
+      "binId": "B1",
+      "message": "Package M settled in B1; configured destination is B2."
+    }
+  },
+  "resetReinitializationEqual": true,
+  "resetHasNoDuplicateBodiesOrColliders": true,
+  "placementTimeoutSeconds": 8,
+  "placementSettleLinearMps": 0.04,
+  "placementSettleAngularRadps": 0.12
+}

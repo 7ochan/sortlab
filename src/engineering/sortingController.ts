@@ -85,6 +85,8 @@ export type SortingPort = Readonly<{
   release: () => Readonly<{ success: boolean; reason: string }>;
   resetPackage: () => void;
   stepPhysics: () => PackageSnapshot | null;
+  /** Optional fixed-step instrumentation for deterministic validation. */
+  getPhysicsStepCount?: () => number;
 }>;
 
 export type ControllerSnapshot = Readonly<{
@@ -345,6 +347,7 @@ export class SortingController {
     this.elapsed += dt;
     this.tickCount += 1;
     try {
+      const physicsStepsBefore = this.port.getPhysicsStepCount?.();
       switch (this.state) {
         case 'selecting':
           this.select();
@@ -383,7 +386,13 @@ export class SortingController {
           );
           return;
       }
-      this.port.stepPhysics();
+      const physicsStepsAfter = this.port.getPhysicsStepCount?.();
+      if (
+        physicsStepsBefore === undefined ||
+        physicsStepsAfter === undefined ||
+        physicsStepsAfter === physicsStepsBefore
+      )
+        this.port.stepPhysics();
     } catch (error) {
       this.raiseFault('controller-exception', `${this.state} failed: ${messageOf(error)}`);
     }

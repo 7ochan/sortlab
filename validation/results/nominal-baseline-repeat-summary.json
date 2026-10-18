@@ -1,0 +1,75 @@
+{
+  "attemptCount": 100,
+  "terminalOutcomes": 100,
+  "completedCycles": 100,
+  "successfulPlacements": 100,
+  "failedCycles": 0,
+  "abortedCycles": 0,
+  "successRate": 1,
+  "target": 0.95,
+  "targetMet": true,
+  "cycleDurationSeconds": {
+    "mean": 30.679999999999524,
+    "median": 30.349999999999557,
+    "min": 29.91666666666625,
+    "max": 31.78333333333281,
+    "completedAttemptCount": 100
+  },
+  "grasp": {
+    "attempts": 100,
+    "firstAttemptSuccesses": 100,
+    "retries": 0,
+    "finalFailures": 0
+  },
+  "placementFailuresByReason": {
+    "incorrect-bin": 0,
+    "outside-bin": 0,
+    "placement-timeout": 0
+  },
+  "routePlanningRejections": 0,
+  "byCategory": {
+    "S": {
+      "attempts": 34,
+      "completed": 34,
+      "failures": 0,
+      "aborted": 0
+    },
+    "M": {
+      "attempts": 33,
+      "completed": 33,
+      "failures": 0,
+      "aborted": 0
+    },
+    "L": {
+      "attempts": 33,
+      "completed": 33,
+      "failures": 0,
+      "aborted": 0
+    }
+  },
+  "byDestination": {
+    "B1": {
+      "attempts": 34,
+      "completed": 34,
+      "failures": 0,
+      "aborted": 0
+    },
+    "B2": {
+      "attempts": 33,
+      "completed": 33,
+      "failures": 0,
+      "aborted": 0
+    },
+    "B3": {
+      "attempts": 33,
+      "completed": 33,
+      "failures": 0,
+      "aborted": 0
+    }
+  },
+  "maxPhysicsControllerTimeDifferenceSeconds": 0.01666666666719152,
+  "placementVelocityBounds": {
+    "maxLinearVelocityMps": 0.0000020445944734366726,
+    "maxAngularVelocityRadps": 0.00006585434088026596
+  }
+}

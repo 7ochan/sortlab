@@ -1,6 +1,6 @@
 # Phase 5 — Dashboard, Scenarios and Performance Metrics
 
-**Status:** Implemented locally on the current branch. Simulation only; Phase 6 campaigns and physical validation have not started.
+**Status:** Implemented locally and subsequently exercised by the Phase 6 validation campaigns. Simulation only; no physical validation is claimed.
 
 ## Dashboard
 

@@ -1,0 +1,181 @@
+{
+  "fkIkRoundTrips": {
+    "requested": 5000,
+    "successful": 5000,
+    "inverseRejected": 0,
+    "maxPositionErrorM": 4.965068306494546e-16,
+    "maxAngularErrorRad": 1.7763568394002505e-15,
+    "tolerancePositionM": 1e-10,
+    "toleranceAngularRad": 1e-10
+  },
+  "workspaceGrid": {
+    "points": 6561,
+    "reachablePoints": 3968,
+    "minX": -0.6,
+    "maxX": 0.6,
+    "minY": -0.6,
+    "maxY": 0.6,
+    "samplesPerAxis": 81
+  },
+  "boundaryAndSingularCases": {
+    "justInsideOuter": true,
+    "justOutsideOuter": false,
+    "atJ3Minimum": true,
+    "belowJ3Minimum": false,
+    "atJ3Maximum": true,
+    "aboveJ3Maximum": false,
+    "fullyExtendedSingularity": {
+      "reachable": true,
+      "solutions": [
+        {
+          "branch": "elbow-positive",
+          "joints": {
+            "j1": 0,
+            "j2": 0,
+            "j3": 0.56,
+            "j4": 0
+          },
+          "singular": true
+        }
+      ],
+      "reason": null
+    },
+    "fullyFoldedSingularity": {
+      "reachable": false,
+      "solutions": [],
+      "reason": "Target has no inverse-kinematic branch inside all configured joint limits."
+    },
+    "individualJointLimits": {
+      "j1": {
+        "min": -2.6179938779914944,
+        "max": 2.6179938779914944,
+        "rejectsBelow": true,
+        "rejectsAbove": true
+      },
+      "j2": {
+        "min": -2.792526803190927,
+        "max": 2.792526803190927,
+        "rejectsBelow": true,
+        "rejectsAbove": true
+      },
+      "j3": {
+        "min": 0.3,
+        "max": 0.58,
+        "rejectsBelow": true,
+        "rejectsAbove": true
+      },
+      "j4": {
+        "min": -3.141592653589793,
+        "max": 3.141592653589793,
+        "rejectsBelow": true,
+        "rejectsAbove": true
+      }
+    }
+  },
+  "routes": [
+    {
+      "destinationId": "B1",
+      "mappedPackage": "S",
+      "endpointPositionErrorM": 0,
+      "startMatchesPickup": true,
+      "endpointMatchesDestination": true,
+      "deterministic": true,
+      "sampleCount": 527,
+      "durationSeconds": 8.766666666666666,
+      "endpointVelocityNorm": 0,
+      "startVelocityNorm": 0,
+      "maxSampledSpeedRatio": 0.922278996349357,
+      "maxSampledAccelerationRatio": 0.8372021861636991,
+      "speedRatiosByJoint": {
+        "j1": 0.6056609343031938,
+        "j2": 0.4066432772927583,
+        "j3": 0.6978622852723015,
+        "j4": 0.922278996349357
+      },
+      "accelerationRatiosByJoint": {
+        "j1": 0.4783234144951588,
+        "j2": 0.5164566941311237,
+        "j3": 0.8372021861636991,
+        "j4": 0.7960565343410528
+      }
+    },
+    {
+      "destinationId": "B2",
+      "mappedPackage": "M",
+      "endpointPositionErrorM": 0,
+      "startMatchesPickup": true,
+      "endpointMatchesDestination": true,
+      "deterministic": true,
+      "sampleCount": 576,
+      "durationSeconds": 9.583333333333334,
+      "endpointVelocityNorm": 0,
+      "startVelocityNorm": 0,
+      "maxSampledSpeedRatio": 0.7465976409336362,
+      "maxSampledAccelerationRatio": 0.8370272880749223,
+      "speedRatiosByJoint": {
+        "j1": 0.7402073537653797,
+        "j2": 0.4426070010317731,
+        "j3": 0.6749023437500057,
+        "j4": 0.7465976409336362
+      },
+      "accelerationRatiosByJoint": {
+        "j1": 0.42043936609726806,
+        "j2": 0.5121751227062001,
+        "j3": 0.8261718750004476,
+        "j4": 0.8370272880749223
+      }
+    },
+    {
+      "destinationId": "B3",
+      "mappedPackage": "L",
+      "endpointPositionErrorM": 0,
+      "startMatchesPickup": true,
+      "endpointMatchesDestination": true,
+      "deterministic": true,
+      "sampleCount": 522,
+      "durationSeconds": 8.683333333333334,
+      "endpointVelocityNorm": 0,
+      "startVelocityNorm": 0,
+      "maxSampledSpeedRatio": 0.922278996349357,
+      "maxSampledAccelerationRatio": 0.8308549561948819,
+      "speedRatiosByJoint": {
+        "j1": 0.6056609343031938,
+        "j2": 0.4066432772927583,
+        "j3": 0.6580391542561248,
+        "j4": 0.922278996349357
+      },
+      "accelerationRatiosByJoint": {
+        "j1": 0.4783234144951588,
+        "j2": 0.5164566941311237,
+        "j3": 0.8308549561948819,
+        "j4": 0.7960565343410528
+      }
+    }
+  ],
+  "jointCubic": {
+    "sampleCount": 121,
+    "durationSeconds": 2,
+    "startPositionExact": true,
+    "endPositionExact": true,
+    "deterministic": true,
+    "sampledConstraints": {
+      "j1": {
+        "maxSpeedRatio": 0.04774648292756861,
+        "maxAccelerationRatio": 0.04774648292756861
+      },
+      "j2": {
+        "maxSpeedRatio": 0.04774648292756861,
+        "maxAccelerationRatio": 0.04774648292756861
+      },
+      "j3": {
+        "maxSpeedRatio": 0.1200000000000001,
+        "maxAccelerationRatio": 0.1200000000000001
+      },
+      "j4": {
+        "maxSpeedRatio": 0.053714793293514675,
+        "maxAccelerationRatio": 0.053714793293514675
+      }
+    }
+  },
+  "collisionValidation": "TCP path sampled and kinematic constraints checked; no swept-link or package collision safety claim."
+}

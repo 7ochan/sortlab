@@ -4,9 +4,9 @@
 
 ## Current phase
 
-**Phase 5: Dashboard, scenarios and performance metrics.** SortLab includes a responsive live engineering dashboard, repeatable nominal S/M/L and controlled fault scenarios, event-derived session metrics, and JSON export. The Phase 4 deterministic fixed-tick controller continues to use the existing SCARA routes, Rapier package physics, gripper attachment, and simulated bin placement verification. Routes do not have swept robot-link/tool collision checks; no physical robot or sensor validation is claimed.
+**Phase 6: Validation and evaluation.** Phases 1–5 provide the engineering dashboard and autonomous sorting simulation. Phase 6 adds a headless deterministic campaign harness, measured 100-cycle nominal results, fault-injection campaigns, and broad numerical/physics checks. The latest campaign measured 100/100 verified placements (S 34, M 33, L 33); these are software simulation results, not hardware or sensor validation. Routes do not have swept robot-link/tool collision checks.
 
-The course brief was not available in the inspected workspace. Course-specific dates, marks, formatting, physical-hardware obligations, and AI policy remain unverified; see [the Mission 0 plan](docs/MISSION-0-PLAN.md). Phase boundaries remain in force; Phase 6 requires explicit owner approval.
+The course brief was not available in the inspected workspace. Course-specific dates, marks, formatting, physical-hardware obligations, and AI policy remain unverified; see [the Mission 0 plan](docs/MISSION-0-PLAN.md). Phase boundaries remain in force; Phase 7 requires explicit owner approval.
 
 ## Requirements
 
@@ -30,6 +30,7 @@ npm run typecheck     # browser and Vite configuration TypeScript checks
 npm test              # deterministic Vitest unit tests
 npm run verify:rapier-node # Rapier package/WASM initialization check in Node
 npm run smoke:browser # Playwright smoke test against a running Vite URL
+npm run validate:campaign # 100 real controller/Rapier cycles + validation campaigns
 npm run build         # type checks and production bundle
 npm run preview       # serve the production bundle locally
 ```
@@ -42,6 +43,8 @@ SORTLAB_URL=http://127.0.0.1:5173/ npm run smoke:browser
 ```
 
 The smoke test uses pinned Playwright Core 1.63.0 and its matching cached Chromium revision 1243; it does not download or install a browser. It checks WebGL 2, the rendered workcell, joint controls and FK readouts, all three route selections, playback/scrubbing, package grasp/carry/release and free fall, one autonomous cycle, nominal S scenario completion, unreachable-route rejection, JSON metrics export, and browser errors/network failures.
+
+See [validation instructions](validation/README.md) to reproduce the deterministic 100-attempt nominal campaign, fault campaigns, kinematics/trajectory checks, and Rapier placement/gripper checks. Generated evidence is stored in `validation/results/`; the measured analysis is in [the Phase 6 validation record](docs/PHASE-6-VALIDATION.md).
 
 Use `npm run format` to format application/config source. No course report export is generated yet.
 
@@ -60,5 +63,6 @@ World frame W is right-handed: X forward, Y lateral, Z up; positive revolute rot
 - [Phase 3 package physics and gripper transfer](docs/PHASE-3-IMPLEMENTATION.md)
 - [Phase 4 autonomous sorting controller](docs/PHASE-4-IMPLEMENTATION.md)
 - [Phase 5 dashboard, scenarios and metrics](docs/PHASE-5-IMPLEMENTATION.md)
+- [Phase 6 validation and evaluation](docs/PHASE-6-VALIDATION.md)
 
-Phase 3 package handling, Phase 4 placement verification, and Phase 5 performance metrics are simulated educational models. Swept-link collision checking, Phase 6 validation campaigns, hardware validation, and the final university report remain future work. No physical test or validated hardware performance is claimed.
+Phase 3 package handling, Phase 4 placement verification, Phase 5 performance metrics, and Phase 6 campaign results are software simulation evidence. Swept-link collision checking, hardware validation, and the final university report remain future work. Phase 7 is not started. No physical test or validated hardware performance is claimed.

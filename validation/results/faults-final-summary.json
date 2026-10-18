@@ -1,0 +1,98 @@
+{
+  "unreachable-route": {
+    "trials": 3,
+    "expectedOutcome": "unreachable-route",
+    "matched": 3,
+    "falsePositivePlacements": 0,
+    "resetsClean": 3,
+    "nominalRerunsCompleted": 3
+  },
+  "grasp-misalignment": {
+    "trials": 3,
+    "expectedOutcome": "failed-grasp",
+    "matched": 3,
+    "falsePositivePlacements": 0,
+    "resetsClean": 3,
+    "nominalRerunsCompleted": 3
+  },
+  "lost-attachment-transport": {
+    "trials": 3,
+    "expectedOutcome": "lost-attachment",
+    "matched": 3,
+    "falsePositivePlacements": 0,
+    "resetsClean": 3,
+    "nominalRerunsCompleted": 3
+  },
+  "release-failure": {
+    "trials": 3,
+    "expectedOutcome": "lost-attachment",
+    "matched": 3,
+    "falsePositivePlacements": 0,
+    "resetsClean": 3,
+    "nominalRerunsCompleted": 3
+  },
+  "incorrect-bin": {
+    "trials": 3,
+    "expectedOutcome": "incorrect-bin",
+    "matched": 3,
+    "falsePositivePlacements": 0,
+    "resetsClean": 3,
+    "nominalRerunsCompleted": 3
+  },
+  "outside-bin": {
+    "trials": 3,
+    "expectedOutcome": "outside-bin",
+    "matched": 3,
+    "falsePositivePlacements": 0,
+    "resetsClean": 3,
+    "nominalRerunsCompleted": 3
+  },
+  "placement-timeout": {
+    "trials": 3,
+    "expectedOutcome": "placement-timeout",
+    "matched": 3,
+    "falsePositivePlacements": 0,
+    "resetsClean": 3,
+    "nominalRerunsCompleted": 3
+  },
+  "abort-pickup": {
+    "trials": 3,
+    "expectedOutcome": "aborted",
+    "matched": 3,
+    "falsePositivePlacements": 0,
+    "resetsClean": 3,
+    "nominalRerunsCompleted": 3
+  },
+  "abort-transport": {
+    "trials": 3,
+    "expectedOutcome": "aborted",
+    "matched": 3,
+    "falsePositivePlacements": 0,
+    "resetsClean": 3,
+    "nominalRerunsCompleted": 3
+  },
+  "abort-release": {
+    "trials": 3,
+    "expectedOutcome": "aborted",
+    "matched": 3,
+    "falsePositivePlacements": 0,
+    "resetsClean": 3,
+    "nominalRerunsCompleted": 3
+  },
+  "abort-verification": {
+    "trials": 3,
+    "expectedOutcome": "aborted",
+    "matched": 3,
+    "falsePositivePlacements": 0,
+    "resetsClean": 3,
+    "nominalRerunsCompleted": 3
+  },
+  "invalid-transition": {
+    "trials": 3,
+    "expectedOutcome": "invalid-transition",
+    "matched": 3,
+    "falsePositivePlacements": 0,
+    "resetsClean": 3,
+    "nominalRerunsCompleted": 3
+  }
+}

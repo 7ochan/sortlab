@@ -136,6 +136,7 @@ describe('autonomous sorting controller', () => {
       worlds.push(physics);
       const bodyCount = physics.bodyCount;
       physics.stepFixed(1);
+      const startFixedSteps = physics.fixedSteps;
       let controllerJoints = CONFIG.robot.home;
       const controller = new SortingController({
         setJoints: (joints) => {
@@ -150,6 +151,7 @@ describe('autonomous sorting controller', () => {
         release: () => physics.release(),
         resetPackage: () => physics.reset(),
         stepPhysics: () => physics.stepFixed(1),
+        getPhysicsStepCount: () => physics.fixedSteps,
       });
       expect(controller.start(id)).toBe(true);
       cycleToTerminal(controller, 2400);
@@ -159,6 +161,9 @@ describe('autonomous sorting controller', () => {
       expect(controller.snapshot.placementResult?.status).toBe('accepted');
       expect(physics.isAttached).toBe(false);
       expect(physics.bodyCount).toBe(bodyCount);
+      expect(
+        (physics.fixedSteps - startFixedSteps) * CONFIG.performance.fixedStepSeconds,
+      ).toBeCloseTo(controller.snapshot.elapsedSeconds, 10);
     },
     15000,
   );

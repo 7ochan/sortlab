@@ -1,6 +1,6 @@
 # SortLab Architecture Decision
 
-**Status:** Phases 1–5 implemented locally. Phase 5 adds an event-derived dashboard, repeatable controller scenarios, and session metric export. Swept collision validation and Phase 6 validation campaigns remain unimplemented.
+**Status:** Phases 1–6 implemented locally. Phase 6 adds reproducible headless campaigns over the production controller/Rapier path and records validation evidence. Swept collision validation and physical robot validation remain unimplemented.
 
 **Date:** 2026-10-17
 
@@ -31,7 +31,7 @@ Webots remains a contingency only if the course expects a dedicated robotics sim
 
 ## Target architecture and module contracts
 
-Phase 4 implements the controller and placement accounting. Phase 5 implements a typed scenario registry and event recorder; Phase 6 campaigns and a collision guard remain future work.
+Phase 4 implements the controller and placement accounting. Phase 5 implements a typed scenario registry and event recorder. Phase 6's independent validation runner imports the same route, controller, placement classifier, and Rapier implementation; its controlled injections are isolated from normal UI behavior.
 
 ```mermaid
 flowchart LR
@@ -68,7 +68,7 @@ flowchart LR
 | Controller         | **Phase 4:** state transitions, configured package/bin mapping, route validation, bounded grasp retry, cancellation, placement verification and event generation | Typed start/pause/abort/reset operations and snapshot |
 | Simulation adapter | **Phase 3/4:** fixed-step Rapier package/environment bodies, sensor-pad grasp gate, fixed-joint carry, dynamic release, package pose and velocity. Robot remains kinematic in React/Three. | Fixed tick steps coordinated with controller commands |
 | Presentation       | Scene geometry, camera, UI controls and read-only state display                                                         | Commands to controller; events/metrics from controller                     |
-| Evaluation         | **Phase 5:** typed single-cycle scenarios, event deduplication, aggregate metrics and JSON export                         | In-memory results derived from controller events                          |
+| Evaluation         | **Phase 5:** typed scenarios, deduplicated session metrics and JSON export; **Phase 6:** headless production-path nominal/fault campaigns and numerical/physics measurements | Session UI metrics and machine-readable campaign artifacts |
 | Documentation      | Requirement mapping, assumptions, calculations, diagrams, cumulative report history                                     | Evidence traceability                                                      |
 
 ## Simulation loop and data flow
@@ -82,7 +82,7 @@ flowchart LR
 7. Start resolves the selected package's configured destination, plans and validates motion before execution, verifies the actual grasp result, and releases dynamically at the route target. Lost attachment faults the cycle.
 8. Placement accounting checks package-size-shrunk bin interior bounds and Rapier linear/angular velocity for a 0.25 s settling window. It awards a sort only for the configured destination. This pose-based simulated check is not camera or hardware sensing.
 
-The browser animation loop is not the physics timestep. Phase 3 uses the configured 1/60 s accumulator and caps catch-up to six steps per rendered frame; excess delayed wall time is discarded. When carrying, direct joint controls and route selection/scrubbing are disabled to avoid teleporting the attached body. This is not an industrial servo controller.
+The browser animation loop is not the physics timestep. Phase 3 uses the configured 1/60 s accumulator and caps catch-up to six steps per rendered frame; excess delayed wall time is discarded. A grasp attempt itself advances one Rapier fixed step to refresh contact pairs; Phase 6 instrumentation makes the controller skip its outer physics step on that tick so simulation and controller time remain aligned. When carrying, direct joint controls and route selection/scrubbing are disabled to avoid teleporting the attached body. This is not an industrial servo controller.
 
 ## State machine and fault behavior
 
@@ -108,7 +108,7 @@ Metric definitions: terminal attempts equal completed + faulted + aborted cycles
 - Vitest: FK/IK, workspace, cubic trajectories/routes, Rapier initialization/fixed steps/reset, all package proxies, contact-gated grasp, carry/release, full S/M/L autonomous Rapier cycles, controller transitions/recovery, placement acceptance/rejection and reset lifecycle. Swept collision clearance remains untested and unimplemented.
 - Playwright: load, WebGL render, manual controls/routes/grasp/release, autonomous completion, nominal S and unreachable-route scenarios, and JSON metric export.
 - Engineering review: independently recompute representative kinematics and grip force; review clearance and diagrams.
-- Evaluation: at least 100 nominal cycles plus repeated fault cases. All outputs labeled simulated.
+- Phase 6: 100 nominal cycles, 36 injected fault trials, 5,000 deterministic FK/IK samples, 6,561 workspace points, route/trajectory checks, and repeated fixed-step physics measurements. Raw and summary outputs are in `validation/results/`; analysis and commands are in `docs/PHASE-6-VALIDATION.md`.
 
 The deterministic Rapier JS/WASM variant is selected to improve repeatability. Rapier documents cross-platform deterministic execution but requires identical initialization/order/steps; initialization math such as sin/cos may vary. We therefore require fixed-step, seeded scenarios and claim only repeatability demonstrated for the recorded app/runtime. The compat build embeds WASM, increasing bundle size for simpler bundler support; cell scale is small. [Rapier determinism](https://rapier.rs/docs/user_guides/javascript/determinism/), [package variants](https://www.npmjs.com/package/%40dimforge/rapier3d-deterministic-compat).
 
