@@ -40,11 +40,33 @@ export type ControllerFault = Readonly<{
 }>;
 
 export type ControllerEvent = Readonly<{
+  id: number;
+  cycleId: number;
+  kind:
+    | 'start'
+    | 'transition'
+    | 'grasp'
+    | 'release'
+    | 'placement'
+    | 'terminal'
+    | 'fault'
+    | 'control';
+  packageId: PackageClass['id'] | null;
+  destinationId: SortDestination['id'] | null;
   tick: number;
   simulationTimeSeconds: number;
   state: ControllerState;
   message: string;
   fault?: FaultType;
+}>;
+
+export type ControllerScenarioHooks = Readonly<{
+  planRoute?: (destination: SortDestination['id'], config: SortLabConfig) => PlannedRoute;
+  attemptGrasp?: (
+    attempt: number,
+    actual: () => Readonly<{ success: boolean; reason: string }>,
+  ) => Readonly<{ success: boolean; reason: string }>;
+  classifyPlacement?: (snapshot: PackageSnapshot, config: SortLabConfig) => PlacementResult;
 }>;
 
 export type PlacementResult = Readonly<{
@@ -66,6 +88,7 @@ export type SortingPort = Readonly<{
 }>;
 
 export type ControllerSnapshot = Readonly<{
+  cycleId: number;
   state: ControllerState;
   action: string;
   packageId: PackageClass['id'] | null;
@@ -173,6 +196,11 @@ export class SortingController {
   private placementResult: PlacementResult | null = null;
   private fault: ControllerFault | null = null;
   private events: ControllerEvent[] = [];
+  private eventSequence = 0;
+  private cycleSequence = 0;
+  private cycleId = 0;
+  private nextEventKind: ControllerEvent['kind'] = 'transition';
+  private scenarioHooks: ControllerScenarioHooks = {};
   private config: SortLabConfig;
   private paused = false;
 
@@ -181,6 +209,12 @@ export class SortingController {
     config: SortLabConfig = CONFIG,
   ) {
     this.config = config;
+  }
+
+  configureScenario(hooks: ControllerScenarioHooks = {}): boolean {
+    if (this.state !== 'idle') return false;
+    this.scenarioHooks = hooks;
+    return true;
   }
 
   get snapshot(): ControllerSnapshot {
@@ -199,6 +233,7 @@ export class SortingController {
                 ? 0.7 + 0.3 * (this.motionTime / (routeDuration + homeDuration))
                 : 0;
     return {
+      cycleId: this.cycleId,
       state: this.state,
       action: this.action,
       packageId: this.packageId,
@@ -220,6 +255,7 @@ export class SortingController {
     if (!this.snapshot.active) return;
     this.paused = paused;
     this.action = paused ? 'Paused at fixed simulation tick' : `Resumed: ${this.state}`;
+    this.nextEventKind = 'control';
     this.record(this.action);
   }
 
@@ -229,8 +265,10 @@ export class SortingController {
       return false;
     }
     this.packageId = packageId;
+    this.cycleId = ++this.cycleSequence;
     this.state = 'selecting';
     this.action = `Validating package ${packageId} and configured destination`;
+    this.nextEventKind = 'start';
     this.record(this.action);
     return true;
   }
@@ -254,6 +292,7 @@ export class SortingController {
       }
       this.state = 'aborted';
       this.action = 'Cycle aborted; motion stopped and any attachment released';
+      this.nextEventKind = 'terminal';
       this.record(this.action);
     } catch (error) {
       this.raiseFault('controller-exception', `Abort cleanup failed: ${messageOf(error)}`);
@@ -275,7 +314,6 @@ export class SortingController {
       this.returnTrajectory = null;
       this.pickupTrajectory = null;
       this.elapsed = 0;
-      this.tickCount = 0;
       this.motionTime = 0;
       this.placementTime = 0;
       this.settledTime = 0;
@@ -285,6 +323,7 @@ export class SortingController {
       this.fault = null;
       this.paused = false;
       this.events = [];
+      this.scenarioHooks = {};
       this.record('Controller reset; package returned to pickup and physics attachment cleared');
       return true;
     } catch (error) {
@@ -369,7 +408,10 @@ export class SortingController {
   private plan(): void {
     try {
       if (!this.destinationId) throw new Error('Destination is missing.');
-      this.route = planDestinationRoute(this.destinationId, this.config);
+      this.route = (this.scenarioHooks.planRoute ?? planDestinationRoute)(
+        this.destinationId,
+        this.config,
+      );
       const samples = this.route.trajectory.samples;
       if (
         samples.length < 2 ||
@@ -435,7 +477,10 @@ export class SortingController {
     if (this.graspAttempts === 0) {
       this.port.close();
       this.graspAttempts += 1;
-      const result = this.port.attemptGrasp();
+      this.nextEventKind = 'grasp';
+      const result =
+        this.scenarioHooks.attemptGrasp?.(1, () => this.port.attemptGrasp()) ??
+        this.port.attemptGrasp();
       const attached = result.success && this.port.getSnapshot()?.attached === true;
       this.graspResult = attached
         ? 'Successful: Rapier fixed-joint attachment confirmed'
@@ -444,16 +489,22 @@ export class SortingController {
         this.motionTime = 0;
         this.state = 'lifting';
         this.action = 'Lift package; attachment confirmed';
+        this.nextEventKind = 'grasp';
+        this.record(`Grasp attempt 1/2 — ${this.graspResult}`);
         this.record(this.action);
       } else {
         this.action = 'Grasp attempt failed; one bounded retry at pickup';
+        this.record(`Grasp attempt 1/2 — ${this.graspResult}`);
         this.record(this.action);
       }
       return;
     }
     if (this.graspAttempts < 2) {
       this.graspAttempts += 1;
-      const result = this.port.attemptGrasp();
+      this.nextEventKind = 'grasp';
+      const result =
+        this.scenarioHooks.attemptGrasp?.(2, () => this.port.attemptGrasp()) ??
+        this.port.attemptGrasp();
       const attached = result.success && this.port.getSnapshot()?.attached === true;
       this.graspResult = attached
         ? 'Successful on retry: Rapier fixed-joint attachment confirmed'
@@ -462,8 +513,11 @@ export class SortingController {
         this.motionTime = 0;
         this.state = 'lifting';
         this.action = 'Lift package; attachment confirmed on retry';
+        this.nextEventKind = 'grasp';
+        this.record(`Grasp attempt 2/2 — ${this.graspResult}`);
         this.record(this.action);
       } else {
+        this.record(`Grasp attempt 2/2 — ${this.graspResult}`);
         this.port.open();
         this.raiseFault('failed-grasp', `Grasp failed after 2 attempts: ${result.reason}`);
       }
@@ -518,6 +572,7 @@ export class SortingController {
   }
 
   private release(): void {
+    this.nextEventKind = 'release';
     const result = this.port.release();
     if (!result.success || this.port.getSnapshot()?.attached)
       return this.raiseFault('lost-attachment', `Release did not detach package: ${result.reason}`);
@@ -531,6 +586,7 @@ export class SortingController {
     this.settledTime = 0;
     this.state = 'verifying-placement';
     this.action = `Verify released package inside ${this.destinationId}`;
+    this.nextEventKind = 'release';
     this.record(`Release confirmed by Rapier: ${result.reason}`);
     this.record(this.action);
   }
@@ -543,7 +599,10 @@ export class SortingController {
         'Released package is missing, mismatched, or still attached.',
       );
     this.placementTime += dt;
-    const placement = classifyPlacement(snapshot, this.config);
+    this.nextEventKind = 'placement';
+    const placement =
+      this.scenarioHooks.classifyPlacement?.(snapshot, this.config) ??
+      classifyPlacement(snapshot, this.config);
     this.placementResult = placement;
     if (placement.status === 'accepted') this.settledTime += dt;
     else this.settledTime = 0;
@@ -551,11 +610,14 @@ export class SortingController {
       this.state = 'returning-home';
       this.motionTime = 0;
       this.action = `Placement verified: ${placement.message}; return to safe/home pose`;
+      this.nextEventKind = 'placement';
       this.record(this.action);
       return;
     }
     if (this.placementTime >= PLACEMENT_TIMEOUT_SECONDS) {
-      const latest = classifyPlacement(snapshot, this.config);
+      const latest =
+        this.scenarioHooks.classifyPlacement?.(snapshot, this.config) ??
+        classifyPlacement(snapshot, this.config);
       const type =
         latest.status === 'incorrect-bin'
           ? 'incorrect-bin'
@@ -584,6 +646,7 @@ export class SortingController {
         this.port.setJoints(this.config.robot.home);
         this.state = 'completed';
         this.action = `Cycle complete: ${this.packageId} verified in ${this.destinationId}`;
+        this.nextEventKind = 'terminal';
         this.record(this.action);
       }
     }
@@ -600,13 +663,21 @@ export class SortingController {
     };
     this.state = 'recoverable-fault';
     this.action = `Fault: ${message}`;
+    this.nextEventKind = 'fault';
     this.record(message, type);
   }
 
   private record(message: string, fault?: FaultType): void {
+    const kind = fault ? 'fault' : this.nextEventKind;
+    this.nextEventKind = 'transition';
     this.events = [
       ...this.events,
       {
+        id: ++this.eventSequence,
+        cycleId: this.cycleId,
+        kind,
+        packageId: this.packageId,
+        destinationId: this.destinationId,
         tick: this.tickCount,
         simulationTimeSeconds: this.elapsed,
         state: this.state,

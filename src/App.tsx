@@ -14,6 +14,9 @@ import { PackagePanel } from './components/PackagePanel';
 import type { JointState, PackageClass } from './engineering/types';
 import { SortingController } from './engineering/sortingController';
 import { AutonomousPanel } from './components/AutonomousPanel';
+import { OperationsDashboard } from './components/OperationsDashboard';
+import { MetricsRecorder } from './engineering/metrics';
+import { SCENARIOS, compareScenarioOutcome, type ScenarioId } from './engineering/scenarios';
 import './styles.css';
 
 const Workcell = lazy(() =>
@@ -53,6 +56,17 @@ function App() {
   const [manualInspection, setManualInspection] = useState(false);
   const physicsRef = useRef<PackagePhysicsSimulation | null>(null);
   const controllerRef = useRef<SortingController | null>(null);
+  const metricsRef = useRef(new MetricsRecorder());
+  const activeScenarioRef = useRef<Readonly<{ id: ScenarioId; cycleId: number }> | null>(null);
+  const [sessionMetrics, setSessionMetrics] = useState(metricsRef.current.metrics);
+  const [sessionEvents, setSessionEvents] = useState(metricsRef.current.events);
+  const [selectedScenario, setSelectedScenario] = useState<ScenarioId>('nominal-s');
+  const [scenarioOutcome, setScenarioOutcome] = useState<Readonly<{
+    scenarioId: ScenarioId;
+    passed: boolean;
+    summary: string;
+  }> | null>(null);
+  const [simulationTick, setSimulationTick] = useState(0);
   const [packageClass, setPackageClass] = useState<PackageClass>(CONFIG.packages[0]!);
   const [packageSnapshot, setPackageSnapshot] = useState<PackageSnapshot | null>(null);
   const [physicsStatus, setPhysicsStatus] = useState('Initializing fixed-step Rapier world…');
@@ -170,6 +184,7 @@ function App() {
             const controller = controllerRef.current;
             if (controller?.snapshot.active) {
               if (!controller.isPaused) controller.tick(dt);
+              metricsRef.current.ingest(controller.snapshot.events);
             } else {
               simulation.stepFixed();
             }
@@ -179,6 +194,9 @@ function App() {
           if (steps) {
             setPackageSnapshot(simulation.stepFixed(0));
             if (controllerRef.current) setControllerSnapshot(controllerRef.current.snapshot);
+            setSimulationTick(simulation.fixedSteps);
+            setSessionMetrics(metricsRef.current.metrics);
+            setSessionEvents(metricsRef.current.events);
           }
           frame = requestAnimationFrame(tick);
         };
@@ -240,6 +258,73 @@ function App() {
     }
   };
 
+  const syncController = () => {
+    const controller = controllerRef.current;
+    if (!controller) return;
+    metricsRef.current.ingest(controller.snapshot.events);
+    setControllerSnapshot(controller.snapshot);
+    setSessionMetrics(metricsRef.current.metrics);
+    setSessionEvents(metricsRef.current.events);
+  };
+
+  const runScenario = () => {
+    const controller = controllerRef.current;
+    const simulation = physicsRef.current;
+    const scenario = SCENARIOS.find(({ id }) => id === selectedScenario);
+    if (!controller || !simulation || !scenario || controller.snapshot.active) return;
+    setPlaying(false);
+    if (controller.snapshot.state !== 'idle') controller.reset();
+    else controller.reset();
+    if (simulation.packageClass.id !== scenario.packageId)
+      simulation.selectPackage(scenario.packageId);
+    const item = CONFIG.packages.find(({ id }) => id === scenario.packageId)!;
+    const destinationRoute = routes.find(
+      ({ destinationId }) => destinationId === item.destination,
+    )!;
+    setPackageClass(item);
+    setSelectedDestination(item.destination);
+    setManualInspection(false);
+    setPlaybackTime(0);
+    playbackTimeRef.current = 0;
+    jointsRef.current = destinationRoute.trajectory.samples[0]!.position;
+    setJoints(jointsRef.current);
+    setGraspResult(null);
+    setGripperOpen(true);
+    controller.configureScenario(scenario.hooks);
+    setScenarioOutcome(null);
+    controller.start(scenario.packageId);
+    activeScenarioRef.current = { id: scenario.id, cycleId: controller.snapshot.cycleId };
+    syncController();
+    setPackageSnapshot(simulation.stepFixed(0));
+  };
+
+  useEffect(() => {
+    const activeScenario = activeScenarioRef.current;
+    if (
+      !activeScenario ||
+      controllerSnapshot.cycleId !== activeScenario.cycleId ||
+      !['completed', 'recoverable-fault', 'aborted'].includes(controllerSnapshot.state)
+    )
+      return;
+    const scenario = SCENARIOS.find(({ id }) => id === activeScenario.id);
+    if (!scenario) return;
+    setScenarioOutcome({
+      scenarioId: activeScenario.id,
+      ...compareScenarioOutcome(scenario.expected, controllerSnapshot),
+    });
+    activeScenarioRef.current = null;
+  }, [controllerSnapshot]);
+
+  const exportSession = () => {
+    const blob = new Blob([metricsRef.current.exportJson()], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement('a');
+    anchor.href = url;
+    anchor.download = 'sortlab-session-metrics.json';
+    anchor.click();
+    URL.revokeObjectURL(url);
+  };
+
   const selectDestination = (destination: 'B1' | 'B2' | 'B3') => {
     const selectedRoute = routes.find(({ destinationId }) => destinationId === destination);
     if (!selectedRoute) return;
@@ -267,7 +352,7 @@ function App() {
         <div className="topbar-context">
           <span>ROBOTICS DIGITAL TWIN</span>
           <span className="context-separator" />
-          PHASE 03 · PACKAGE TRANSFER
+          PHASE 05 · SORTING OPERATIONS
         </div>
         <div className="topbar-right">
           <span className="connection-indicator">
@@ -279,8 +364,10 @@ function App() {
       <section className="intro-row">
         <div>
           <span className="eyebrow">SORTLAB / WORKCELL 01</span>
-          <h1>SCARA engineering preview</h1>
-          <p>Analytical kinematics with constraint-checked, scrubbable SCARA route previews.</p>
+          <h1>Warehouse robotics digital twin</h1>
+          <p>
+            Live SCARA workcell with repeatable sorting scenarios and event-derived performance.
+          </p>
         </div>
         <div className="assumption-chip">
           <span className="chip-dot" />
@@ -458,16 +545,17 @@ function App() {
             onStart={() => {
               setPlaying(false);
               controllerRef.current?.start(packageClass.id);
-              if (controllerRef.current) setControllerSnapshot(controllerRef.current.snapshot);
+              activeScenarioRef.current = null;
+              syncController();
             }}
             onPause={() => {
               const controller = controllerRef.current;
               controller?.setPaused(!controller.isPaused);
-              if (controller) setControllerSnapshot(controller.snapshot);
+              syncController();
             }}
             onAbort={() => {
               controllerRef.current?.abort();
-              if (controllerRef.current) setControllerSnapshot(controllerRef.current.snapshot);
+              syncController();
               if (physicsRef.current) setPackageSnapshot(physicsRef.current.stepFixed(0));
             }}
             onReset={() => {
@@ -482,12 +570,30 @@ function App() {
                 setPlaybackTime(0);
                 playbackTimeRef.current = 0;
                 setPackageSnapshot(physicsRef.current?.stepFixed(0) ?? null);
-                setControllerSnapshot(controller.snapshot);
+                activeScenarioRef.current = null;
+                syncController();
               }
             }}
           />
         </div>
       </section>
+      <OperationsDashboard
+        snapshot={controllerSnapshot}
+        metrics={sessionMetrics}
+        events={sessionEvents}
+        joints={joints}
+        simulationTime={
+          (physicsRef.current?.fixedSteps ?? simulationTick) * CONFIG.performance.fixedStepSeconds
+        }
+        simulationTick={simulationTick}
+        fixedStepSeconds={CONFIG.performance.fixedStepSeconds}
+        physicsStatus={physicsStatus}
+        selectedScenario={selectedScenario}
+        scenarioOutcome={scenarioOutcome}
+        onScenarioChange={setSelectedScenario}
+        onRunScenario={runScenario}
+        onExport={exportSession}
+      />
       <footer className="footer">
         <span>SORTLAB ENGINEERING · CONFIGURATION-DRIVEN VIEW</span>
         <span>SIMULATED / NOT HARDWARE-VALIDATED</span>

@@ -754,6 +754,187 @@ input[type='range'] {
     monospace;
   letter-spacing: 0.07em;
 }
+.operations-dashboard {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(260px, 0.8fr);
+  gap: 14px;
+  margin-top: 16px;
+  align-items: start;
+}
+.dashboard-column {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+}
+.dashboard-card {
+  min-width: 0;
+  padding: 17px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: rgba(26, 37, 41, 0.94);
+}
+.dashboard-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.dashboard-title h2 {
+  margin-top: 4px;
+  font-size: 15px;
+}
+.dashboard-tag,
+.event-count {
+  color: #91a39e;
+  font:
+    9px 'DM Mono',
+    monospace;
+  letter-spacing: 0.06em;
+}
+.scenario-card label {
+  display: block;
+  margin-bottom: 6px;
+  color: #a7b6b0;
+  font-size: 11px;
+}
+.scenario-card select {
+  width: 100%;
+}
+.scenario-card select,
+.dashboard-card button {
+  min-height: 34px;
+}
+.dashboard-card select {
+  padding: 7px 9px;
+  border: 1px solid #35464a;
+  border-radius: 4px;
+  background: #172125;
+  color: #e5ece8;
+}
+.scenario-card > button {
+  width: 100%;
+  margin-top: 9px;
+}
+.dashboard-copy {
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.5;
+}
+.scenario-expected,
+.scenario-result,
+.placement-failures {
+  margin-top: 9px;
+  color: #a6b4af;
+  font-size: 11px;
+  line-height: 1.5;
+}
+.scenario-result {
+  padding: 8px;
+  border-left: 2px solid currentColor;
+  background: #15201f;
+}
+.telemetry-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+.telemetry-grid > div,
+.metric-item {
+  min-width: 0;
+  padding: 9px;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  background: #172125;
+}
+.telemetry-grid span,
+.metric-item span {
+  display: block;
+  color: #82938e;
+  font-size: 9px;
+}
+.telemetry-grid b {
+  display: block;
+  margin-top: 5px;
+  color: #d9e2dd;
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+.dashboard-fault {
+  margin-top: 10px;
+  padding: 9px;
+  border: 1px solid #9e674f;
+  border-radius: 4px;
+  color: #f0ad8a;
+  font-size: 11px;
+  line-height: 1.5;
+}
+.metric-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 7px;
+  margin-top: 10px;
+}
+.metric-item b {
+  display: block;
+  margin-top: 5px;
+  color: #e1ece6;
+  font:
+    600 15px 'DM Mono',
+    monospace;
+}
+.breakdown-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin-top: 13px;
+  color: #aab8b3;
+  font-size: 10px;
+}
+.breakdown-row ul {
+  margin: 7px 0 0;
+  padding-left: 16px;
+  line-height: 1.7;
+}
+.event-card {
+  height: 100%;
+  max-height: 790px;
+  display: flex;
+  flex-direction: column;
+}
+.event-list {
+  overflow: auto;
+  min-height: 170px;
+}
+.event-row {
+  display: grid;
+  grid-template-columns: 90px 60px 1fr;
+  gap: 7px;
+  align-items: baseline;
+  padding: 8px 0;
+  border-top: 1px solid var(--line);
+  font-size: 10px;
+}
+.event-row time,
+.event-row > span {
+  color: #91a39e;
+  font:
+    9px 'DM Mono',
+    monospace;
+}
+.event-row p {
+  color: #d0dbd5;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+.empty-events {
+  padding: 16px 0;
+  color: var(--muted);
+  font-size: 11px;
+}
 @media (max-width: 1050px) {
   .app-shell {
     padding: 0 20px;
@@ -770,6 +951,12 @@ input[type='range'] {
   .viewport {
     height: 58vh;
     min-height: 380px;
+  }
+  .operations-dashboard {
+    grid-template-columns: minmax(0, 1fr) minmax(235px, 0.7fr);
+  }
+  .metric-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 @media (max-width: 790px) {
@@ -802,6 +989,12 @@ input[type='range'] {
   }
   .topbar-context {
     display: none;
+  }
+  .operations-dashboard {
+    grid-template-columns: 1fr;
+  }
+  .event-card {
+    max-height: 420px;
   }
 }
 @media (max-width: 520px) {
@@ -850,5 +1043,13 @@ input[type='range'] {
   .footer {
     gap: 12px;
     font-size: 7px;
+  }
+  .telemetry-grid,
+  .breakdown-row {
+    grid-template-columns: 1fr;
+  }
+  .event-row {
+    grid-template-columns: 72px 48px 1fr;
+    gap: 5px;
   }
 }

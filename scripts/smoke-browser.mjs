@@ -2,7 +2,7 @@
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { constants } from 'node:fs';
-import { access, mkdtemp } from 'node:fs/promises';
+import { access, mkdtemp, readFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { chromium } from 'playwright-core';
@@ -50,7 +50,7 @@ try {
   assert(response, `No navigation response from ${url}`);
   assert(response.ok(), `Navigation failed with HTTP ${response.status()}`);
   await page
-    .getByRole('heading', { name: 'SCARA engineering preview' })
+    .getByRole('heading', { name: 'Warehouse robotics digital twin' })
     .waitFor({ state: 'visible' });
   await page.locator('.viewport canvas').waitFor({ state: 'visible', timeout: 30000 });
   await page.waitForFunction(
@@ -340,6 +340,42 @@ try {
     autonomousOperation.placement.includes('settled inside its configured B2'),
     'Autonomous cycle did not visibly verify correct-bin placement.',
   );
+  await page.getByLabel('Scenario', { exact: true }).selectOption('nominal-s');
+  await page.getByRole('button', { name: 'Reset and run selected scenario' }).click();
+  await page.waitForFunction(
+    () =>
+      document.querySelector('.scenario-result')?.textContent?.includes('Scenario passed') ?? false,
+    null,
+    { timeout: 60000 },
+  );
+  const nominalScenario = await page.locator('.scenario-result').innerText();
+  assert(
+    nominalScenario.includes('completed'),
+    'Nominal S scenario did not match expected completion.',
+  );
+
+  await page.getByLabel('Scenario', { exact: true }).selectOption('unreachable-route');
+  await page.getByRole('button', { name: 'Reset and run selected scenario' }).click();
+  await page.waitForFunction(
+    () =>
+      document.querySelector('.scenario-result')?.textContent?.includes('Scenario passed') ?? false,
+    null,
+    { timeout: 5000 },
+  );
+  const rejectedScenario = await page.locator('.scenario-result').innerText();
+  assert(
+    rejectedScenario.includes('unreachable-route'),
+    'Route rejection scenario was not observed.',
+  );
+  const downloadPromise = page.waitForEvent('download');
+  await page.getByRole('button', { name: 'Export JSON' }).click();
+  const download = await downloadPromise;
+  const exportedMetricsPath = path.join(evidenceDir, download.suggestedFilename());
+  await download.saveAs(exportedMetricsPath);
+  const exportedSession = JSON.parse(await readFile(exportedMetricsPath, 'utf8'));
+  assert.equal(exportedSession.metrics.completedCycles, 2);
+  assert.equal(exportedSession.metrics.routePlanningRejections, 1);
+  assert(exportedSession.events.length > 0, 'Session export contains no controller history.');
   const packageInteraction = {
     grasped: true,
     carriedPose,
@@ -362,7 +398,9 @@ try {
         chromiumVersion: browser.version(),
         executablePath,
         title: await page.title(),
-        heading: await page.getByRole('heading', { name: 'SCARA engineering preview' }).innerText(),
+        heading: await page
+          .getByRole('heading', { name: 'Warehouse robotics digital twin' })
+          .innerText(),
         workcellLegend: legend,
         visibleDestinationRows: 3,
         webgl,
@@ -375,6 +413,8 @@ try {
         },
         packageInteraction,
         autonomousOperation,
+        scenarios: { nominalS: nominalScenario, unreachableRoute: rejectedScenario },
+        exportedMetrics: exportedSession.metrics,
         consoleErrors: errors,
         failedRequests,
         badResponses,

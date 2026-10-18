@@ -4,7 +4,7 @@
 
 ## Current phase
 
-**Phase 4: Autonomous sorting controller.** SortLab includes the Phase 1 foundation, Phase 2 FK/IK and fixed-cell routes, Phase 3 Rapier package/gripper model, and a deterministic fixed-tick controller for one selected package per cycle. It resolves S→B1, M→B2, L→B3, confirms simulated attachment before carry, verifies a settled package inside the target bin region, and reports recoverable faults/abort in the UI. Routes do not have swept robot-link/tool collision checks; no physical robot or sensor validation is claimed.
+**Phase 5: Dashboard, scenarios and performance metrics.** SortLab includes a responsive live engineering dashboard, repeatable nominal S/M/L and controlled fault scenarios, event-derived session metrics, and JSON export. The Phase 4 deterministic fixed-tick controller continues to use the existing SCARA routes, Rapier package physics, gripper attachment, and simulated bin placement verification. Routes do not have swept robot-link/tool collision checks; no physical robot or sensor validation is claimed.
 
 The course brief was not available in the inspected workspace. Course-specific dates, marks, formatting, physical-hardware obligations, and AI policy remain unverified; see [the Mission 0 plan](docs/MISSION-0-PLAN.md). Phase boundaries remain in force; Phase 5 requires explicit owner approval.
 
@@ -41,7 +41,7 @@ npm run dev -- --host 127.0.0.1
 SORTLAB_URL=http://127.0.0.1:5173/ npm run smoke:browser
 ```
 
-The smoke test uses pinned Playwright Core 1.63.0 and its matching cached Chromium revision 1243; it does not download or install a browser. It checks WebGL 2, the rendered workcell, joint controls and FK readouts, all three route selections, playback/scrubbing, browser errors/network failures, package grasp/carry/release and free fall, and one autonomous cycle through terminal placement verification.
+The smoke test uses pinned Playwright Core 1.63.0 and its matching cached Chromium revision 1243; it does not download or install a browser. It checks WebGL 2, the rendered workcell, joint controls and FK readouts, all three route selections, playback/scrubbing, package grasp/carry/release and free fall, one autonomous cycle, nominal S scenario completion, unreachable-route rejection, JSON metrics export, and browser errors/network failures.
 
 Use `npm run format` to format application/config source. No course report export is generated yet.
 
@@ -58,5 +58,7 @@ World frame W is right-handed: X forward, Y lateral, Z up; positive revolute rot
 - [Phase 1 implementation and verification record](docs/PHASE-1-IMPLEMENTATION.md)
 - [Phase 2 trajectory and route implementation](docs/PHASE-2-IMPLEMENTATION.md)
 - [Phase 3 package physics and gripper transfer](docs/PHASE-3-IMPLEMENTATION.md)
+- [Phase 4 autonomous sorting controller](docs/PHASE-4-IMPLEMENTATION.md)
+- [Phase 5 dashboard, scenarios and metrics](docs/PHASE-5-IMPLEMENTATION.md)
 
-Phase 3 package handling and Phase 4 placement verification are simplified educational models. Swept-link collision checking, seeded performance campaigns, hardware validation, and the final university report remain future work. See [Phase 4 implementation notes](docs/PHASE-4-IMPLEMENTATION.md). No physical test or validated hardware performance is claimed.
+Phase 3 package handling, Phase 4 placement verification, and Phase 5 performance metrics are simulated educational models. Swept-link collision checking, Phase 6 validation campaigns, hardware validation, and the final university report remain future work. No physical test or validated hardware performance is claimed.

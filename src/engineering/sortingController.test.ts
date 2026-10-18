@@ -5,6 +5,12 @@ import type { PackageSnapshot } from './packagePhysics';
 import { PackagePhysicsSimulation } from './packagePhysics';
 import { forwardKinematics } from './kinematics';
 import type { PackageClass } from './types';
+import {
+  SCENARIOS,
+  compareScenarioOutcome,
+  nominalRouteIsFeasible,
+  scenarioById,
+} from './scenarios';
 
 const worlds: { dispose?: () => void }[] = [];
 
@@ -345,5 +351,85 @@ describe('placement acceptance region', () => {
   it('requires low linear and angular velocity before accepting a package', () => {
     const moving = { ...centerInBin('M'), linearVelocity: { x: 0, y: 0, z: 0.5 } };
     expect(classifyPlacement(moving).status).toBe('settling');
+  });
+});
+
+describe('repeatable sorting scenarios', () => {
+  it('registers all nominal package mappings and controlled fault outcomes', () => {
+    expect(SCENARIOS.map(({ id }) => id)).toEqual([
+      'nominal-s',
+      'nominal-m',
+      'nominal-l',
+      'unreachable-route',
+      'grasp-failure',
+      'placement-timeout',
+    ]);
+    expect(
+      SCENARIOS.slice(0, 3).map(({ packageId, expected }) => [packageId, expected.state]),
+    ).toEqual([
+      ['S', 'completed'],
+      ['M', 'completed'],
+      ['L', 'completed'],
+    ]);
+    expect(nominalRouteIsFeasible('S')).toBe(true);
+    expect(nominalRouteIsFeasible('M')).toBe(true);
+    expect(nominalRouteIsFeasible('L')).toBe(true);
+  });
+
+  it('compares actual terminal state and fault against the declared expectation', () => {
+    expect(
+      compareScenarioOutcome(scenarioById('grasp-failure').expected, {
+        state: 'recoverable-fault',
+        fault: {
+          type: 'failed-grasp',
+          packageId: 'M',
+          destinationId: 'B2',
+          simulationTimeSeconds: 1,
+          state: 'aligning-and-grasping',
+          message: 'miss',
+        },
+      }).passed,
+    ).toBe(true);
+    expect(
+      compareScenarioOutcome(scenarioById('grasp-failure').expected, {
+        state: 'completed',
+        fault: null,
+      }).passed,
+    ).toBe(false);
+  });
+
+  it('injects route rejection before any joint motion', () => {
+    const port = new FakePort();
+    const controller = new SortingController(port);
+    expect(controller.configureScenario(scenarioById('unreachable-route').hooks)).toBe(true);
+    controller.start('S');
+    cycleTo(controller, 'recoverable-fault');
+    expect(port.joints).toBe(0);
+    expect(
+      compareScenarioOutcome(scenarioById('unreachable-route').expected, controller.snapshot)
+        .passed,
+    ).toBe(true);
+  });
+
+  it('injects bounded grasp misses and placement timeout through the same controller lifecycle', () => {
+    const graspPort = new FakePort();
+    graspPort.snapshot = { ...graspPort.snapshot, id: 'M' };
+    const grasp = new SortingController(graspPort);
+    grasp.configureScenario(scenarioById('grasp-failure').hooks);
+    grasp.start('M');
+    cycleTo(grasp, 'recoverable-fault');
+    expect(grasp.snapshot.fault?.type).toBe('failed-grasp');
+    expect(grasp.snapshot.events.filter(({ kind }) => kind === 'grasp')).toHaveLength(2);
+
+    const placementPort = new FakePort();
+    placementPort.snapshot = { ...placementPort.snapshot, id: 'L' };
+    const placement = new SortingController(placementPort);
+    placement.configureScenario(scenarioById('placement-timeout').hooks);
+    placement.start('L');
+    cycleTo(placement, 'recoverable-fault');
+    expect(placement.snapshot.fault?.type).toBe('placement-timeout');
+    expect(
+      compareScenarioOutcome(scenarioById('placement-timeout').expected, placement.snapshot).passed,
+    ).toBe(true);
   });
 });

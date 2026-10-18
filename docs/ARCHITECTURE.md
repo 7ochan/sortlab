@@ -1,6 +1,6 @@
 # SortLab Architecture Decision
 
-**Status:** Phases 1–4 implemented locally. Phase 4 adds a deterministic autonomous controller over the existing route and Rapier/gripper APIs. Swept collision validation, scenario campaigns, and physical validation remain unimplemented.
+**Status:** Phases 1–5 implemented locally. Phase 5 adds an event-derived dashboard, repeatable controller scenarios, and session metric export. Swept collision validation and Phase 6 validation campaigns remain unimplemented.
 
 **Date:** 2026-10-17
 
@@ -17,7 +17,7 @@ Use compatible stable versions pinned in package-lock.json; avoid canary/alpha a
 
 ### Implemented foundation and Phase 2 status
 
-The app separates `src/engineering` (typed baseline/config validation, FK/IK, trajectories/routes, and `packagePhysics.ts`), `src/components` (3D workcell and status/route/package panels), and `src/App.tsx` (composition and fixed-step adapter). Direct inspection, route playback, and package attachment use the same joint state and FK convention. Rapier loads asynchronously and its package/gripper state is tested separately from React.
+The app separates `src/engineering` (typed baseline/config validation, FK/IK, trajectories/routes, package physics, autonomous controller, scenario registry, and event metrics), `src/components` (3D workcell and reusable dashboard panels), and `src/App.tsx` (composition and fixed-step adapter). Direct inspection, route playback, and package attachment use the same joint state and FK convention. Rapier loads asynchronously and its package/gripper state is tested separately from React.
 
 The diagram shows the implemented route, controller, fixed-step simulation, package lifecycle and presentation path. Swept collision checking and performance evaluation remain future work. Route execution is simulated and is not collision-safe.
 
@@ -31,14 +31,14 @@ Webots remains a contingency only if the course expects a dedicated robotics sim
 
 ## Target architecture and module contracts
 
-Phase 4 implements the controller, placement accounting and event display. Scenario campaigns and a collision guard remain future architecture.
+Phase 4 implements the controller and placement accounting. Phase 5 implements a typed scenario registry and event recorder; Phase 6 campaigns and a collision guard remain future work.
 
 ```mermaid
 flowchart LR
   UI[React dashboard] -->|typed commands| CTRL[Sorting state machine]
   CFG[Cell configuration] --> CTRL
   CFG --> KIN[SCARA FK / IK]
-  SCEN[Seeded scenarios] --> CTRL
+  SCEN[Typed repeatable scenarios] --> CTRL
   ID[Simulated barcode] --> CTRL
   CTRL --> PLAN[Waypoint graph and clearance]
   KIN --> PLAN
@@ -50,8 +50,9 @@ flowchart LR
   PHYS -->|contact and placement events| CTRL
   ARM --> VIEW[Three.js workcell]
   PHYS --> VIEW
-  CTRL --> EVT[Events and metrics]
-  EVT --> UI
+  CTRL --> EVT[Stable controller events]
+  EVT --> MET[Session metrics and JSON export]
+  MET --> UI
   TESTS[Vitest + Playwright] -.verify.-> KIN
   TESTS -.verify.-> PLAN
   TESTS -.verify.-> CTRL
@@ -67,7 +68,7 @@ flowchart LR
 | Controller         | **Phase 4:** state transitions, configured package/bin mapping, route validation, bounded grasp retry, cancellation, placement verification and event generation | Typed start/pause/abort/reset operations and snapshot |
 | Simulation adapter | **Phase 3/4:** fixed-step Rapier package/environment bodies, sensor-pad grasp gate, fixed-joint carry, dynamic release, package pose and velocity. Robot remains kinematic in React/Three. | Fixed tick steps coordinated with controller commands |
 | Presentation       | Scene geometry, camera, UI controls and read-only state display                                                         | Commands to controller; events/metrics from controller                     |
-| Evaluation         | Seeded scenario sets, run definitions, aggregation and export of raw simulated results                                  | Versioned JSON/CSV run data                                                |
+| Evaluation         | **Phase 5:** typed single-cycle scenarios, event deduplication, aggregate metrics and JSON export                         | In-memory results derived from controller events                          |
 | Documentation      | Requirement mapping, assumptions, calculations, diagrams, cumulative report history                                     | Evidence traceability                                                      |
 
 ## Simulation loop and data flow
@@ -98,14 +99,14 @@ Idle → Selecting → Planning → MovingToPickup → AligningAndGrasping → L
 
 The Phase 2 planner is fixed-cell rather than general warehouse navigation. It checks sampled TCP IK continuity, joint limits, and configured speed/acceleration constraints for an elevated corridor. It does not check link/package envelopes, bin entry collision, or swept volume. Alternate elbow branches are tried. Future collision checks must be completed before treating a route as safe to execute.
 
-Current UI: 3D cell and route overlay; route selection/playback; direct joint inspection; package category/reset; open/close/grasp/release; package pose/state; and an autonomous panel with start, pause/resume, abort, reset/recover, state/action, package/destination, progress, grasp/placement result, elapsed simulation time and recent event/fault log. Manual controls lock during an autonomous cycle. Autonomous barcode sensing, scenario injection, sort counts and performance dashboards are not implemented.
+Current UI: 3D cell and route overlay; route selection/playback; direct joint inspection; package category/reset; open/close/grasp/release; and an autonomous panel. The Phase 5 dashboard shows live joint/controller/simulation status, nominal S/M/L and controlled route/grasp/placement fault scenarios, event history, success/failure breakdowns, cycle-time average, retry and rejection counts, and downloadable session JSON. Manual controls lock during an autonomous cycle. Scenario hooks test controller outcomes without changing ordinary Rapier behavior. Autonomous barcode sensing is not implemented.
 
-Metrics: correct-sort fraction, wrong-bin count, retry rate, faults/recoveries, cycle-time distribution, packages per simulated minute, unreachable-route count, and minimum path clearance. Each metric records denominator, run length, config version, seed, timestep, software lockfile and runtime.
+Metric definitions: terminal attempts equal completed + faulted + aborted cycles; success rate is completed / terminal attempts; average cycle time includes completed attempts only; placement success requires the controller's accepted target-bin placement event. Category/bin outcomes count terminal attempts only. Grasp success/retry and placement/route rejection counts come from deduplicated controller result/fault events. Zero-attempt rates and zero-completed averages display as unavailable. Phase 5 does not calculate packages/minute, path clearance, or campaign distributions.
 
 ## Verification
 
 - Vitest: FK/IK, workspace, cubic trajectories/routes, Rapier initialization/fixed steps/reset, all package proxies, contact-gated grasp, carry/release, full S/M/L autonomous Rapier cycles, controller transitions/recovery, placement acceptance/rejection and reset lifecycle. Swept collision clearance remains untested and unimplemented.
-- Playwright: load, WebGL render, manual controls/routes/grasp/release, and one full autonomous cycle through visible terminal placement status.
+- Playwright: load, WebGL render, manual controls/routes/grasp/release, autonomous completion, nominal S and unreachable-route scenarios, and JSON metric export.
 - Engineering review: independently recompute representative kinematics and grip force; review clearance and diagrams.
 - Evaluation: at least 100 nominal cycles plus repeated fault cases. All outputs labeled simulated.
 
