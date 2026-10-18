@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="430" viewBox="0 0 1100 430">
+  <defs><marker id="a" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0 0L10 4 0 8Z" fill="#15806e"/></marker><style>.box{fill:#f1f6fa;stroke:#24527a;stroke-width:2;rx:12}.pkg{fill:#e9ac4b;stroke:#976c1e;stroke-width:2}.arm{stroke:#387e76;stroke-width:9;stroke-linecap:round;fill:none}.path{stroke:#15806e;stroke-width:3;stroke-dasharray:8 5;fill:none;marker-end:url(#a)}.txt{font:700 16px Arial;fill:#17344b}.small{font:13px Arial;fill:#516675}.floor{stroke:#7d909d;stroke-width:4}</style></defs>
+  <text x="26" y="34" style="font:700 22px Arial;fill:#15324b">Package handling route (side-view concept; not a collision-clearance proof)</text>
+  <line x1="70" y1="345" x2="1035" y2="345" class="floor"/>
+  <rect x="90" y="300" width="140" height="45" class="box"/><text x="115" y="328" class="txt">Pickup support</text>
+  <rect x="790" y="265" width="165" height="80" class="box"/><text x="835" y="310" class="txt">Target bin</text>
+  <path d="M160 285 C260 90 450 90 570 90 S760 90 865 210" class="path"/>
+  <circle cx="160" cy="285" r="12" fill="#24527a"/><circle cx="250" cy="115" r="10" fill="#24527a"/><circle cx="570" cy="90" r="10" fill="#24527a"/><circle cx="865" cy="210" r="10" fill="#24527a"/>
+  <text x="110" y="260" class="small">Pick, package centre</text><text x="202" y="95" class="small">Vertical clearance</text><text x="500" y="66" class="small">Elevated transit corridor</text><text x="846" y="188" class="small">Approach / place</text>
+  <rect x="150" y="265" width="20" height="38" class="pkg"/><path d="M170 270 L200 270 L205 280" stroke="#2b4a5f" stroke-width="5" fill="none"/><path d="M170 293 L200 293 L205 283" stroke="#2b4a5f" stroke-width="5" fill="none"/>
+  <rect x="848" y="184" width="20" height="36" class="pkg"/><path d="M870 188 L890 188 L890 197 M870 215 L890 215 L890 206" stroke="#2b4a5f" stroke-width="5" fill="none"/>
+  <path d="M870 220 C750 340 330 360 190 300" class="path"/>
+  <text x="340" y="385" class="txt">After release: wait for Rapier settling check → reverse route → checked home pose</text>
+  <text x="65" y="414" class="small">TCP transfer is at z=0.54 m above the configured 0.46 m bin lip; clearance is z=0.56 m. Arm/package envelopes are not swept-collision checked.</text>
+</svg>

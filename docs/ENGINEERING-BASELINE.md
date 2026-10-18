@@ -83,6 +83,8 @@ For m=0.60 kg, safety factor S=2.0, g=9.81 m/s², vertical acceleration a_z=0.30
 
 This is a virtual grasp qualification limit, not a selected actuator. Model excludes crushing, pressure distribution, pad compliance, offset grasp, jerk and torsional slip. Any physical build needs measured friction/crush limits and sourced actuator data.
 
+The production grasp gate uses the configured vertical acceleration term in this safety-factored estimate. A Phase 7 evidence audit found that the implementation had originally omitted it; `attemptGrasp()` was corrected and a regression test plus a fresh 100-cycle campaign were run. The numerical estimate remains a virtual qualification gate and does not establish physical jaw force.
+
 ## Performance and safety assumptions
 
 - Piecewise cubic joint profiles with endpoint conditions; fixed 1/60 s simulation/control tick.

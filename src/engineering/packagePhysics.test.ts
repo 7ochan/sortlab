@@ -61,6 +61,24 @@ describe('Rapier package dynamics and gripper state', () => {
     expect(sim.attemptGrasp().success).toBe(true);
   });
 
+  it('uses configured vertical acceleration in the safety-factored virtual jaw-force check', async () => {
+    const forceLimitedConfig = {
+      ...CONFIG,
+      robot: {
+        ...CONFIG.robot,
+        gripper: { ...CONFIG.robot.gripper, virtualJawCapacityN: 12 },
+      },
+    };
+    const sim = await PackagePhysicsSimulation.create(forceLimitedConfig, 'L');
+    worlds.push(sim);
+    sim.stepFixed(2);
+    sim.close();
+    const result = sim.attemptGrasp();
+    expect(result.success).toBe(false);
+    expect(result.reason).toContain('12.13 N exceeds the 12 N virtual capacity');
+    expect(sim.isAttached).toBe(false);
+  });
+
   it('rejects distant and yaw-misaligned packages without attaching them', async () => {
     const sim = await create();
     sim.close();

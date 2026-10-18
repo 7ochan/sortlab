@@ -352,7 +352,8 @@ export class PackagePhysicsSimulation {
       };
     const force =
       (this.selected.massKg *
-        this.config.robot.gripper.gravityMps2 *
+        (this.config.robot.gripper.gravityMps2 +
+          this.config.robot.gripper.verticalAccelerationMps2) *
         this.config.robot.gripper.safetyFactor) /
       (2 * this.config.robot.gripper.assumedFrictionCoefficient);
     if (force > this.config.robot.gripper.virtualJawCapacityN)

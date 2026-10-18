@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="540" viewBox="0 0 1100 540">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0 0 L10 4 L0 8 Z" fill="#24527a"/></marker>
+    <marker id="grayArrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0 0 L10 4 L0 8 Z" fill="#7c8994"/></marker>
+    <style>.box{fill:#f1f6fa;stroke:#24527a;stroke-width:2;rx:12}.assumed{fill:#fff;stroke:#84919b;stroke-width:2;stroke-dasharray:8 6;rx:12}.title{font:700 20px Arial;fill:#15324b}.label{font:16px Arial;fill:#172d3e}.small{font:13px Arial;fill:#526675}.line{stroke:#24527a;stroke-width:3;fill:none;marker-end:url(#arrow)}.feedback{stroke:#408578;stroke-width:2.5;fill:none;marker-end:url(#arrow)}.assumeLine{stroke:#7c8994;stroke-width:2;fill:none;stroke-dasharray:8 6;marker-end:url(#grayArrow)}</style>
+  </defs>
+  <text x="28" y="34" class="title">SortLab architecture: implemented simulation path and proposed cell hardware</text>
+  <rect x="35" y="80" width="205" height="98" class="box"/><text x="55" y="113" class="title">Category input</text><text x="55" y="139" class="label">Operator-selected S / M / L</text><text x="55" y="160" class="small">Simulated label event; no camera</text>
+  <rect x="295" y="80" width="205" height="98" class="box"/><text x="315" y="113" class="title">Sorting controller</text><text x="315" y="139" class="label">Typed finite-state machine</text><text x="315" y="160" class="small">1/60 s ticks, events, faults</text>
+  <rect x="555" y="80" width="220" height="98" class="box"/><text x="575" y="113" class="title">Motion planning</text><text x="575" y="139" class="label">Routes • analytic IK • cubic</text><text x="575" y="160" class="small">Joint limits and sampled constraints</text>
+  <rect x="830" y="80" width="230" height="98" class="assumed"/><text x="850" y="113" class="title">Electric drives</text><text x="850" y="139" class="label">Servo + reduction concept</text><text x="850" y="160" class="small">Concept only; ratings not selected</text>
+  <path d="M240 129 H290" class="line"/><path d="M500 129 H550" class="line"/><path d="M775 129 H825" class="assumeLine"/>
+  <rect x="830" y="245" width="230" height="100" class="assumed"/><text x="850" y="278" class="title">SCARA mechanism</text><text x="850" y="304" class="label">J1, J2 rotary • J3 slide • J4 yaw</text><text x="850" y="326" class="small">Kinematic visual, not dynamic links</text>
+  <path d="M945 178 V240" class="assumeLine"/>
+  <rect x="555" y="245" width="220" height="100" class="box"/><text x="575" y="278" class="title">Parallel-jaw model</text><text x="575" y="304" class="label">Pad overlap + pose + width checks</text><text x="575" y="326" class="small">Ideal fixed-joint carry in Rapier</text>
+  <path d="M830 295 H780" class="assumeLine"/>
+  <rect x="295" y="245" width="205" height="100" class="box"/><text x="315" y="278" class="title">Rapier package world</text><text x="315" y="304" class="label">Package pose and velocity</text><text x="315" y="326" class="small">Fixed supports, bins, dynamic proxy</text>
+  <path d="M555 295 H505" class="feedback"/><path d="M395 245 V185" class="feedback"/>
+  <rect x="35" y="245" width="205" height="100" class="box"/><text x="55" y="278" class="title">Verification + UI</text><text x="55" y="304" class="label">Placement classifier and log</text><text x="55" y="326" class="small">Measured session metrics / export</text>
+  <path d="M295 295 H245" class="feedback"/>
+  <rect x="295" y="405" width="205" height="78" class="assumed"/><text x="315" y="438" class="title">Electrical supply</text><text x="315" y="463" class="small">Voltage/current TBD by sizing</text>
+  <path d="M500 445 C690 445 750 390 880 350" class="assumeLine"/>
+  <rect x="555" y="405" width="220" height="78" class="assumed"/><text x="575" y="438" class="title">Feedback devices</text><text x="575" y="463" class="small">Encoder / presence sensing TBD</text>
+  <path d="M775 440 C860 440 875 390 920 350" class="assumeLine"/>
+  <rect x="830" y="405" width="230" height="78" class="assumed"/><text x="850" y="438" class="title">Physical label sensor</text><text x="850" y="463" class="small">Simulated in SortLab; hardware TBD</text>
+  <path d="M830 445 C680 520 370 520 170 350" class="assumeLine"/>
+  <line x1="35" y1="515" x2="85" y2="515" stroke="#24527a" stroke-width="3"/><text x="95" y="521" class="small">Implemented software/simulation</text>
+  <line x1="350" y1="515" x2="400" y2="515" stroke="#7c8994" stroke-dasharray="8 6" stroke-width="2"/><text x="410" y="521" class="small">Conceptual hardware block or unimplemented input</text>
+</svg>
