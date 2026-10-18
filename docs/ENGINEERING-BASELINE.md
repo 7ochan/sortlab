@@ -49,7 +49,7 @@ Origin is shoulder axis; assumed tabletop plane z=0.25 m.
 | Pick            | (+0.30,0) XY                               | One package presented at a time                                              |
 | B1 / B2 / B3    | (-0.24,+0.25), (-0.24,0), (-0.24,-0.25) XY | Exterior 0.24 × 0.22 m; interior 0.20 × 0.18 m; lip z=0.46 m; floor z=0.30 m |
 | Transfer height | TCP z=0.54 m                               | 0.08 m above bin lip; arm links still require checking                       |
-| Home target     | (+0.30,0,0.56) m                           | Above pickup/conveyor; full swept path must be checked                       |
+| Home target     | Joint vector (0,0,0.56,0) → FK TCP (+0.55,0,0.56) m | Configured in `src/engineering/config.ts`; full swept path must be checked |
 
 The bin pitch is 0.25 m across Y and exterior width 0.22 m, leaving 0.03 m nominal gaps. The middle bin's nearest outer face is x=-0.12 m, 0.04 m beyond the assumed base-column radius of 0.08 m. The conveyor begins at x=0.115 m, 0.035 m beyond that radius on the opposite side. Largest package footprint is 0.16 × 0.12 m, leaving 0.02/0.03 m margin inside the bin when aligned. These margins are tight and still require full 3D collision checks.
 

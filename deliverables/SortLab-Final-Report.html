@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>SortLab — Automated Warehouse Package Sorting Robot — Version 3.0</title>
+<style>
+@page { size: letter; margin: 1in; }
+body { font: 10.5pt/1.16 Calibri, Arial, sans-serif; color: #202733; }
+h1 { color:#2E74B5; font-size:16pt; margin:16pt 0 8pt; }
+h2 { color:#2E74B5; font-size:13pt; margin:12pt 0 6pt; }
+h3 { color:#1F4D78; font-size:12pt; margin:8pt 0 4pt; }
+p { margin:0 0 6pt; text-align:justify; }
+ul,ol { margin:2pt 0 8pt 0; padding-left:28pt; }
+li { margin:0 0 3pt; }
+table { width:100%; border-collapse:collapse; margin:6pt 0 9pt; font-size:9pt; }
+th,td { border:0.5pt solid #9AA4B2; padding:5pt 6pt; vertical-align:top; }
+th { background:#F2F4F7; text-align:left; }
+.cover { height:8.7in; display:flex; flex-direction:column; justify-content:center; }
+.kicker { color:#1F4D78; letter-spacing:1.5pt; font-size:10pt; font-weight:bold; }
+.title { color:#1F4D78; font-size:27pt; line-height:1.08; margin:22pt 0 8pt; }
+.subtitle { font-size:17pt; color:#435368; margin:0 0 26pt; }
+.coverbox { border-left:3pt solid #2E74B5; padding:8pt 14pt; margin:18pt 0; }
+.small { font-size:8.5pt; color:#4D5968; }
+.page { page-break-before:always; }
+.figure { text-align:center; margin:8pt auto 9pt; page-break-inside:avoid; }
+.figure img { max-width:100%; max-height:4.6in; }
+.figure figcaption { font-size:8pt; color:#526070; text-align:left; margin-top:3pt; }
+.equation { text-align:center; font-family:Cambria,serif; font-size:12pt; margin:8pt; }
+.callout { border:1pt solid #BCC8D6; background:#F7F9FB; padding:7pt 9pt; margin:7pt 0; }
+.refs p { text-align:left; font-size:9pt; margin-bottom:8pt; }
+.no-break { page-break-inside:avoid; }
+.tag { font-size:8pt; text-transform:uppercase; letter-spacing:.6pt; color:#24527a; }
+a { color:#1F4D78; }
+</style>
+</head>
+<body>
+<section class="cover">
+  <div class="kicker">ROBOTICS — INDIVIDUAL DESIGN PROJECT</div>
+  <div class="title">SortLab</div>
+  <div class="subtitle">Automated Warehouse Package Sorting Robot</div>
+  <div class="coverbox">
+    <p><b>Student:</b> [Full student name]</p>
+    <p><b>Registration / USN:</b> [University registration number]</p>
+    <p><b>Course:</b> Robotics · <b>Programme:</b> BCA UG · <b>Semester:</b> VII</p>
+    <p><b>Assignment option:</b> 01 — Automated Warehouse Package Sorting Robot</p>
+    <p><b>Submission version:</b> V3.0 · <b>Project window in brief:</b> 12–30 October 2026</p>
+  </div>
+  <p><b>Package classes:</b> S→B1 · M→B2 · L→B3</p>
+  <p class="small">Summary: A SCARA-style, four-axis software digital twin plans and executes package sorting using analytic kinematics, cubic trajectories, a deterministic Rapier package model, a gripper abstraction and physics-based placement verification.</p>
+  <p class="small">Prepared with AI assistance for drafting and evidence organization. The student must verify all technical content and disclose assistance as required by the course brief.</p>
+</section>
+
+<section class="page">
+<h1>1. Abstract, objectives and scope</h1>
+<p>SortLab is a software simulation of a compact warehouse cell that sorts three configured package classes from a single pickup station into three designated bins. The selected concept is a four-axis SCARA-style robot with two planar rotary joints, a vertical prismatic axis and a yaw wrist. The application combines forward and inverse kinematics, route planning, cubic motion profiles, a gripper model, Rapier rigid-body package physics, an autonomous finite-state controller and a live engineering dashboard. The validation runner executes the production controller and package simulation in fixed 1/60 s steps.</p>
+<p>The final nominal campaign completed 100 of 100 attempts with verified placements in their configured bins, above the assignment evaluation target of 95%. However, the measured median cycle was 30.350 simulated seconds, missing the configured engineering aspiration of 12 seconds. Results apply to the fixed simulated workcell and initial conditions; they do not estimate physical robot reliability. No hardware, camera or real-world sensor was tested.</p>
+<h2>Objectives</h2>
+<ul><li>Model a reachable four-axis pick-and-place mechanism and three bin destinations.</li><li>Plan bounded motion and coordinate grasp, carry, release and placement checking.</li><li>Make normal and injected fault outcomes observable and repeatable.</li><li>Evaluate numerical, trajectory, physics and controller behavior using raw reproducible evidence.</li></ul>
+<h2>Scope and assumptions</h2>
+<p>One package is presented at a time. Package identity is a deterministic simulated category input. Links are kinematic; the robot has no motor, mass/inertia or torque model. Packages are rigid proxies, including a rounded rigid proxy for the nominal pouch. Grip attachment is an ideal fixed joint. Configured dimensions, masses, friction and limits are engineering assumptions rather than measured warehouse data. Collision evaluation samples TCP paths; the project does not prove swept-link, tool or package clearance.</p>
+<h2>Workcell requirements and configured inputs</h2>
+<table><tr><th>Package</th><th>Proxy and dimensions L×W×H (m)</th><th>Assumed mass</th><th>Target</th></tr>
+<tr><td>S / small</td><td>Carton, 0.08×0.06×0.04</td><td>0.10 kg</td><td>B1</td></tr>
+<tr><td>M / medium</td><td>Vertical cylinder, 0.12×0.09×0.06</td><td>0.30 kg</td><td>B2</td></tr>
+<tr><td>L / large</td><td>Rounded cuboid pouch proxy, 0.16×0.12×0.08</td><td>0.60 kg</td><td>B3</td></tr></table>
+<p>Pickup center is (+0.30, 0.00) m. Configured home joints are (0,0,0.56,0), whose forward-kinematics TCP target is (+0.55, 0.00, 0.56) m. Bin centers are B1 (−0.24,+0.25), B2 (−0.24,0), B3 (−0.24,−0.25) m. Assumed bin floor is z=0.30 m and lip z=0.46 m. The support surface is z=0.25 m. The dimensions and maps are defined in `src/engineering/config.ts` and documented in `docs/ENGINEERING-BASELINE.md`.</p>
+<figure class="figure"><img src="assets/workcell.svg"><figcaption>Figure 1. Configured workcell stations and package-to-bin mapping (schematic, plan view). Geometry is configured model data, not a surveyed installation.</figcaption></figure>
+</section>
+
+<section class="page">
+<h1>2. Configuration choice and robot anatomy</h1>
+<h2>Configuration comparison</h2>
+<table><tr><th>Criterion</th><th>SCARA-style (selected)</th><th>Cartesian gantry (alternative)</th></tr>
+<tr><td>Task fit</td><td>Planar transfers with vertical pickup/place suit two rotary axes plus Z travel.</td><td>Orthogonal axes also suit the task and simplify axis-aligned programming.</td></tr>
+<tr><td>Workspace and footprint</td><td>Annular XY envelope can reach around the center column; compact base, but reach varies with angle.</td><td>Rectangular envelope is easy to reason about; rails and frame occupy the work area.</td></tr>
+<tr><td>Control / mechanics</td><td>Requires nonlinear 2-link IK and branch/limit checks; comparatively few moving members.</td><td>Axis-wise Cartesian motion and calibration are straightforward; long rails need stiffness and alignment.</td></tr>
+<tr><td>Tradeoff for this project</td><td>Good educational case for FK/IK and sorting reach; chosen for compact tabletop cell.</td><td>Would be a plausible production alternative where rectangular coverage or heavy vertical payload dominates.</td></tr></table>
+<p>This is a qualitative design comparison. No cost, cycle-time or payload tests were run on either physical configuration. The SCARA-style concept is selected because the three bins and pickup are planar stations with a mostly vertical approach.</p>
+<h2>Anatomy and coordinates</h2>
+<p>The base shoulder is the origin. X points forward, Y lateral and Z upward; angles are radians in the controller and displayed in degrees. J1 and J2 rotate about parallel Z axes. L1=.30 m and L2=.25 m connect shoulder to elbow and elbow to wrist. J3 translates the TCP in world Z over 0.30–0.58 m. J4 rotates tool yaw over ±180°. Thus the mechanism has four commanded DOF and controls planar position, height and tool yaw, not arbitrary 6D orientation. The normal J1/J2 limits are ±150°/±160°.</p>
+<p>The ideal link-only annulus is r=|L1−L2| to L1+L2, or 0.05–0.55 m. Joint limits, tool geometry and obstacles reduce useful reach. In the measured 81×81 XY grid at configured home Z and yaw, 3,968 of 6,561 points were IK-reachable. This is a discrete reachability map, not an analytical collision-free workspace.</p>
+<figure class="figure"><img src="assets/workcell.svg"><figcaption>Figure 2. Coordinate-frame interpretation: shoulder origin, X forward, Y lateral, Z vertical, and planar link geometry. The workcell view is schematic and not to scale.</figcaption></figure>
+<h2>Actuation concept and end effector</h2>
+<p>A plausible implementation would use rotary electric servos and reductions at J1/J2/J4, a linear electric actuator or screw drive for J3, and a parallel-jaw electric gripper. Electric drives offer controllable positioning without a dedicated pneumatic supply. This is a concept only: no motor, gearbox, screw, drive, power supply, braking system or safety-rated controller is selected or sized. The modeled tool has a palm and two virtual pads with 0.03–0.16 m jaw opening. The package is attached by a Rapier fixed joint after sensor-pad overlap and alignment checks; contact compliance and finger mechanics are not modeled.</p>
+</section>
+
+<section class="page">
+<h1>3. Kinematics and example calculation</h1>
+<h2>Forward kinematics</h2>
+<p>For planar shoulder and elbow angles q1 and q2, the wrist position is the sum of two link vectors. J3 gives world TCP height in this model, and J4 contributes tool yaw [1]:</p>
+<div class="equation">x = L₁ cos(q₁) + L₂ cos(q₁+q₂) &nbsp;&nbsp; y = L₁ sin(q₁) + L₂ sin(q₁+q₂)</div>
+<div class="equation">z = q₃ &nbsp;&nbsp; ψ = q₁ + q₂ + q₄</div>
+<h2>Worked numerical FK example</h2>
+<p>Use configured L1=.30 m, L2=.25 m and choose q1=30°, q2=−60°, q3=.45 m, q4=15°. Angles convert to radians for calculation: 30°=π/6, −60°=−π/3.</p>
+<div class="equation">x=.30 cos30° + .25 cos(−30°) = .476314 m</div>
+<div class="equation">y=.30 sin30° + .25 sin(−30°) = .025000 m</div>
+<p>Therefore TCP = (.476314,.025000,.450000) m and yaw ψ=30°−60°+15°=−15°. This analytic example is consistent with `src/engineering/kinematics.ts`; it is a software calculation, not a measured robot pose.</p>
+<h2>Inverse kinematics and reachability</h2>
+<p>For a target (x,y), set r²=x²+y² and solve the cosine law [1]:</p>
+<div class="equation">cos(q₂) = (r²−L₁²−L₂²)/(2L₁L₂), &nbsp; q₂ = ±acos(cos(q₂))</div>
+<p>The two signs represent elbow branches. For the example, r²≈.2275 m², yielding cos(q2)=.5 and branches q2=±60°. For the q2=−60° branch, q1=atan2(y,x)−atan2(L2 sin q2,L1+L2 cos q2)=30°. Given target yaw, q4=ψ−q1−q2=15°. The solver retains only branches that satisfy joint bounds. At the example target both branches may be mathematically reachable; route planning also checks continuity and configured limits.</p>
+<p>In 5,000 deterministic FK→IK→FK samples, all returned a valid inverse branch. Maximum position residual was 4.9651×10⁻¹⁶ m; maximum wrapped yaw error was 1.7764×10⁻¹⁵ rad against 10⁻¹⁰ tolerances. These near-machine-precision values show numerical consistency in the equations and implementation, not actuator calibration or physical accuracy.</p>
+<div class="callout"><b>Singularity note.</b> At full extension q2=0, the links align and planar Jacobian rank is reduced. The boundary target is reachable but motion conditioning deteriorates near it. A fully folded q2=π target is outside the configured J2 limits and is rejected.</div>
+</section>
+
+<section class="page">
+<h1>4. Architecture and software design</h1>
+<p>The browser application is written in TypeScript/React. The controller is a typed fixed-tick state machine separated from React. Kinematics, route generation, cubic trajectories, Rapier package simulation, placement classification, scenario setup and metrics are implemented as distinct engineering modules. UI actions call existing controller/physics APIs; the validation runner uses the same production controller, planner, physics and placement classifier [3].</p>
+<figure class="figure"><img src="assets/architecture.svg"><figcaption>Figure 3. Software architecture. Dashed blocks represent physical concepts required by the assignment but not implemented or validated in this simulation.</figcaption></figure>
+<h2>Principal data and control path</h2>
+<ol><li>Operator selects a simulated package category; configured mapping determines its bin.</li><li>Controller validates package, target, reachability, route samples and return-home trajectory before motion.</li><li>Trajectory samples update the commanded joint state and TCP pose on each fixed simulation tick.</li><li>Gripper checks pad overlap, center/yaw alignment, jaw bounds and the virtual force gate.</li><li>Rapier advances package bodies, contacts and grasp constraint at Δt=1/60 s. Controller checks attachment before carrying.</li><li>After release, placement verifier reads the detached package body pose and velocity; accepted placement plus return-home completion is required for success.</li><li>Controller events feed status, log and metrics; campaign runner records raw attempt rows and generates summaries.</li></ol>
+<p>Robot links are kinematically driven. Rapier package physics does not feed forces back into robot joints [5]. Browser frame accumulator drives fixed steps and may discard excess wall time after a delayed frame. Headless validation calls fixed steps directly, without sleeps; Rapier determinism depends on controlled initial conditions and construction order [4].</p>
+<h2>Waypoint sequence and interpolation spaces</h2>
+<p>The normal route starts at the category-specific package-center pickup height above (0.30,0), rises to a clearance TCP height near .56 m, moves through a corridor at x=.12 m and y=+.40 m for B1/B2 or −.40 m for B3, approaches the bin center at clearance height, descends to placement, releases, then reverses the path and returns to the configured home joints (0,0,.56,0). Package category centers are z=.37/.38/.39 m for S/M/L.</p>
+<p>Joint-space cubic motion provides direct joint bound and speed/acceleration checks [1]. Cartesian waypoints express the desired tool path and are resolved through IK, then sampled for limit/continuity checks. Sampling can miss collisions between samples, and link/tool/package swept-volume clearance is not established. The corridor is a route assumption, not a certified obstacle-free path.</p>
+<figure class="figure"><img src="assets/trajectory.svg"><figcaption>Figure 4. Route/trajectory sequence. The profile illustration explains timing; it is not a measured hardware trace.</figcaption></figure>
+</section>
+
+<section class="page">
+<h1>5. Trajectory, gripping and placement verification</h1>
+<h2>Cubic trajectory example</h2>
+<p>For a rest-to-rest move from q0 to qf over duration T, the implemented cubic boundary profile can be written using u=t/T:</p>
+<div class="equation">q(t)=q₀+(qf−q₀)(3u²−2u³), &nbsp; 0≤u≤1</div>
+<p>Illustrative J1 example: q0=0°, qf=30°, T=2 s. At t=1 s, u=.5 and q=15°. For Δq=π/6 rad, peak speed is 1.5Δq/T=.3927 rad/s; peak acceleration magnitude is 6Δq/T²=.7854 rad/s². Configured J1 limits are 1.5708 rad/s (90°/s) and 3.1416 rad/s² (180°/s²), so this example is below both. This is a transparent one-axis calculation, not a recorded route segment. Production profiles are checked with configured limits and sampled routes; final Phase 6 route maxima were .9223 of a speed limit and .8373 of an acceleration limit.</p>
+<h2>Virtual grip calculation</h2>
+<p>For a symmetric friction grip, each jaw applies normal force N. Assuming two contact faces, equal load sharing and Coulomb friction:</p>
+<div class="equation">2 μ N ≥ S m(g+a<sub>z</sub>) &nbsp; ⇒ &nbsp; N<sub>required</sub> = S m(g+a<sub>z</sub>)/(2 μ)</div>
+<p>For the L package (m=.60 kg), safety factor S=2, g=9.81 m/s², configured vertical acceleration a<sub>z</sub>=.30 m/s² and assumed μ=.50, N=2×.60×(9.81+.30)/(2×.50)=12.132 N per jaw. At assumed μ=.30, N=20.22 N. The model's virtual cap is 25 N per jaw. Code now uses g+a<sub>z</sub>; regression test rejects the L package when the virtual cap is 12 N. This is not a physical force measurement or selected actuator rating. It ignores pressure distribution, package crush, compliance, off-center loads, jerk and torsional slip.</p>
+<h2>Grasp and release</h2>
+<p>Configured capture tolerances are 12 mm package-center offset and 8° yaw. Both pad sensors must overlap, width must be within the jaw opening, and the virtual force gate must pass. A successful capture creates a fixed joint between gripper and package. Controller transport requires both the grasp result and actual attachment flag; it never treats a close command alone as success. Release removes the constraint; the package becomes dynamic and is stepped by Rapier.</p>
+<h2>Placement acceptance criteria</h2>
+<p>For each bin, the package-center XY region is the interior bin rectangle shrunk by package projected half-extents at current yaw plus a 5 mm edge margin. Center Z must lie from floor+half-height−12 mm to lip−half-height−10 mm. The package must classify in the intended bin and have linear speed below .04 m/s and angular speed below .12 rad/s continuously for .25 simulated seconds. An 8 s verification timeout yields a fault. Outcomes distinguish correct accepted bin, incorrect bin, outside all regions, still settling/timeout, grasp failure, lost attachment and abort. The verdict uses simulated rigid-body state, not a camera or real sensor.</p>
+<figure class="figure"><img src="assets/state-flow.svg"><figcaption>Figure 5. Autonomous state progression and fault/abort exits. Success requires verified placement and completed return.</figcaption></figure>
+</section>
+
+<section class="page">
+<h1>6. Autonomous operation, hazards and recovery</h1>
+<h2>State machine and recovery limits</h2>
+<p>Explicit controller states include idle, selecting/validating, planning, moving to pickup, grasp alignment, lifting, transporting, releasing, verifying placement, returning home, completed, recoverable fault and aborted. Planning occurs before motion. A failed grasp permits a bounded retry; it cannot retry indefinitely. Loss of attachment during transport, invalid transition, route rejection or unverified placement stops predictable motion and records a typed reason. Abort is available during active phases. Reset detaches any package joint, restores package pose/controller state and supports a fresh cycle.</p>
+<p>A controller cycle is successful only when the correct package is physically released in the configured acceptance region, satisfies settling criteria, and the controller returns home to completed. The dashboard and event log show the observed state/action, package, bin, grasp result, placement result, simulation time and faults. Scenario injections are distinct from ordinary operation and do not alter default physics.</p>
+<h2>Hazard analysis</h2>
+<table><tr><th>Hazard</th><th>Potential consequence</th><th>Proposed control / current boundary</th><th>Residual risk</th></tr>
+<tr><td>Unexpected arm motion or pinch at joints/gripper</td><td>Impact, pinch or entrapment in a physical cell</td><td>Software locks conflicting manual controls during autonomy; route/joint bounds; real installation requires fixed guarding, interlocks, access control and safety-rated stop.</td><td>UI lock is not a protective device. No physical hazard assessment or safety-rated functions tested.</td></tr>
+<tr><td>Package slips, falls or is crushed</td><td>Injury, product damage, uncontrolled drop</td><td>Simulated alignment/force gate, attachment check, bounded lift/transport and verified release; real design needs measured friction/crush limits and guarded catch area.</td><td>Fixed-joint model cannot slip or reproduce crushing. Virtual force is assumed and uncalibrated.</td></tr>
+<tr><td>Arm/package collides with bin, conveyor or person</td><td>Equipment damage or impact</td><td>Configured target routes and discrete path checks; human exclusion, guarding and independently validated collision detection required for hardware.</td><td>No swept-link collision proof; kinematic links do not react to Rapier contacts.</td></tr>
+<tr><td>Drive/power/control fault</td><td>Uncontrolled motion or loss of holding/braking</td><td>Concept requires drive fault monitoring, safe torque off/braking, watchdog and power isolation designed to applicable standards.</td><td>No physical drives, power model, safety PLC or fault-injection hardware exists.</td></tr></table>
+<p>This hazard discussion is informed by OSHA industrial robot hazard and safeguarding guidance [6, 7]; it is not a formal risk assessment, safety validation or declaration of conformity.</p>
+<h2>Demonstration evidence</h2>
+<figure class="figure"><img src="assets/workcell-smoke-capture.png" style="max-height:3.1in"><figcaption>Figure 6. Actual browser smoke-test capture of the running Three.js workcell, recorded 18 October 2026 using cached Chromium/WebGL 2 software rendering. It demonstrates the software view only; it is not a hardware photograph.</figcaption></figure>
+<p class="small">A current dashboard capture should be recorded during the student's live demonstration if the instructor expects evidence of the full dashboard. The screenshot above is retained with the actual smoke-run provenance; no screenshot has been retouched to imply hardware.</p>
+</section>
+
+<section class="page">
+<h1>7. Validation method and measured results</h1>
+<h2>Environment and method</h2>
+<p>The checked-in runner executes the production TypeScript `SortingController`, route planner, trajectory generator, `PackagePhysicsSimulation`, gripper attachment/release, fixed-step Rapier world and `classifyPlacement`. Each attempt initializes a fresh world with fixed configured package pose and runs at Δt=1/60 s. There are no timing sleeps or mocked successful nominal placements. Unique attempt records include package, target, simulation times, terminal state, fault and independently classified actual final package snapshot. Reproduction instructions and exact raw data are under `validation/`.</p>
+<table><tr><th>Nominal measure</th><th>Measured follow-up campaign</th></tr>
+<tr><td>Attempts / terminal outcomes</td><td>100 / 100</td></tr><tr><td>Distribution</td><td>S→B1 34; M→B2 33; L→B3 33</td></tr>
+<tr><td>Verified target-bin placements</td><td>100; failed 0; aborted 0</td></tr><tr><td>Success rate</td><td>100/100 terminal attempts = 100%; 95% campaign target met</td></tr>
+<tr><td>Cycle time for 100 completed cycles</td><td>Mean 30.680 s; median 30.350 s; minimum 29.917 s; maximum 31.783 s</td></tr>
+<tr><td>Grasp outcomes</td><td>100 first-attempt successes; 0 retries; 0 final failures</td></tr>
+<tr><td>Placement / planning failures</td><td>Incorrect bin 0; outside 0; timeout 0; route rejection 0</td></tr>
+<tr><td>Max final settled linear / angular velocity</td><td>2.0446×10⁻⁶ m/s; 6.5854×10⁻⁵ rad/s</td></tr>
+<tr><td>Controller/physics clock difference</td><td>5.22×10⁻¹³ s maximum absolute difference after clock correction</td></tr></table>
+<p>Success denominator is all terminal nominal attempts; in-progress attempts are excluded. A successful attempt requires controller `completed`, accepted placement in the configured target, and independently classified final Rapier package state in that same bin. Cycle time runs from accepted controller start to terminal completion; setup and wall-clock time are excluded. The baseline performance aspiration is median ≤12 simulated seconds; it was missed (30.350 s median) and was not altered.</p>
+<h2>Robustness results</h2>
+<ul><li>FK/IK: 5,000 of 5,000 valid samples round-tripped; max residuals 4.9651×10⁻¹⁶ m / 1.7764×10⁻¹⁵ rad. Workspace grid: 3,968/6,561 reachable. Full extension accepted as singular; full-fold target rejected by configured joint limits.</li><li>Routes B1/B2/B3: correct package map, exact reported destination endpoints, zero endpoint velocity. Sampled maximum speed ratio .9223 and acceleration ratio .8373.</li><li>Rapier: repeated 120-step fixed-step traces equal; reset state matched a fresh world; 19 bodies/20 colliders; grasp carry tracking error 8.0380×10⁻⁸ m; release detached package.</li><li>Placement boundaries: accepted interior/floor/lip tolerance cases, rejected just-outside cases, identified wrong bin; .039999 m/s was accepted and .040000 m/s remained settling.</li></ul>
+<p>Fault campaign: 12 classes ×3 trials=36. All 36 expected outcomes matched; zero false-positive placements; all resets had no stale attachment or duplicate body/collider count; 36/36 nominal reruns succeeded. Route/grasp/timeout and release-response conditions use deterministic controller hooks; wrong/outside placement uses validation-only pose setup on the actual detached body; lost attachment uses Rapier detach; abort uses real controller abort commands. These are controlled software fault injections, not physical failure simulations.</p>
+</section>
+
+<section class="page">
+<h1>8. Discussion, limitations and conclusion</h1>
+<h2>Evidence-backed correction</h2>
+<p>During final audit, code review found that the documented safety-factored virtual grip equation included vertical acceleration but `attemptGrasp()` originally evaluated gravity only. The calculation omitted the configured 0.30 m/s² acceleration term. The code was corrected to use g+a<sub>z</sub>; a regression test confirms an assumed 12 N/jaw cap rejects the L package at 12.13 N required. The follow-up campaign was rerun using the unchanged production path and placement criteria: 100/100 nominal placements and 36/36 injected fault outcomes. This correction improves consistency of the simulation's virtual gate only; it does not validate physical grip force.</p>
+<h2>Limitations</h2>
+<ul><li>No physical robot, actuator, power stage, camera, encoder, force sensor or real package was used. Category selection is simulated.</li><li>Robot is a kinematic command model with no link inertias, motor torque, flexible dynamics, backlash, braking or calibration error.</li><li>Rigid package proxies simplify cardboard, cylinder and flexible pouch behavior. The ideal fixed-joint gripper cannot model slip, compliance, crush or force distribution.</li><li>Rapier determinism was measured for repeated same-environment initial conditions/build order; it is not claimed bit-identical across platforms. Kinematic links do not react physically to contact.</li><li>Placement acceptance is a package-center geometric/velocity predicate with simplified bin geometry; no simulated camera or real sensor verifies placement.</li><li>Route and trajectory checks are sampled. No continuous swept collision proof or human safety claim exists.</li><li>The 100-attempt sample uses three fixed package poses and one configured layout. Its 100% result is not a field reliability estimate. The 12 s median target was missed.</li></ul>
+<h2>Conclusion</h2>
+<p>SortLab demonstrates an integrated software path from package/category selection through reachable route planning, bounded trajectory motion, verified virtual grasp, physics stepping, release, settling-based bin classification, and return-home completion. Reproducible nominal and fault campaigns support the claim that this implementation meets the 95% nominal target under its fixed simulation conditions. The measured cycle speed does not meet the separate 12-second aspiration. The next engineering steps are swept-volume collision checking, dynamics and drive sizing, calibrated gripper/contact behavior, perception uncertainty, and a safeguarded physical validation campaign. These are future work, not completed capabilities.</p>
+<p><b>Change log.</b> V1.0 recorded feasibility assumptions; V2.0 added routes, physics, controller and dashboard; V3.0 added validation evidence and documented corrections. No faculty feedback is represented.</p>
+</section>
+
+<section class="page refs">
+<h1>References</h1>
+<p>[1] K. M. Lynch and F. C. Park, <i>Modern Robotics: Mechanics, Planning, and Control</i>. Cambridge University Press, 2017. DOI: 10.1017/9781316661239. Text resources: Chapter 4, forward kinematics, https://modernrobotics.northwestern.edu/chapters/chapter4/; Chapter 6, inverse kinematics, https://modernrobotics.northwestern.edu/chapters/chapter6/; Chapter 9, point-to-point trajectories, https://modernrobotics.northwestern.edu/nu-gm-book-resource/9-1-and-9-2-point-to-point-trajectories-part-2-of-2/. Accessed 18 Oct 2026.</p>
+<p>[2] Robotics Course Project Brief, “Robotics - Individual Design Project,” BCA UG Semester VII, Option 01, supplied course brief, accessed 18 Oct 2026. Original file: `Robotics Course Project Brief.docx` (Downloads).</p>
+<p>[3] SortLab project source and records: `src/engineering/config.ts`, `kinematics.ts`, `routes.ts`, `trajectory.ts`, `packagePhysics.ts`, `sortingController.ts`, `validation.ts`; `docs/ENGINEERING-BASELINE.md`; `docs/ARCHITECTURE.md`; `docs/PHASE-1-IMPLEMENTATION.md` through `docs/PHASE-6-VALIDATION.md`; `validation/README.md` and generated `validation/results/` files. Local software evidence, version audited 18 Oct 2026.</p>
+<p>[4] Dimforge, “Determinism,” Rapier JavaScript User’s Guide, <a href="https://rapier.rs/docs/user_guides/javascript/determinism/">https://rapier.rs/docs/user_guides/javascript/determinism/</a>. Notes same initial conditions and construction order for repeatability; accessed 18 Oct 2026.</p>
+<p>[5] Dimforge, “Rigid-body type,” Rapier JavaScript User’s Guide, <a href="https://rapier.rs/docs/user_guides/javascript/rigid_body_type/">https://rapier.rs/docs/user_guides/javascript/rigid_body_type/</a>. Kinematic bodies ignore contact forces; accessed 18 Oct 2026.</p>
+<p>[6] Occupational Safety and Health Administration, “Industrial Robot Systems and Industrial Robot System Safety,” Technical Manual, Section IV, Chapter 4, <a href="https://www.osha.gov/otm/section-4-safety-hazards/chapter-4">https://www.osha.gov/otm/section-4-safety-hazards/chapter-4</a>. Accessed 18 Oct 2026.</p>
+<p>[7] Occupational Safety and Health Administration, “Robotics: Hazards,” <a href="https://www.osha.gov/robotics/hazards">https://www.osha.gov/robotics/hazards</a>. Accessed 18 Oct 2026.</p>
+<h1>Appendix A — Reproduction and artifact index</h1>
+<p>In the project root, install dependencies from the lockfile and run `npm run validate:campaign`; to preserve this result, use `SORTLAB_CAMPAIGN_LABEL=phase7-grip-fix npm run validate:campaign`. The raw rows and generated summaries are `validation/results/nominal-phase7-grip-fix.json`, `nominal-phase7-grip-fix-summary.json`, `faults-phase7-grip-fix.json`, `faults-phase7-grip-fix-summary.json`, plus `numerics.json` and `physics.json`. The campaign writes these artifacts from actual production-path outcomes.</p>
+<p>Additional report sources: `docs/PHASE-7-DELIVERABLES-AUDIT.md` maps requirements to evidence and gaps; `docs/PHASE-7-DEMO-PLAN.md` is the timed software demonstration script; `docs/PHASE-7-VIVA-PREP.md` contains evidence-bound oral examination questions and answers. The real browser capture is `deliverables/assets/workcell-smoke-capture.png`.</p>
+<p><b>AI assistance disclosure:</b> AI assistance was used to organize evidence, draft documentation and report prose, and check consistency. The student must independently inspect the implementation, calculations and cited material, revise the submission, and comply with course disclosure rules.</p>
+</section>
+</body></html>

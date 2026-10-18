@@ -33,6 +33,8 @@ Numerical campaign: 5,000/5,000 FK→IK→FK samples; maximum position error 4.9
 
 **Evidence-backed defect correction:** the runtime virtual jaw-force gate had omitted configured vertical acceleration although its documented equation included it. `src/engineering/packagePhysics.ts` now computes `S m (g+a_z)/(2μ)`. A regression test with a 12 N/jaw cap rejects the L package at the expected 12.13 N. The follow-up campaign (`phase7-grip-fix`) reproduced the nominal 100/100 and fault 36/36 outcomes without changing placement criteria. This corrects a simulated safety-factor check only; it does not demonstrate real gripping force.
 
+The audit also found an old home-position note inconsistent with the actual configured joint vector. Current home joints are `(0,0,0.56,0)`; FK gives TCP `(+0.55,0,0.56) m`. The engineering baseline and report now state this computed pose. The earlier Mission 0 plan retains its historical preliminary estimate and should not be treated as the implemented home pose.
+
 ## Classification of report claims
 
 - **Measured software outputs:** campaign counts/outcomes/durations, fixed-step trace comparisons, FK/IK residuals, route sample ratios, Rapier snapshots and browser smoke behavior. Exact raw data: `validation/results/nominal-phase7-grip-fix.json`, its generated summary, fault raw/summary files, `numerics.json`, and `physics.json`.
