@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1050" height="750" viewBox="0 0 1050 750">
+  <defs>
+    <!-- Arrowhead markers -->
+    <marker id="arrow-amber" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#E5A842"/>
+    </marker>
+    <marker id="arrow-blue" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#246A8A"/>
+    </marker>
+    <marker id="arrow-periwinkle" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#738FD2"/>
+    </marker>
+    <marker id="arrow-axis" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#17324D"/>
+    </marker>
+    <marker id="arrow-axis-y" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#17324D"/>
+    </marker>
+  </defs>
+
+  <!-- White background -->
+  <rect width="1050" height="750" fill="#FFFFFF"/>
+
+  <!-- Faint grid lines at 0.1m = 36px intervals -->
+  <!-- Vertical grid lines -->
+  <g stroke="#EAEFF2" stroke-width="0.8" opacity="0.9">
+    <line x1="62" y1="20" x2="62" y2="730"/>
+    <line x1="98" y1="20" x2="98" y2="730"/>
+    <line x1="134" y1="20" x2="134" y2="730"/>
+    <line x1="170" y1="20" x2="170" y2="730"/>
+    <line x1="206" y1="20" x2="206" y2="730"/>
+    <line x1="242" y1="20" x2="242" y2="730"/>
+    <line x1="278" y1="20" x2="278" y2="730"/>
+    <line x1="314" y1="20" x2="314" y2="730"/>
+    <line x1="350" y1="20" x2="350" y2="730"/>
+    <line x1="386" y1="20" x2="386" y2="730"/>
+    <line x1="422" y1="20" x2="422" y2="730"/>
+    <line x1="458" y1="20" x2="458" y2="730"/>
+    <line x1="494" y1="20" x2="494" y2="730"/>
+    <line x1="530" y1="20" x2="530" y2="730"/>
+    <line x1="566" y1="20" x2="566" y2="730"/>
+    <line x1="602" y1="20" x2="602" y2="730"/>
+    <line x1="638" y1="20" x2="638" y2="730"/>
+    <line x1="674" y1="20" x2="674" y2="730"/>
+    <line x1="710" y1="20" x2="710" y2="730"/>
+    <line x1="746" y1="20" x2="746" y2="730"/>
+    <line x1="782" y1="20" x2="782" y2="730"/>
+    <line x1="818" y1="20" x2="818" y2="730"/>
+    <line x1="854" y1="20" x2="854" y2="730"/>
+    <line x1="890" y1="20" x2="890" y2="730"/>
+    <line x1="926" y1="20" x2="926" y2="730"/>
+    <line x1="962" y1="20" x2="962" y2="730"/>
+    <line x1="998" y1="20" x2="998" y2="730"/>
+  </g>
+  <!-- Horizontal grid lines -->
+  <g stroke="#EAEFF2" stroke-width="0.8" opacity="0.9">
+    <line x1="20" y1="54" x2="1030" y2="54"/>
+    <line x1="20" y1="90" x2="1030" y2="90"/>
+    <line x1="20" y1="126" x2="1030" y2="126"/>
+    <line x1="20" y1="162" x2="1030" y2="162"/>
+    <line x1="20" y1="198" x2="1030" y2="198"/>
+    <line x1="20" y1="234" x2="1030" y2="234"/>
+    <line x1="20" y1="270" x2="1030" y2="270"/>
+    <line x1="20" y1="306" x2="1030" y2="306"/>
+    <line x1="20" y1="342" x2="1030" y2="342"/>
+    <line x1="20" y1="378" x2="1030" y2="378"/>
+    <line x1="20" y1="414" x2="1030" y2="414"/>
+    <line x1="20" y1="450" x2="1030" y2="450"/>
+    <line x1="20" y1="486" x2="1030" y2="486"/>
+    <line x1="20" y1="522" x2="1030" y2="522"/>
+    <line x1="20" y1="558" x2="1030" y2="558"/>
+    <line x1="20" y1="594" x2="1030" y2="594"/>
+    <line x1="20" y1="630" x2="1030" y2="630"/>
+    <line x1="20" y1="666" x2="1030" y2="666"/>
+    <line x1="20" y1="702" x2="1030" y2="702"/>
+  </g>
+
+  <!-- Outer reach arc 0.55m = 198px, dashed teal -->
+  <circle cx="530" cy="450" r="198" fill="none" stroke="#168C8C" stroke-width="1.5" stroke-dasharray="8,5"/>
+  <text x="723" y="260" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#168C8C">Outer reach 0.55 m</text>
+
+  <!-- Inner dead zone arc 0.05m = 18px, dashed red -->
+  <circle cx="530" cy="450" r="18" fill="none" stroke="#C0392B" stroke-width="1.2" stroke-dasharray="4,3"/>
+  <text x="548" y="434" font-family="Arial, Helvetica, sans-serif" font-size="9" fill="#C0392B">dead zone</text>
+
+  <!-- World frame axes -->
+  <!-- X axis (right, toward positive X = forward) -->
+  <line x1="530" y1="450" x2="620" y2="450" stroke="#17324D" stroke-width="2" marker-end="url(#arrow-axis)"/>
+  <text x="626" y="454" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#17324D" font-weight="bold">+X (forward)</text>
+  <!-- Y axis (up in SVG = positive Y lateral) -->
+  <line x1="530" y1="450" x2="530" y2="360" stroke="#17324D" stroke-width="2" marker-end="url(#arrow-axis-y)"/>
+  <text x="504" y="353" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#17324D" font-weight="bold">+Y (lateral)</text>
+
+  <!-- Conveyor rectangle: centre at (0.34,0) = px(652,450), 162×72px -->
+  <rect x="571" y="414" width="162" height="72" fill="#EDF2F4" stroke="#5C6B78" stroke-width="1.5" rx="4"/>
+  <text x="652" y="447" font-family="Arial, Helvetica, sans-serif" font-size="12" fill="#5C6B78" text-anchor="middle" font-weight="bold">Conveyor</text>
+  <text x="652" y="463" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#5C6B78" text-anchor="middle">Belt surface</text>
+
+  <!-- Bins: each 86×79px -->
+  <!-- B1 at (-0.24,+0.25) = px(444, 360) -->
+  <rect x="401" y="320" width="86" height="79" fill="#C8EAE5" stroke="#168C8C" stroke-width="2" rx="3"/>
+  <text x="444" y="344" font-family="Arial, Helvetica, sans-serif" font-size="12" fill="#17324D" text-anchor="middle" font-weight="bold">B1</text>
+  <text x="444" y="360" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#17324D" text-anchor="middle">Small</text>
+  <text x="444" y="374" font-family="Arial, Helvetica, sans-serif" font-size="9" fill="#5C6B78" text-anchor="middle">(-0.24, +0.25)</text>
+  <text x="444" y="388" font-family="Arial, Helvetica, sans-serif" font-size="9" fill="#5C6B78" text-anchor="middle">→ B1</text>
+
+  <!-- B2 at (-0.24,0.00) = px(444, 450) -->
+  <rect x="401" y="411" width="86" height="79" fill="#EAF2F5" stroke="#246A8A" stroke-width="2" rx="3"/>
+  <text x="444" y="435" font-family="Arial, Helvetica, sans-serif" font-size="12" fill="#17324D" text-anchor="middle" font-weight="bold">B2</text>
+  <text x="444" y="451" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#17324D" text-anchor="middle">Medium</text>
+  <text x="444" y="465" font-family="Arial, Helvetica, sans-serif" font-size="9" fill="#5C6B78" text-anchor="middle">(-0.24, 0.00)</text>
+  <text x="444" y="479" font-family="Arial, Helvetica, sans-serif" font-size="9" fill="#5C6B78" text-anchor="middle">→ B2</text>
+
+  <!-- B3 at (-0.24,-0.25) = px(444, 540) -->
+  <rect x="401" y="501" width="86" height="79" fill="#E8EBF7" stroke="#738FD2" stroke-width="2" rx="3"/>
+  <text x="444" y="525" font-family="Arial, Helvetica, sans-serif" font-size="12" fill="#17324D" text-anchor="middle" font-weight="bold">B3</text>
+  <text x="444" y="541" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#17324D" text-anchor="middle">Large</text>
+  <text x="444" y="555" font-family="Arial, Helvetica, sans-serif" font-size="9" fill="#5C6B78" text-anchor="middle">(-0.24, -0.25)</text>
+  <text x="444" y="569" font-family="Arial, Helvetica, sans-serif" font-size="9" fill="#5C6B78" text-anchor="middle">→ B3</text>
+
+  <!-- ===== ROUTE B1 (amber #E5A842) ===== -->
+  <!-- Pickup(638,450) → Transit WP3(573,306) → B1 target(444,360) -->
+  <polyline points="638,450 573,306 444,360" fill="none" stroke="#E5A842" stroke-width="2.5" marker-mid="url(#arrow-amber)" marker-end="url(#arrow-amber)"/>
+
+  <!-- Route B1 waypoint circles -->
+  <!-- WP3 Transit B1 at (573,306) -->
+  <circle cx="573" cy="306" r="7" fill="#E5A842" stroke="#FFFFFF" stroke-width="1.5"/>
+  <text x="582" y="298" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#E5A842" font-weight="bold">WP3-B1</text>
+  <text x="582" y="310" font-family="Arial, Helvetica, sans-serif" font-size="9" fill="#5C6B78">Transit(+0.12,+0.40)</text>
+
+  <!-- ===== ROUTE B2 (steel blue #246A8A, dashed) ===== -->
+  <!-- Pickup(638,450) → Transit WP3(573,306) → B2 approach(444,450) -->
+  <polyline points="638,450 573,306 444,450" fill="none" stroke="#246A8A" stroke-width="2" stroke-dasharray="10,5" marker-end="url(#arrow-blue)"/>
+
+  <!-- WP3 Transit B2 shares (573,306) - already drawn for B1 -->
+  <text x="582" y="322" font-family="Arial, Helvetica, sans-serif" font-size="9" fill="#246A8A">WP3-B2 (same transit)</text>
+
+  <!-- ===== ROUTE B3 (periwinkle #738FD2, dashed) ===== -->
+  <!-- Pickup(638,450) → Transit B3(573,594) → B3(444,540) -->
+  <polyline points="638,450 573,594 444,540" fill="none" stroke="#738FD2" stroke-width="2" stroke-dasharray="6,4" marker-end="url(#arrow-periwinkle)"/>
+
+  <!-- WP3 Transit B3 at (573,594) -->
+  <circle cx="573" cy="594" r="7" fill="#738FD2" stroke="#FFFFFF" stroke-width="1.5"/>
+  <text x="582" y="590" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#738FD2" font-weight="bold">WP3-B3</text>
+  <text x="582" y="602" font-family="Arial, Helvetica, sans-serif" font-size="9" fill="#5C6B78">Transit(+0.12,−0.40)</text>
+
+  <!-- Pickup point P at (638,450) - orange filled circle -->
+  <circle cx="638" cy="450" r="8" fill="#E9A34C" stroke="#FFFFFF" stroke-width="2"/>
+  <text x="648" y="444" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#E9A34C" font-weight="bold">WP1 / P</text>
+  <text x="648" y="456" font-family="Arial, Helvetica, sans-serif" font-size="9" fill="#5C6B78">(0.30, 0.00)</text>
+
+  <!-- Home H at same XY as P - teal circle above pickup label -->
+  <circle cx="638" cy="430" r="6" fill="#168C8C" stroke="#FFFFFF" stroke-width="1.5"/>
+  <text x="648" y="428" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#168C8C" font-weight="bold">H (Home)</text>
+  <text x="648" y="440" font-family="Arial, Helvetica, sans-serif" font-size="9" fill="#5C6B78">Z=0.56 m (above)</text>
+
+  <!-- WP2 Clearance annotation -->
+  <rect x="530" y="388" width="95" height="38" fill="#FFF9EE" stroke="#E5A842" stroke-width="1" rx="3"/>
+  <text x="577" y="403" font-family="Arial, Helvetica, sans-serif" font-size="9" fill="#5C6B78" text-anchor="middle">WP2: Clearance</text>
+  <text x="577" y="415" font-family="Arial, Helvetica, sans-serif" font-size="9" fill="#5C6B78" text-anchor="middle">Z-only lift (same XY)</text>
+  <line x1="625" y1="407" x2="638" y2="440" stroke="#E5A842" stroke-width="1" stroke-dasharray="3,2"/>
+
+  <!-- WP4/WP5 labels at B1 -->
+  <text x="395" y="310" font-family="Arial, Helvetica, sans-serif" font-size="9" fill="#E5A842" text-anchor="end" font-weight="bold">WP4/WP5</text>
+  <text x="395" y="322" font-family="Arial, Helvetica, sans-serif" font-size="9" fill="#5C6B78" text-anchor="end">Approach/Target B1</text>
+
+  <!-- WP4 label at B2 -->
+  <text x="395" y="445" font-family="Arial, Helvetica, sans-serif" font-size="9" fill="#246A8A" text-anchor="end" font-weight="bold">WP4</text>
+  <text x="395" y="457" font-family="Arial, Helvetica, sans-serif" font-size="9" fill="#5C6B78" text-anchor="end">Approach/Target B2</text>
+
+  <!-- WP4 label at B3 -->
+  <text x="395" y="534" font-family="Arial, Helvetica, sans-serif" font-size="9" fill="#738FD2" text-anchor="end" font-weight="bold">WP4</text>
+  <text x="395" y="546" font-family="Arial, Helvetica, sans-serif" font-size="9" fill="#5C6B78" text-anchor="end">Approach/Target B3</text>
+
+  <!-- Base circle at (530,450) -->
+  <circle cx="530" cy="450" r="29" fill="#17324D" stroke="#FFFFFF" stroke-width="2"/>
+  <text x="530" y="447" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">Base</text>
+  <text x="530" y="459" font-family="Arial, Helvetica, sans-serif" font-size="9" fill="#AABBCC" text-anchor="middle">O(0,0)</text>
+
+  <!-- Legend box top right -->
+  <rect x="850" y="30" width="180" height="160" fill="#F8FAFB" stroke="#5C6B78" stroke-width="1.5" rx="5"/>
+  <text x="940" y="50" font-family="Arial, Helvetica, sans-serif" font-size="12" fill="#17324D" text-anchor="middle" font-weight="bold">Legend</text>
+  <!-- B1 route -->
+  <line x1="865" y1="65" x2="900" y2="65" stroke="#E5A842" stroke-width="2.5"/>
+  <circle cx="882" cy="65" r="4" fill="#E5A842"/>
+  <text x="908" y="69" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#333">Route B1 (Small)</text>
+  <!-- B2 route -->
+  <line x1="865" y1="88" x2="900" y2="88" stroke="#246A8A" stroke-width="2" stroke-dasharray="7,3"/>
+  <text x="908" y="92" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#333">Route B2 (Medium)</text>
+  <!-- B3 route -->
+  <line x1="865" y1="111" x2="900" y2="111" stroke="#738FD2" stroke-width="2" stroke-dasharray="5,3"/>
+  <text x="908" y="115" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#333">Route B3 (Large)</text>
+  <!-- Waypoint -->
+  <circle cx="882" cy="134" r="5" fill="#E5A842" stroke="#FFFFFF" stroke-width="1.5"/>
+  <text x="908" y="138" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#333">Waypoint</text>
+  <!-- Reach envelope -->
+  <line x1="865" y1="157" x2="900" y2="157" stroke="#168C8C" stroke-width="1.5" stroke-dasharray="6,4"/>
+  <text x="908" y="161" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#333">Reach envelope</text>
+
+  <!-- Scale indicator -->
+  <line x1="50" y1="700" x2="86" y2="700" stroke="#5C6B78" stroke-width="2"/>
+  <line x1="50" y1="695" x2="50" y2="705" stroke="#5C6B78" stroke-width="2"/>
+  <line x1="86" y1="695" x2="86" y2="705" stroke="#5C6B78" stroke-width="2"/>
+  <text x="68" y="718" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#5C6B78" text-anchor="middle">0.10 m</text>
+  <text x="68" y="730" font-family="Arial, Helvetica, sans-serif" font-size="9" fill="#5C6B78" text-anchor="middle">Scale: 1m = 360 px</text>
+
+  <!-- Note box bottom -->
+  <rect x="130" y="690" width="700" height="50" fill="#F0F4F8" stroke="#C0C8D0" stroke-width="1" rx="4"/>
+  <text x="480" y="710" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#5C6B78" text-anchor="middle" font-style="italic">Note: Clearance waypoints (WP2) are Z-only moves at the same XY as pickup; not visible in this top view.</text>
+  <text x="480" y="726" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#5C6B78" text-anchor="middle" font-style="italic">Transit corridor avoids singularity region near base.</text>
+
+  <!-- Title -->
+  <text x="30" y="35" font-family="Arial, Helvetica, sans-serif" font-size="16" fill="#17324D" font-weight="bold">Fig. V3-10: Motion Paths and Labelled Waypoints (X-Y Top View)</text>
+  <text x="30" y="55" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#5C6B78" font-style="italic">Three planned routes shown; Z clearance moves occur at vertical segments (not shown in top view)   [configured values]</text>
+</svg>

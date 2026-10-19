@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="950" height="700" viewBox="0 0 950 700">
+  <defs>
+    <marker id="arr" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#17324D"/>
+    </marker>
+    <marker id="arr-teal" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#168C8C"/>
+    </marker>
+    <marker id="arr-amber" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#E5A842"/>
+    </marker>
+    <marker id="dim-arr" markerWidth="8" markerHeight="6" refX="4" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#5C6B78"/>
+    </marker>
+    <marker id="dim-arr-start" markerWidth="8" markerHeight="6" refX="4" refY="3" orient="auto-start-reverse">
+      <polygon points="0 0, 8 3, 0 6" fill="#5C6B78"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="950" height="700" fill="#FAFAFA"/>
+
+  <!-- Title -->
+  <text x="475" y="36" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="bold" fill="#17324D" text-anchor="middle">Fig. V2-3: End-Effector and Gripper Design</text>
+  <text x="475" y="55" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#5C6B78" text-anchor="middle">Parallel-jaw gripper — all dimensions are provisional configuration values. No physical gripper manufactured or tested.</text>
+
+  <!-- ===== TOP HALF — GRIPPER VIEWS ===== -->
+  <!-- Section label -->
+  <text x="40" y="82" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="bold" fill="#246A8A">Gripper Views</text>
+  <line x1="40" y1="86" x2="910" y2="86" stroke="#C8D6E0" stroke-width="1.5"/>
+
+  <!-- ====== FRONT VIEW (left side) ====== -->
+  <text x="185" y="105" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="bold" fill="#5C6B78" text-anchor="middle">Front View</text>
+
+  <!-- TCP reference line -->
+  <line x1="80" y1="130" x2="300" y2="130" stroke="#C0392B" stroke-width="1.5" stroke-dasharray="8,4"/>
+  <text x="310" y="134" font-family="Arial, Helvetica, sans-serif" font-size="9.5" fill="#C0392B" font-weight="bold">TCP</text>
+  <circle cx="185" cy="130" r="5" fill="none" stroke="#C0392B" stroke-width="2"/>
+  <line x1="185" y1="125" x2="185" y2="135" stroke="#C0392B" stroke-width="2"/>
+  <line x1="180" y1="130" x2="190" y2="130" stroke="#C0392B" stroke-width="2"/>
+
+  <!-- Palm body -->
+  <rect x="148" y="132" width="75" height="18" rx="3" fill="#17324D" stroke="#17324D" stroke-width="2"/>
+  <text x="185" y="145" font-family="Arial, Helvetica, sans-serif" font-size="8" fill="white" text-anchor="middle">Palm 75×40×18mm</text>
+
+  <!-- LEFT JAW (closed position) -->
+  <rect x="148" y="152" width="28" height="35" rx="2" fill="#246A8A" stroke="#17324D" stroke-width="2"/>
+  <text x="162" y="185" font-family="Arial, Helvetica, sans-serif" font-size="7.5" fill="white" text-anchor="middle">Jaw L</text>
+
+  <!-- RIGHT JAW (closed position) -->
+  <rect x="196" y="152" width="28" height="35" rx="2" fill="#246A8A" stroke="#17324D" stroke-width="2"/>
+  <text x="210" y="185" font-family="Arial, Helvetica, sans-serif" font-size="7.5" fill="white" text-anchor="middle">Jaw R</text>
+
+  <!-- Package between jaws -->
+  <rect x="176" y="155" width="22" height="29" rx="1" fill="#E9A34C" stroke="#C0392B" stroke-width="1.5"/>
+  <text x="187" y="174" font-family="Arial, Helvetica, sans-serif" font-size="7" fill="white" text-anchor="middle">PKG</text>
+
+  <!-- JAW PADS -->
+  <rect x="174" y="155" width="4" height="18" rx="1" fill="#168C8C"/>
+  <rect x="194" y="155" width="4" height="18" rx="1" fill="#168C8C"/>
+  <text x="165" y="163" font-family="Arial, Helvetica, sans-serif" font-size="7" fill="#168C8C" text-anchor="end">Pad</text>
+  <text x="205" y="163" font-family="Arial, Helvetica, sans-serif" font-size="7" fill="#168C8C">Pad</text>
+
+  <!-- OPEN POSITION (dashed) -->
+  <rect x="106" y="152" width="28" height="35" rx="2" fill="none" stroke="#5C6B78" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <rect x="238" y="152" width="28" height="35" rx="2" fill="none" stroke="#5C6B78" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <text x="120" y="202" font-family="Arial, Helvetica, sans-serif" font-size="8" fill="#5C6B78" text-anchor="middle">Open</text>
+  <text x="252" y="202" font-family="Arial, Helvetica, sans-serif" font-size="8" fill="#5C6B78" text-anchor="middle">Open</text>
+
+  <!-- Jaw opening dimension arrows (open position) -->
+  <line x1="108" y1="215" x2="264" y2="215" stroke="#5C6B78" stroke-width="1.5" marker-start="url(#dim-arr-start)" marker-end="url(#dim-arr)"/>
+  <text x="186" y="228" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#5C6B78" text-anchor="middle" font-weight="bold">Max opening: 160 mm</text>
+
+  <!-- Closed jaw opening dimension -->
+  <line x1="150" y1="208" x2="224" y2="208" stroke="#246A8A" stroke-width="1.5" marker-start="url(#dim-arr-start)" marker-end="url(#dim-arr)"/>
+  <text x="186" y="220" font-family="Arial, Helvetica, sans-serif" font-size="8.5" fill="#246A8A" text-anchor="middle">30 mm min</text>
+
+  <!-- Labels for front view -->
+  <text x="100" y="248" font-family="Arial, Helvetica, sans-serif" font-size="9.5" fill="#17324D" font-weight="bold">Parallel-jaw gripper</text>
+  <text x="100" y="262" font-family="Arial, Helvetica, sans-serif" font-size="9" fill="#5C6B78">Jaw pads: 35 mm long, 8 mm thick</text>
+  <text x="100" y="275" font-family="Arial, Helvetica, sans-serif" font-size="9" fill="#5C6B78">Contact height: 18 mm above TCP</text>
+  <text x="100" y="288" font-family="Arial, Helvetica, sans-serif" font-size="9" fill="#5C6B78">Palm body: 75 × 40 × 18 mm</text>
+
+  <!-- ====== SIDE VIEW (right of front view) ====== -->
+  <text x="470" y="105" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="bold" fill="#5C6B78" text-anchor="middle">Side View</text>
+
+  <!-- TCP ref line side -->
+  <line x1="370" y1="130" x2="580" y2="130" stroke="#C0392B" stroke-width="1.5" stroke-dasharray="8,4"/>
+  <text x="585" y="134" font-family="Arial, Helvetica, sans-serif" font-size="9.5" fill="#C0392B">TCP ref</text>
+
+  <!-- Palm body (side view): 40 mm wide shown as ~60px, 18mm height ~26px -->
+  <rect x="440" y="132" width="60" height="26" rx="3" fill="#17324D" stroke="#17324D" stroke-width="2"/>
+  <text x="470" y="149" font-family="Arial, Helvetica, sans-serif" font-size="8.5" fill="white" text-anchor="middle">Palm (side)</text>
+
+  <!-- Jaw body from side — single rectangle representing one jaw + package -->
+  <rect x="450" y="158" width="40" height="35" rx="2" fill="#246A8A" stroke="#17324D" stroke-width="2"/>
+  <text x="470" y="180" font-family="Arial, Helvetica, sans-serif" font-size="8" fill="white" text-anchor="middle">Jaw depth</text>
+
+  <!-- Palm offset dimension -->
+  <line x1="580" y1="130" x2="580" y2="195" stroke="#5C6B78" stroke-width="1.5" marker-start="url(#dim-arr-start)" marker-end="url(#dim-arr)"/>
+  <text x="588" y="148" font-family="Arial, Helvetica, sans-serif" font-size="9" fill="#5C6B78">Palm offset</text>
+  <text x="588" y="160" font-family="Arial, Helvetica, sans-serif" font-size="9" fill="#5C6B78">65 mm</text>
+  <text x="588" y="172" font-family="Arial, Helvetica, sans-serif" font-size="9" fill="#5C6B78">above TCP</text>
+
+  <!-- Z arrow side view -->
+  <line x1="390" y1="220" x2="390" y2="100" stroke="#C0392B" stroke-width="2" marker-end="url(#arr-teal)"/>
+  <text x="383" y="96" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="bold" fill="#C0392B">Z</text>
+
+  <!-- Side view annotation -->
+  <text x="370" y="248" font-family="Arial, Helvetica, sans-serif" font-size="9.5" fill="#17324D" font-weight="bold">Side profile</text>
+  <text x="370" y="262" font-family="Arial, Helvetica, sans-serif" font-size="9" fill="#5C6B78">Palm depth: 40 mm</text>
+  <text x="370" y="275" font-family="Arial, Helvetica, sans-serif" font-size="9" fill="#5C6B78">Total gripper height: ~65 mm below TCP</text>
+  <text x="370" y="288" font-family="Arial, Helvetica, sans-serif" font-size="9" fill="#5C6B78">Jaw pad friction μ = 0.50 (assumed)</text>
+
+  <!-- Grip force diagram — right portion of top half -->
+  <rect x="640" y="90" width="280" height="210" rx="6" fill="#EAF2F5" stroke="#246A8A" stroke-width="1.5"/>
+  <text x="780" y="112" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="bold" fill="#17324D" text-anchor="middle">Grip Force Model</text>
+  <line x1="652" y1="118" x2="908" y2="118" stroke="#246A8A" stroke-width="1"/>
+  <text x="652" y="135" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#17324D">Virtual jaw force:  F = 25 N per jaw</text>
+  <text x="652" y="152" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#17324D">Friction coeff:     μ = 0.50 (assumed)</text>
+  <text x="652" y="169" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#17324D">Grip force:         Fg = 2 × F × μ</text>
+  <text x="652" y="186" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#246A8A">            Fg = 2 × 25 × 0.50 = 25 N</text>
+  <text x="652" y="203" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#17324D">Safety factor:      SF = 2×</text>
+  <text x="652" y="220" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#17324D">Max payload (virtual):</text>
+  <text x="652" y="237" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#168C8C">  m_max = Fg / (SF × g) = 0.64 kg</text>
+  <text x="652" y="254" font-family="Arial, Helvetica, sans-serif" font-size="9" fill="#5C6B78" font-style="italic">  (at a_z=0.30 m/s², g=9.81 m/s²)</text>
+  <text x="652" y="270" font-family="Arial, Helvetica, sans-serif" font-size="9" fill="#E5A842" font-style="italic">  Covers L-class pkg (0.60 kg) with margin</text>
+  <text x="652" y="287" font-family="Arial, Helvetica, sans-serif" font-size="9" fill="#5C6B78" font-style="italic">  assumed values — not actuator specifications</text>
+
+  <!-- ===== BOTTOM HALF — SPECIFICATION TABLE ===== -->
+  <line x1="30" y1="315" x2="920" y2="315" stroke="#C8D6E0" stroke-width="1.5"/>
+  <text x="40" y="334" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="bold" fill="#246A8A">Gripper Specification Table</text>
+
+  <!-- Table header -->
+  <rect x="30" y="342" width="890" height="26" rx="3" fill="#17324D"/>
+  <text x="180" y="359" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="bold" fill="white" text-anchor="middle">Parameter</text>
+  <text x="460" y="359" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="bold" fill="white" text-anchor="middle">Value</text>
+  <text x="750" y="359" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="bold" fill="white" text-anchor="middle">Note</text>
+  <line x1="330" y1="342" x2="330" y2="685" stroke="#C8D6E0" stroke-width="1.5"/>
+  <line x1="590" y1="342" x2="590" y2="685" stroke="#C8D6E0" stroke-width="1.5"/>
+
+  <!-- Table rows -->
+  <!-- Row data: param, value, note -->
+  <!-- Row 1 -->
+  <rect x="30" y="368" width="890" height="28" fill="#EAF2F5"/>
+  <text x="55" y="386" font-family="Arial, Helvetica, sans-serif" font-size="10.5" fill="#17324D">Jaw opening (min)</text>
+  <text x="350" y="386" font-family="Arial, Helvetica, sans-serif" font-size="10.5" fill="#17324D">30 mm</text>
+  <text x="605" y="386" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#5C6B78">Minimum package width capture</text>
+
+  <!-- Row 2 -->
+  <rect x="30" y="396" width="890" height="28" fill="#FAFAFA"/>
+  <text x="55" y="414" font-family="Arial, Helvetica, sans-serif" font-size="10.5" fill="#17324D">Jaw opening (max)</text>
+  <text x="350" y="414" font-family="Arial, Helvetica, sans-serif" font-size="10.5" fill="#17324D">160 mm</text>
+  <text x="605" y="414" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#5C6B78">Assumes package width ≤ 120 mm (configured)</text>
+
+  <!-- Row 3 -->
+  <rect x="30" y="424" width="890" height="28" fill="#EAF2F5"/>
+  <text x="55" y="442" font-family="Arial, Helvetica, sans-serif" font-size="10.5" fill="#17324D">Virtual jaw force</text>
+  <text x="350" y="442" font-family="Arial, Helvetica, sans-serif" font-size="10.5" fill="#17324D">25 N per jaw</text>
+  <text x="605" y="442" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#5C6B78">Design assumption, not actuator rating</text>
+
+  <!-- Row 4 -->
+  <rect x="30" y="452" width="890" height="28" fill="#FAFAFA"/>
+  <text x="55" y="470" font-family="Arial, Helvetica, sans-serif" font-size="10.5" fill="#17324D">Palm size (L×W×H)</text>
+  <text x="350" y="470" font-family="Arial, Helvetica, sans-serif" font-size="10.5" fill="#17324D">75 × 40 × 18 mm</text>
+  <text x="605" y="470" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#5C6B78">Schematic geometry — not manufactured</text>
+
+  <!-- Row 5 -->
+  <rect x="30" y="480" width="890" height="28" fill="#EAF2F5"/>
+  <text x="55" y="498" font-family="Arial, Helvetica, sans-serif" font-size="10.5" fill="#17324D">Pad size</text>
+  <text x="350" y="498" font-family="Arial, Helvetica, sans-serif" font-size="10.5" fill="#17324D">35 × 8 mm face</text>
+  <text x="605" y="498" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#5C6B78">Virtual contact surface</text>
+
+  <!-- Row 6 -->
+  <rect x="30" y="508" width="890" height="28" fill="#FAFAFA"/>
+  <text x="55" y="526" font-family="Arial, Helvetica, sans-serif" font-size="10.5" fill="#17324D">Friction coefficient μ</text>
+  <text x="350" y="526" font-family="Arial, Helvetica, sans-serif" font-size="10.5" fill="#17324D">0.50 (assumed)</text>
+  <text x="605" y="526" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#5C6B78">Common grip surface estimate</text>
+
+  <!-- Row 7 -->
+  <rect x="30" y="536" width="890" height="28" fill="#EAF2F5"/>
+  <text x="55" y="554" font-family="Arial, Helvetica, sans-serif" font-size="10.5" fill="#17324D">Safety factor</text>
+  <text x="350" y="554" font-family="Arial, Helvetica, sans-serif" font-size="10.5" fill="#17324D">2×</text>
+  <text x="605" y="554" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#5C6B78">Applied to grip force requirement</text>
+
+  <!-- Row 8 -->
+  <rect x="30" y="564" width="890" height="28" fill="#FAFAFA"/>
+  <text x="55" y="582" font-family="Arial, Helvetica, sans-serif" font-size="10.5" fill="#17324D">Max payload (virtual)</text>
+  <text x="350" y="582" font-family="Arial, Helvetica, sans-serif" font-size="10.5" fill="#168C8C" font-weight="bold">0.60 kg (L-class)</text>
+  <text x="605" y="582" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#5C6B78">At SF=2, μ=0.50, a_z=0.30 m/s²</text>
+
+  <!-- Table border -->
+  <rect x="30" y="342" width="890" height="250" fill="none" stroke="#17324D" stroke-width="1.5" rx="3"/>
+  <line x1="30" y1="368" x2="920" y2="368" stroke="#17324D" stroke-width="1"/>
+  <line x1="30" y1="396" x2="920" y2="396" stroke="#C8D6E0" stroke-width="1"/>
+  <line x1="30" y1="424" x2="920" y2="424" stroke="#C8D6E0" stroke-width="1"/>
+  <line x1="30" y1="452" x2="920" y2="452" stroke="#C8D6E0" stroke-width="1"/>
+  <line x1="30" y1="480" x2="920" y2="480" stroke="#C8D6E0" stroke-width="1"/>
+  <line x1="30" y1="508" x2="920" y2="508" stroke="#C8D6E0" stroke-width="1"/>
+  <line x1="30" y1="536" x2="920" y2="536" stroke="#C8D6E0" stroke-width="1"/>
+  <line x1="30" y1="564" x2="920" y2="564" stroke="#C8D6E0" stroke-width="1"/>
+
+  <!-- Package class legend -->
+  <rect x="30" y="605" width="890" height="40" rx="4" fill="#F8FAFB" stroke="#C8D6E0" stroke-width="1.5"/>
+  <text x="50" y="622" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="bold" fill="#5C6B78">Package classes:</text>
+  <rect x="170" y="610" width="18" height="14" rx="2" fill="#E9A34C"/>
+  <text x="194" y="622" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#17324D">S (Small, 0.10 kg)</text>
+  <rect x="320" y="610" width="18" height="14" rx="2" fill="#59AD9A"/>
+  <text x="344" y="622" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#17324D">M (Medium, 0.30 kg)</text>
+  <rect x="490" y="610" width="18" height="14" rx="2" fill="#738FD2"/>
+  <text x="514" y="622" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#17324D">L (Large, 0.60 kg) — design max payload</text>
+  <text x="50" y="638" font-family="Arial, Helvetica, sans-serif" font-size="9.5" fill="#5C6B78" font-style="italic">All class parameters are configured values — not measured from physical packages.</text>
+
+  <!-- Bottom note -->
+  <rect x="30" y="654" width="890" height="24" rx="4" fill="#FFF8EC" stroke="#E5A842" stroke-width="1.5"/>
+  <text x="475" y="670" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#5C6B78" text-anchor="middle">⚠  All dimensions are provisional configuration values. No physical gripper has been manufactured or tested.</text>
+</svg>

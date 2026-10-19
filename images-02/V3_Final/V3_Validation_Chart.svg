@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="430" viewBox="0 0 1200 430">
+<defs><marker id="arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0 0 L10 4 L0 8 Z" fill="#246A8A"/></marker><marker id="tealArrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0 0 L10 4 L0 8 Z" fill="#168C8C"/></marker></defs>
+<rect width="100%" height="100%" fill="#FFFFFF"/>
+<style>text{font-family:Arial,sans-serif;fill:#24313D}.title{font-size:28px;font-weight:700;fill:#17324D}.label{font-size:24px}.small{font-size:21px}.tiny{font-size:18px}.axis{stroke:#5C6B78;stroke-width:2}.arm{stroke:#246A8A;stroke-width:16;stroke-linecap:round}.joint{fill:#FFFFFF;stroke:#17324D;stroke-width:4}.path{fill:none;stroke:#168C8C;stroke-width:5;stroke-dasharray:12 8}.solid{fill:#EAF2F5;stroke:#246A8A;stroke-width:2}.concept{fill:#F8FAFB;stroke:#738594;stroke-width:2;stroke-dasharray:8 6}.bin{fill:#EAF2F5;stroke:#246A8A;stroke-width:3}.package{fill:#E5A842;stroke:#9A6722;stroke-width:2}.muted{fill:#5C6B78}.good{fill:#168C8C}.bad{fill:#B45A4A}</style>
+<text x="38" y="42" class="title">Measured cycle-time ranges by package category</text>
+<text x="62" y="91" class="small">Simulated seconds · min–max line; mean diamond; all attempts accepted.</text>
+<line x1="220.0" y1="102" x2="220.0" y2="330" stroke="#DCE4E8" stroke-width="1"/><text x="209.0" y="362" class="small">28</text>
+<line x1="266.9" y1="102" x2="266.9" y2="330" stroke="#DCE4E8" stroke-width="1"/><text x="255.9" y="362" class="small">30</text>
+<line x1="313.7" y1="102" x2="313.7" y2="330" stroke="#DCE4E8" stroke-width="1"/><text x="302.7" y="362" class="small">32</text>
+<line x1="360.6" y1="102" x2="360.6" y2="330" stroke="#DCE4E8" stroke-width="1"/><text x="349.6" y="362" class="small">34</text>
+<line x1="407.4" y1="102" x2="407.4" y2="330" stroke="#DCE4E8" stroke-width="1"/><text x="396.4" y="362" class="small">36</text>
+<line x1="220" y1="330" x2="1040" y2="330" class="axis"/>
+<text x="90" y="128" class="label">S → B1</text>
+<line x1="275.1" y1="120" x2="275.1" y2="120" stroke="#246A8A" stroke-width="12" stroke-linecap="round"/>
+<path d="M 275.1 109 l 11 11 -11 11 -11 -11 Z" fill="#E5A842" stroke="#9A6722" stroke-width="2"/>
+<text x="293.1" y="127" class="small">mean 30.35 · n=34, 34/34 accepted</text>
+<text x="90" y="202" class="label">M → B2</text>
+<line x1="308.6" y1="194" x2="308.6" y2="194" stroke="#246A8A" stroke-width="12" stroke-linecap="round"/>
+<path d="M 308.6 183 l 11 11 -11 11 -11 -11 Z" fill="#E5A842" stroke="#9A6722" stroke-width="2"/>
+<text x="326.6" y="201" class="small">mean 31.78 · n=33, 33/33 accepted</text>
+<text x="90" y="276" class="label">L → B3</text>
+<line x1="264.9" y1="268" x2="264.9" y2="268" stroke="#246A8A" stroke-width="12" stroke-linecap="round"/>
+<path d="M 264.9 257 l 11 11 -11 11 -11 -11 Z" fill="#E5A842" stroke="#9A6722" stroke-width="2"/>
+<text x="282.9" y="275" class="small">mean 29.92 · n=33, 33/33 accepted</text>
+<text x="65" y="395" class="tiny muted">Dots/intervals are computed from the checked-in 100-row campaign; not wall-clock or hardware cycle times.</text>
+</svg>

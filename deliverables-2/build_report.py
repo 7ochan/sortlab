@@ -28,12 +28,13 @@ OUT = Path(__file__).resolve().parent
 DIAGRAMS = OUT / "diagrams"
 IMAGES = OUT / "images"
 REPORT = OUT / "SortLab-Final-Report.docx"
-RAW_PATH = ROOT / "validation/results/nominal-phase7-grip-fix.json"
-SUMMARY_PATH = ROOT / "validation/results/nominal-phase7-grip-fix-summary.json"
-FAULT_PATH = ROOT / "validation/results/faults-phase7-grip-fix-summary.json"
-NUMERICS_PATH = ROOT / "validation/results/numerics.json"
-PHYSICS_PATH = ROOT / "validation/results/physics.json"
-SCREENSHOT = ROOT / "deliverables/assets/workcell-smoke-capture.png"
+DATA = OUT / "source-data"
+RAW_PATH = DATA / "nominal-phase7-grip-fix.json"
+SUMMARY_PATH = DATA / "nominal-phase7-grip-fix-summary.json"
+FAULT_PATH = DATA / "faults-phase7-grip-fix-summary.json"
+NUMERICS_PATH = DATA / "numerics.json"
+PHYSICS_PATH = DATA / "physics.json"
+SCREENSHOT = IMAGES / "browser-workcell-smoke.png"
 
 NAVY = "17324D"
 BLUE = "246A8A"
@@ -102,7 +103,7 @@ def svg_start(width: int, height: int, title: str) -> list[str]:
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}">',
         '<defs><marker id="arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0 0 L10 4 L0 8 Z" fill="#246A8A"/></marker><marker id="tealArrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0 0 L10 4 L0 8 Z" fill="#168C8C"/></marker></defs>',
         '<rect width="100%" height="100%" fill="#FFFFFF"/>',
-        '<style>text{font-family:Arial,sans-serif;fill:#24313D}.title{font-size:25px;font-weight:700;fill:#17324D}.label{font-size:18px}.small{font-size:15px}.tiny{font-size:13px}.axis{stroke:#5C6B78;stroke-width:2}.arm{stroke:#246A8A;stroke-width:16;stroke-linecap:round}.joint{fill:#FFFFFF;stroke:#17324D;stroke-width:4}.path{fill:none;stroke:#168C8C;stroke-width:5;stroke-dasharray:12 8}.solid{fill:#EAF2F5;stroke:#246A8A;stroke-width:2}.concept{fill:#F8FAFB;stroke:#738594;stroke-width:2;stroke-dasharray:8 6}.bin{fill:#EAF2F5;stroke:#246A8A;stroke-width:3}.package{fill:#E5A842;stroke:#9A6722;stroke-width:2}.muted{fill:#5C6B78}.good{fill:#168C8C}.bad{fill:#B45A4A}</style>',
+        '<style>text{font-family:Arial,sans-serif;fill:#24313D}.title{font-size:28px;font-weight:700;fill:#17324D}.label{font-size:24px}.small{font-size:21px}.tiny{font-size:18px}.axis{stroke:#5C6B78;stroke-width:2}.arm{stroke:#246A8A;stroke-width:16;stroke-linecap:round}.joint{fill:#FFFFFF;stroke:#17324D;stroke-width:4}.path{fill:none;stroke:#168C8C;stroke-width:5;stroke-dasharray:12 8}.solid{fill:#EAF2F5;stroke:#246A8A;stroke-width:2}.concept{fill:#F8FAFB;stroke:#738594;stroke-width:2;stroke-dasharray:8 6}.bin{fill:#EAF2F5;stroke:#246A8A;stroke-width:3}.package{fill:#E5A842;stroke:#9A6722;stroke-width:2}.muted{fill:#5C6B78}.good{fill:#168C8C}.bad{fill:#B45A4A}</style>',
         f'<text x="38" y="42" class="title">{esc(title)}</text>',
     ]
 
@@ -115,15 +116,15 @@ def write_svg(name: str, parts: list[str]) -> None:
 def svg_workcell():
     s = svg_start(1280, 560, "SortLab workcell · configured geometry, world frame W")
     # top view
-    ox, oy, scale = 420, 315, 480
-    s += ['<text x="72" y="92" class="label">Plan view (X–Y), metres</text>']
+    ox, oy, scale = 420, 315, 425
+    s += ['<text x="72" y="92" class="label">Plan view (X–Y), metres</text>','<text x="72" y="122" class="tiny">P = pick station · H = home TCP · B1–B3 = bins</text>']
     s += [f'<circle cx="{ox}" cy="{oy}" r="{.55*scale:.1f}" fill="#F8FAFB" stroke="#A9B9C4" stroke-width="2" stroke-dasharray="8 6"/>']
     s += [f'<circle cx="{ox}" cy="{oy}" r="{.10747*scale:.1f}" fill="none" stroke="#168C8C" stroke-width="2" stroke-dasharray="7 5"/>']
     # table/conveyor
     s += [f'<rect x="{ox+.115*scale:.1f}" y="{oy-.10*scale:.1f}" width="{.45*scale:.1f}" height="{.20*scale:.1f}" rx="8" fill="#EDF2F4" stroke="#8FA1AE" stroke-width="2"/>']
     s += [f'<text x="{ox+.19*scale:.1f}" y="{oy+7}" class="small">Infeed</text>']
     # base
-    s += [f'<circle cx="{ox}" cy="{oy}" r="{.08*scale:.1f}" fill="#17324D"/><text x="{ox+16}" y="{oy+30}" class="small">J1 / base O(0,0)</text>']
+    s += [f'<circle cx="{ox}" cy="{oy}" r="{.08*scale:.1f}" fill="#17324D"/><text x="{ox-75}" y="{oy+78}" class="small">Base O (0,0)</text>']
     bins = [("B1 / S", -.24, .25), ("B2 / M", -.24, 0), ("B3 / L", -.24, -.25)]
     for label, x, y in bins:
         px, py = ox+x*scale, oy-y*scale
@@ -131,9 +132,9 @@ def svg_workcell():
         s += [f'<text x="{px-65:.1f}" y="{py+45:.1f}" class="tiny">({x:.2f}, {y:+.2f})</text>']
     # pickup, home and corridor
     px, py = ox+.30*scale, oy
-    s += [f'<rect class="package" x="{px-19:.1f}" y="{py-16:.1f}" width="38" height="32" rx="4"/><text x="{px-38:.1f}" y="{py+39}" class="small">Pick (.30,0)</text>']
+    s += [f'<rect class="package" x="{px-19:.1f}" y="{py-16:.1f}" width="38" height="32" rx="4"/><text x="{px-9:.1f}" y="{py+6}" class="small">P</text>']
     hx, hy = ox+.55*scale, oy
-    s += [f'<circle cx="{hx:.1f}" cy="{hy:.1f}" r="9" fill="#168C8C"/><text x="{hx-60:.1f}" y="{hy-20}" class="tiny">Home TCP (.55,0)</text>']
+    s += [f'<circle cx="{hx:.1f}" cy="{hy:.1f}" r="9" fill="#168C8C"/><text x="{hx-8:.1f}" y="{hy-18}" class="small">H</text>']
     # schematic path through high corridor, projections only
     p = f"{px:.1f},{py:.1f} {ox+.30*scale:.1f},{oy-0.40*scale:.1f} {ox+.12*scale:.1f},{oy-0.40*scale:.1f} {ox-.24*scale:.1f},{oy-.25*scale:.1f}"
     s += [f'<polyline points="{p}" class="path" marker-end="url(#tealArrow)"/>']
@@ -141,15 +142,14 @@ def svg_workcell():
     s += [f'<line x1="{ox}" y1="{oy}" x2="{ox+95}" y2="{oy}" class="axis" marker-end="url(#arrow)"/><text x="{ox+100}" y="{oy+5}" class="small">+X</text>', f'<line x1="{ox}" y1="{oy}" x2="{ox}" y2="{oy-85}" class="axis" marker-end="url(#arrow)"/><text x="{ox-18}" y="{oy-94}" class="small">+Y</text>']
     # side view panel
     s += ['<rect x="855" y="83" width="370" height="420" rx="12" fill="#F8FAFB" stroke="#C5D1D8" stroke-width="2"/>','<text x="880" y="116" class="label">Side view · configured Z levels</text>']
-    zbase, zscale = 425, 565
+    zbase, zscale = 430, 480
     def zy(z): return zbase-z*zscale
-    s += [f'<line x1="890" y1="{zy(.25):.1f}" x2="1195" y2="{zy(.25):.1f}" stroke="#8295A2" stroke-width="8"/><text x="1095" y="{zy(.25)+25:.1f}" class="small">Table z=.25</text>']
-    s += [f'<line x1="920" y1="{zy(.30):.1f}" x2="1190" y2="{zy(.30):.1f}" stroke="#246A8A" stroke-width="6"/><text x="1090" y="{zy(.30)+20:.1f}" class="tiny">Bin floor .30</text>']
-    s += [f'<line x1="920" y1="{zy(.46):.1f}" x2="1190" y2="{zy(.46):.1f}" stroke="#E5A842" stroke-width="5"/><text x="1090" y="{zy(.46)-8:.1f}" class="tiny">Lip .46</text>']
-    s += [f'<line x1="920" y1="{zy(.54):.1f}" x2="1190" y2="{zy(.54):.1f}" stroke="#168C8C" stroke-width="4"/><text x="1090" y="{zy(.54)-7:.1f}" class="tiny">Place TCP .54</text>']
-    s += [f'<circle cx="960" cy="{zy(.56):.1f}" r="8" fill="#17324D"/><text x="979" y="{zy(.56)+6:.1f}" class="tiny">Clearance / home .56</text>']
-    s += [f'<circle cx="960" cy="{zy(.39):.1f}" r="7" fill="#E5A842"/><text x="979" y="{zy(.39)+6:.1f}" class="tiny">Pick centre .37–.39 (S/M/L)</text>']
-    s += ['<text x="880" y="480" class="tiny muted">Radial rings are reach guides only; no swept-link clearance.</text>']
+    s += [f'<line x1="900" y1="{zy(.25):.1f}" x2="900" y2="{zy(.56):.1f}" stroke="#8295A2" stroke-width="4"/>']
+    levels=[(.56,165,".56 m  Clearance / home", "#17324D"),(.54,197,".54 m  Place TCP", "#168C8C"),(.46,229,".46 m  Bin lip", "#E5A842"),(.38,268,".37–.39 m  Package centres", "#E5A842"),(.30,309,".30 m  Bin floor", "#246A8A"),(.25,350,".25 m  Table", "#8295A2")]
+    for z,row_y,label,color in levels:
+        tick_y=zy(z)
+        s += [f'<line x1="888" y1="{tick_y:.1f}" x2="918" y2="{tick_y:.1f}" stroke="{color}" stroke-width="5"/>',f'<path d="M 918 {tick_y:.1f} L 945 {row_y}" fill="none" stroke="{color}" stroke-width="2"/>',f'<circle cx="945" cy="{row_y}" r="4" fill="{color}"/>',f'<text x="960" y="{row_y+6}" class="tiny">{label}</text>']
+    s += ['<text x="880" y="480" class="tiny muted">Z ticks schematic · no swept clearance</text>']
     return s
 
 
@@ -160,13 +160,13 @@ def svg_anatomy():
     s += [f'<line x1="{b[0]}" y1="{b[1]}" x2="{e[0]}" y2="{e[1]}" class="arm"/><line x1="{e[0]}" y1="{e[1]}" x2="{w[0]}" y2="{w[1]}" class="arm"/>']
     for x,y in [b,e,w]: s += [f'<circle cx="{x}" cy="{y}" r="18" class="joint"/>']
     s += [f'<line x1="{w[0]}" y1="{w[1]}" x2="{tcp[0]}" y2="{tcp[1]}" stroke="#168C8C" stroke-width="8"/><circle cx="{tcp[0]}" cy="{tcp[1]}" r="9" fill="#E5A842"/>']
-    s += ['<text x="260" y="168" class="label">Link 1 · L₁=.30 m</text><text x="490" y="205" class="label">Link 2 · L₂=.25 m</text>', '<text x="120" y="224" class="small">J1: rotary about +Z</text><text x="390" y="118" class="small">J2: relative rotary about +Z</text>', '<text x="680" y="306" class="small">J3: TCP world-Z slide</text><text x="740" y="225" class="small">J4 yaw</text><text x="837" y="267" class="small">TCP</text>', '<line x1="680" y1="340" x2="680" y2="285" stroke="#168C8C" stroke-width="4" marker-end="url(#tealArrow)"/><text x="694" y="336" class="small">+Z / q₃</text>', '<path d="M250 262 A60 60 0 0 0 238 220" fill="none" stroke="#E5A842" stroke-width="4"/><text x="220" y="210" class="small">q₁</text>', '<path d="M510 190 A55 55 0 0 1 540 220" fill="none" stroke="#E5A842" stroke-width="4"/><text x="535" y="183" class="small">q₂</text>', '<rect x="930" y="92" width="220" height="225" rx="12" fill="#EAF2F5" stroke="#C5D1D8"/><text x="956" y="130" class="label">Independent axes</text><text x="956" y="172" class="small">J1 · shoulder R · ±150°</text><text x="956" y="208" class="small">J2 · elbow R · ±160°</text><text x="956" y="244" class="small">J3 · vertical P · .30–.58 m</text><text x="956" y="280" class="small">J4 · tool yaw R · ±180°</text><text x="956" y="305" class="tiny">4 commanded DOF; no 6D orientation</text>']
+    s += ['<text x="260" y="168" class="label">Link 1 · L₁=.30 m</text><text x="490" y="205" class="label">Link 2 · L₂=.25 m</text>', '<text x="120" y="224" class="small">J1: rotary about +Z</text><text x="390" y="118" class="small">J2: relative rotary about +Z</text>', '<text x="680" y="306" class="small">J3: TCP world-Z slide</text><text x="740" y="225" class="small">J4 yaw</text><text x="837" y="267" class="small">TCP</text>', '<line x1="680" y1="340" x2="680" y2="285" stroke="#168C8C" stroke-width="4" marker-end="url(#tealArrow)"/><text x="694" y="336" class="small">+Z / q₃</text>', '<path d="M250 262 A60 60 0 0 0 238 220" fill="none" stroke="#E5A842" stroke-width="4"/><text x="220" y="210" class="small">q₁</text>', '<path d="M510 190 A55 55 0 0 1 540 220" fill="none" stroke="#E5A842" stroke-width="4"/><text x="535" y="183" class="small">q₂</text>', '<rect x="930" y="92" width="220" height="225" rx="12" fill="#EAF2F5" stroke="#C5D1D8"/><text x="956" y="130" class="label">Independent axes</text><text x="956" y="172" class="small">J1 · shoulder R · ±150°</text><text x="956" y="208" class="small">J2 · elbow R · ±160°</text><text x="956" y="244" class="small">J3 · vertical P · .30–.58 m</text><text x="956" y="280" class="small">J4 · tool yaw R · ±180°</text><text x="956" y="305" class="tiny">4 axes; no 6D pose</text>']
     return s
 
 
 def svg_workspace():
-    s = svg_start(1200, 380, "XY reach guides and configured station targets")
-    ox,oy,scale=445,220,300
+    s = svg_start(1200, 430, "XY reach guides and configured station targets")
+    ox,oy,scale=330,220,230
     s += [f'<circle cx="{ox}" cy="{oy}" r="{.55*scale}" fill="#F8FAFB" stroke="#246A8A" stroke-width="3" stroke-dasharray="9 6"/>',f'<circle cx="{ox}" cy="{oy}" r="{.10747*scale}" fill="none" stroke="#168C8C" stroke-width="3" stroke-dasharray="7 5"/>']
     # shoulder range edge guides
     for angle in (-150,150):
@@ -176,9 +176,17 @@ def svg_workspace():
     for label,x,y in points:
         px,py=ox+x*scale,oy-y*scale
         color="#E5A842" if label=="Pick" else "#168C8C" if label=="Home TCP" else "#246A8A"
-        s += [f'<circle cx="{px:.1f}" cy="{py:.1f}" r="8" fill="{color}"/><text x="{px+10:.1f}" y="{py-8:.1f}" class="small">{label} ({x:.2f},{y:+.2f})</text>']
-    s += ['<text x="95" y="106" class="small">Link-only annulus: 0.05–0.55 m</text>','<text x="95" y="134" class="small">With J2 ±160°: inner radial limit ≈0.1075 m</text>','<text x="95" y="162" class="small">J1 limits ±150°; shown rays are angular limits</text>','<text x="710" y="150" class="small">These are reach guides, not a collision map.</text>','<text x="710" y="180" class="small">Grid evidence: 3,968 / 6,561 IK-reachable</text>','<text x="710" y="210" class="small">Measured at configured home Z=.56 m and yaw=0</text>','<text x="710" y="260" class="tiny muted">TCP workspace; links, tool, package and obstacles not swept.</text>']
-    s += [f'<line x1="{ox-250}" y1="{oy}" x2="{ox+250}" y2="{oy}" class="axis"/><line x1="{ox}" y1="{oy+130}" x2="{ox}" y2="{oy-145}" class="axis"/><text x="{ox+240}" y="{oy+22}" class="small">+X</text><text x="{ox+10}" y="{oy-145}" class="small">+Y</text>']
+        s += [f'<circle cx="{px:.1f}" cy="{py:.1f}" r="8" fill="{color}"/><text x="{px+10:.1f}" y="{py-8:.1f}" class="small">{label}</text>']
+    s += ['<rect x="650" y="88" width="520" height="300" rx="12" fill="#F8FAFB" stroke="#C5D1D8" stroke-width="2"/>',
+          '<text x="680" y="126" class="label">Stations in W · (x,y), m</text>',
+          '<text x="680" y="164" class="small">B1 (−.24,+.25)   B2 (−.24,0)</text>',
+          '<text x="680" y="196" class="small">B3 (−.24,−.25)   P (+.30,0)   H (+.55,0)</text>',
+          '<text x="680" y="246" class="small">Link-only reach: r=.05–.55 m</text>',
+          '<text x="680" y="278" class="small">With J2 limits: inner reach ≈.1075 m</text>',
+          '<text x="680" y="322" class="small">Grid at z=.56 m, yaw 0:</text>',
+          '<text x="680" y="352" class="small">3,968 / 6,561 targets IK-reachable</text>',
+          '<text x="680" y="378" class="tiny muted">Not a collision map; links/tool not swept.</text>']
+    s += [f'<line x1="{ox-140}" y1="{oy}" x2="{ox+245}" y2="{oy}" class="axis"/><line x1="{ox}" y1="{oy+130}" x2="{ox}" y2="{oy-145}" class="axis"/><text x="{ox+247}" y="{oy+22}" class="small">+X</text><text x="{ox+10}" y="{oy-145}" class="small">+Y</text>']
     return s
 
 
@@ -200,30 +208,30 @@ def svg_frames():
 def svg_architecture():
     s=svg_start(1280,520,"Implemented software path and conceptual physical system")
     blocks=[
-      (40,95,200,105,"Simulated ID input","operator selects S / M / L",True),
-      (285,95,210,105,"Controller FSM","1/60 s ticks, events, faults",True),
-      (545,95,210,105,"Kinematics + planner","IK, routes, cubic samples",True),
-      (805,95,190,105,"Robot view","kinematic links / TCP",True),
-      (1040,95,195,105,"Drive concept","electric R/P drives",False),
-      (40,300,200,105,"UI + event log","metrics and export",True),
-      (285,300,210,105,"Placement verifier","actual package pose / speed",True),
-      (545,300,210,105,"Rapier package world","dynamic package + bins",True),
-      (805,300,190,105,"Gripper model","pad gates + fixed joint",True),
-      (1040,300,195,105,"Power / sensors","physical supply + feedback",False),
+      (40,95,200,105,"Simulated ID","select S / M / L",True),
+      (285,95,200,105,"Controller FSM","fixed Δt = 1/60 s",True),
+      (530,95,200,105,"IK + route","cubic joint samples",True),
+      (775,95,200,105,"Robot view","kinematic links / TCP",True),
+      (1020,95,200,105,"Drive concept","electric R/P axes",False),
+      (40,300,200,105,"UI + event log","controls / export",True),
+      (285,300,200,105,"Placement check","pose / speed window",True),
+      (530,300,200,105,"Rapier world","dynamic package / bins",True),
+      (775,300,200,105,"Gripper model","pad gates / fixed joint",True),
+      (1020,300,200,105,"Power / sensors","supply / feedback",False),
     ]
     for x,y,w,h,title,sub,real in blocks:
         cl="solid" if real else "concept"
-        s += [f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="12" class="{cl}"/>',f'<text x="{x+12}" y="{y+38}" class="label">{esc(title)}</text>',f'<text x="{x+12}" y="{y+70}" class="small">{esc(sub)}</text>']
+        s += [f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="12" class="{cl}"/>',f'<text x="{x+12}" y="{y+38}" class="small">{esc(title)}</text>',f'<text x="{x+12}" y="{y+72}" class="tiny">{esc(sub)}</text>']
     # Implemented flow
-    for x1,y1,x2,y2 in [(240,148,285,148),(495,148,545,148),(755,148,805,148),(900,200,900,300),(805,352,755,352),(545,352,495,352),(285,352,240,352),(385,300,385,200)]:
+    for x1,y1,x2,y2 in [(240,148,280,148),(485,148,525,148),(730,148,770,148),(875,200,875,300),(775,352,735,352),(530,352,490,352),(285,352,245,352),(385,300,385,200)]:
         s += [f'<line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" stroke="#246A8A" stroke-width="3" marker-end="url(#arrow)"/>']
-    s += ['<line x1="995" y1="148" x2="1040" y2="148" stroke="#738594" stroke-width="3" stroke-dasharray="7 6" marker-end="url(#arrow)"/>','<line x1="1135" y1="200" x2="1135" y2="300" stroke="#738594" stroke-width="3" stroke-dasharray="7 6" marker-end="url(#arrow)"/>','<text x="40" y="465" class="small">Solid = implemented simulation/software     Dashed = conceptual or absent hardware blocks</text>','<text x="40" y="492" class="tiny muted">No physical camera, encoder, drive or power train is installed; robot links are commanded kinematically.</text>']
+    s += ['<line x1="975" y1="148" x2="1015" y2="148" stroke="#738594" stroke-width="3" stroke-dasharray="7 6" marker-end="url(#arrow)"/>','<line x1="1120" y1="200" x2="1120" y2="300" stroke="#738594" stroke-width="3" stroke-dasharray="7 6" marker-end="url(#arrow)"/>','<text x="40" y="465" class="tiny">Solid = implemented simulation/software · dashed = conceptual hardware</text>','<text x="40" y="492" class="tiny muted">No camera, encoder, drive or supply is installed; robot links are commanded kinematically.</text>']
     return s
 
 
 def svg_grasp():
     s=svg_start(1200,350,"Package handling logic · gate, attach, release, verify")
-    steps=[("1 · Align","≤12 mm centre error\n≤8° yaw"),("2 · Qualify","both pad sensors\nwidth + virtual force"),("3 · Carry","Rapier fixed joint\nattachment required"),("4 · Release","remove joint\npackage dynamic"),("5 · Verify","target region +\nsettled velocities")]
+    steps=[("1 · Align","Offset ≤12 mm\nYaw ≤8°"),("2 · Qualify","both pad sensors\nwidth + virtual force"),("3 · Carry","Rapier fixed joint\nattachment required"),("4 · Release","remove joint\npackage dynamic"),("5 · Verify","target region +\nsettled velocities")]
     x0=35; w=205; gap=30; y=105; h=150
     for i,(title,sub) in enumerate(steps):
         x=x0+i*(w+gap)
@@ -239,13 +247,13 @@ def svg_grasp():
 def svg_motion():
     s=svg_start(1280,520,"Route logic and rest-to-rest cubic example")
     # Route panel
-    s += ['<text x="55" y="92" class="label">XY route projection (not a swept collision check)</text>','<rect x="85" y="350" width="175" height="70" rx="8" fill="#EAF2F5" stroke="#246A8A" stroke-width="3"/><text x="112" y="390" class="small">Pickup support</text>','<rect x="930" y="310" width="205" height="110" rx="8" fill="#EAF2F5" stroke="#246A8A" stroke-width="3"/><text x="990" y="368" class="small">Target bin</text>']
-    route='M210 350 L320 230 L510 120 L850 120 L1010 310'
-    s += [f'<path d="{route}" class="path" marker-end="url(#tealArrow)"/>','<circle cx="210" cy="350" r="12" fill="#E5A842"/><circle cx="320" cy="230" r="10" fill="#246A8A"/><circle cx="510" cy="120" r="10" fill="#168C8C"/><circle cx="850" cy="120" r="10" fill="#246A8A"/>','<text x="160" y="338" class="tiny">Pick (.30,0)</text><text x="275" y="210" class="tiny">Clear z=.56</text><text x="450" y="95" class="tiny">Corridor x=.12, y=±.40</text><text x="810" y="95" class="tiny">Approach above lip</text><text x="860" y="455" class="tiny">Bins at (−.24, ±.25 / 0); target TCP z=.54 m</text>']
+    s += ['<text x="55" y="92" class="label">XY route projection (not a swept collision check)</text>','<rect x="65" y="350" width="155" height="70" rx="8" fill="#EAF2F5" stroke="#246A8A" stroke-width="3"/><text x="80" y="390" class="small">Pick station</text>','<rect x="480" y="315" width="150" height="105" rx="8" fill="#EAF2F5" stroke="#246A8A" stroke-width="3"/><text x="505" y="370" class="small">Target bin</text>']
+    route='M145 350 L210 250 L300 150 L425 150 L520 315'
+    s += [f'<path d="{route}" class="path" marker-end="url(#tealArrow)"/>','<circle cx="145" cy="350" r="12" fill="#E5A842"/><circle cx="210" cy="250" r="10" fill="#246A8A"/><circle cx="300" cy="150" r="10" fill="#168C8C"/><circle cx="425" cy="150" r="10" fill="#246A8A"/>','<text x="105" y="333" class="tiny">Pick</text><text x="170" y="230" class="tiny">Clear z=.56</text><text x="250" y="118" class="tiny">x=.12, y=±.40</text><text x="380" y="118" class="tiny">Approach</text><text x="78" y="455" class="tiny">Bins: (−.24, ±.25 / 0) m · place TCP z=.54 m</text>']
     # cubic profile panel
     s += ['<line x1="65" y1="476" x2="655" y2="476" stroke="#C5D1D8" stroke-width="2"/><text x="720" y="112" class="label">J1 example, T=2 s</text>']
     # normalized q profile in 300x180 graph
-    gx,gy,gw,gh=770,145,400,220
+    gx,gy,gw,gh=760,145,420,220
     s += [f'<rect x="{gx}" y="{gy}" width="{gw}" height="{gh}" fill="#F8FAFB" stroke="#C5D1D8"/>',f'<line x1="{gx}" y1="{gy+gh}" x2="{gx+gw}" y2="{gy+gh}" class="axis"/><line x1="{gx}" y1="{gy}" x2="{gx}" y2="{gy+gh}" class="axis"/>']
     pts=[]
     for j in range(61):
@@ -258,22 +266,30 @@ def svg_motion():
 def svg_state():
     s=svg_start(1320,510,"Autonomous controller · explicit states and terminal gates")
     labels=["Idle","Select +\nvalidate","Plan\nroute","Move to\npickup","Align +\ngrasp","Lift","Transport","Release","Verify\nplacement","Return\nhome","Completed"]
-    x0=35; y1=100; w=145; h=74; gap=10
+    x0=40; y1=105; w=155; h=78; gap=50
     for i,label in enumerate(labels[:6]):
         x=x0+i*(w+gap)
         s += [f'<rect x="{x}" y="{y1}" width="{w}" height="{h}" rx="10" class="solid"/>']
         for j,line in enumerate(label.split("\n")): s += [f'<text x="{x+10}" y="{y1+31+j*22}" class="small">{esc(line)}</text>']
         if i<5: s += [f'<line x1="{x+w}" y1="{y1+h/2}" x2="{x+w+gap-1}" y2="{y1+h/2}" stroke="#246A8A" stroke-width="3" marker-end="url(#arrow)"/>']
-    # lower row right-to-left for rest of nominal path
+    # Lower row runs right-to-left so it continues from Lift without crossing.
     labels2=labels[6:]
-    y2=240
+    y2=245
     for i,label in enumerate(labels2):
-        x=1245-i*(w+gap)
+        x=1065-i*(w+gap)
         s += [f'<rect x="{x}" y="{y2}" width="{w}" height="{h}" rx="10" fill="#E8F4F0" stroke="#168C8C" stroke-width="2"/>']
         for j,line in enumerate(label.split("\n")): s += [f'<text x="{x+10}" y="{y2+31+j*22}" class="small">{esc(line)}</text>']
-        if i<4: s += [f'<line x1="{x}" y1="{y2+h/2}" x2="{x-w-gap+1}" y2="{y2+h/2}" stroke="#168C8C" stroke-width="3" marker-end="url(#tealArrow)"/>']
+        if i<4: s += [f'<line x1="{x}" y1="{y2+h/2}" x2="{x-gap+1}" y2="{y2+h/2}" stroke="#168C8C" stroke-width="3" marker-end="url(#tealArrow)"/>']
     # transition down from grasp to lift and verify to return is illustrated by arrows; process annotation
-    s += ['<path d="M 1020 174 C 1020 206 820 205 820 240" fill="none" stroke="#246A8A" stroke-width="3" marker-end="url(#arrow)"/>','<path d="M 210 240 C 210 207 90 215 90 174" fill="none" stroke="#168C8C" stroke-width="3" marker-end="url(#tealArrow)"/>','<rect x="295" y="370" width="470" height="86" rx="10" fill="#F4F7F8" stroke="#C5D1D8" stroke-width="2"/><text x="320" y="405" class="small">Recoverable fault: route / grasp / attachment / placement / exception</text><text x="320" y="435" class="small">Abort: explicit stop at active phases · Reset: terminal/fault → Idle</text>','<path d="M 515 174 C 515 325 525 330 525 370" fill="none" stroke="#B45A4A" stroke-width="3" marker-end="url(#arrow)"/>','<path d="M 1090 314 C 1090 360 750 360 750 410" fill="none" stroke="#B45A4A" stroke-width="3" marker-end="url(#arrow)"/>','<text x="820" y="423" class="tiny muted">Success only after accepted target placement, settle window and Completed return.</text>']
+    s += ['<path d="M 1142 183 L 1142 245" fill="none" stroke="#246A8A" stroke-width="3" marker-end="url(#arrow)"/>',
+          '<rect x="40" y="365" width="560" height="86" rx="10" fill="#F4F7F8" stroke="#C5D1D8" stroke-width="2"/>',
+          '<text x="60" y="397" class="small">Recoverable fault: route / grasp / attachment / placement / exception</text>',
+          '<text x="60" y="430" class="small">Abort: stop active phase · Reset terminal/fault → Idle</text>',
+          '<rect x="710" y="365" width="540" height="86" rx="10" fill="#FBEFED" stroke="#B45A4A" stroke-width="2"/>',
+          '<text x="735" y="401" class="small">No false success: acceptance + settle window + return home</text>',
+          '<text x="735" y="432" class="small">A fault or abort cannot reach Completed</text>',
+          '<path d="M 490 183 C 490 305 320 310 320 365" fill="none" stroke="#B45A4A" stroke-width="3" marker-end="url(#arrow)"/>',
+          '<path d="M 735 323 C 735 342 900 342 900 365" fill="none" stroke="#B45A4A" stroke-width="3" marker-end="url(#arrow)"/>']
     return s
 
 
@@ -308,11 +324,12 @@ def generate_diagrams():
     }
     for name,parts in diagrams.items(): write_svg(name,parts)
     IMAGES.mkdir(parents=True,exist_ok=True)
-    shutil.copyfile(SCREENSHOT,IMAGES/"browser-workcell-smoke.png")
+    if SCREENSHOT.resolve() != (IMAGES/"browser-workcell-smoke.png").resolve():
+        shutil.copyfile(SCREENSHOT,IMAGES/"browser-workcell-smoke.png")
     soffice=shutil.which("soffice") or "/Users/lochan/.local/bin/soffice"
     if not Path(soffice).exists(): raise RuntimeError("LibreOffice soffice is required to rasterize editable SVGs for DOCX.")
+    source_files=[str(DIAGRAMS/n) for n in diagrams]
     with tempfile.TemporaryDirectory(prefix="sortlab-doc-profile-") as profile:
-        source_files=[str(DIAGRAMS/n) for n in diagrams]
         cmd=[soffice,"--headless",f"-env:UserInstallation=file://{profile}","--convert-to","png","--outdir",str(IMAGES),*source_files]
         subprocess.run(cmd,check=True,capture_output=True,text=True)
 
@@ -410,6 +427,12 @@ def add_link_text(text,url):
     r=p.add_run(url); r.font.color.rgb=RGBColor.from_string(BLUE); r.font.size=Pt(8.6)
     return p
 
+def add_reference(text):
+    p=doc.add_paragraph(); p.alignment=WD_ALIGN_PARAGRAPH.LEFT
+    p.paragraph_format.space_after=Pt(5); p.paragraph_format.line_spacing=1.05
+    p.add_run(text)
+    return p
+
 def add_field(run,field):
     begin=OxmlElement("w:fldChar"); begin.set(qn("w:fldCharType"),"begin")
     instr=OxmlElement("w:instrText"); instr.set(qn("xml:space"),"preserve"); instr.text=field
@@ -451,7 +474,7 @@ def build_report():
       ("University registration / USN","[Registration number]"),
       ("Programme / semester","BCA UG · Semester VII"),
       ("Project option","01 · Automated Warehouse Package Sorting Robot"),
-      ("Project period in course brief","12–30 October 2026"),
+      ("Submission stage / version","Final report · V3.0"),
     ]
     for label,value in cover_rows:
         p=doc.add_paragraph(); p.paragraph_format.space_after=Pt(5)
@@ -460,7 +483,7 @@ def build_report():
     p=doc.add_paragraph(); p.paragraph_format.space_before=Pt(24); p.paragraph_format.space_after=Pt(6)
     r=p.add_run("S → B1     M → B2     L → B3"); r.font.name=FONT; r.font.size=Pt(15); r.font.bold=True; r.font.color.rgb=RGBColor.from_string(TEAL)
     p=doc.add_paragraph(); p.paragraph_format.space_after=Pt(12)
-    p.alignment=WD_ALIGN_PARAGRAPH.LEFT
+    p.alignment=WD_ALIGN_PARAGRAPH.JUSTIFY
     r=p.add_run("A four-axis SCARA-style software twin integrates analytic kinematics, route planning, cubic trajectories, a simplified gripper, Rapier package physics, autonomous control and placement verification."); r.font.size=Pt(10.3)
     p=doc.add_paragraph(); p.alignment=WD_ALIGN_PARAGRAPH.LEFT
     r=p.add_run("Simulation evidence only. No physical robot or sensor was tested. Draft assistance used AI tools; the student must verify the report and acknowledge substantive assistance under course rules."); r.font.size=Pt(8.6); r.font.italic=True; r.font.color.rgb=RGBColor.from_string(MID)
@@ -522,7 +545,7 @@ def build_report():
     add_body("The implemented path runs from simulated category input through the typed controller, analytic IK/route planner, joint trajectories and kinematic robot view. The gripper performs simulated pad-overlap, alignment, jaw-width and virtual force gates; Rapier carries a package via a fixed joint, then steps it dynamically after release. The placement classifier reads package pose and velocity. Solid blocks in Figure 5 are implemented software/simulation; dashed power, sensor and actuator blocks are conceptual hardware only [R3, R4].")
     add_figure("05-system-architecture.svg","Figure 5. Architecture separates implemented simulation modules from conceptual physical sensors, drives and power. Solid arrows show software/physics flow.",6.45)
     add_heading("Drive and tool choice",2)
-    add_body("The concept uses electric rotary servos for J1/J2/J4, a linear electric screw/actuator for J3, and an electric parallel-jaw gripper. Compared with pneumatic jaws, electric closure is easier to associate with commanded position in this compact educational cell and avoids assuming a compressed-air utility. Pneumatics can be fast and simple but require air and measured force regulation. Vacuum gripping was not selected for mixed shapes and the pouch proxy. No motor, gearbox, gripper, voltage, current, torque or supply is specified or purchased; physical payload and electrical sizing remain open.")
+    add_body("The concept uses electric rotary servos for J1/J2/J4, a linear electric screw/actuator for J3, and an electric parallel-jaw gripper. Compared with pneumatic jaws, electric closure is easier to associate with commanded position in this compact educational cell and avoids assuming a compressed-air utility. Pneumatics can be fast and simple but require air and measured force regulation. Vacuum gripping was not selected for mixed shapes and the pouch proxy. No motor, gearbox, gripper, voltage, current, torque, supply or structural arm payload rating is specified; the arm payload margin is therefore unquantified.")
     add_heading("Transparent virtual grip-force screen",2)
     add_equation("2 μ N ≥ S m(g + aᶻ)     →     Nrequired = S m(g + aᶻ)/(2 μ)")
     add_body("For L: m=.60 kg, S=2, g=9.81 m/s², configured aᶻ=.30 m/s² and assumed μ=.50 give N=2(.60)(10.11)/(2·.50)=12.132 N per jaw. At μ=.30, N=20.22 N. The assumed virtual cap is 25 N/jaw, a capacity/required ratio of 2.06 at μ=.50. This is a modeled gate, not applied contact force or a physical payload margin. The audit corrected the code to include aᶻ and added a 12 N regression rejection test.")
@@ -547,7 +570,7 @@ def build_report():
     add_page(); add_heading("6 · Autonomous control and placement verification",1)
     add_body("The controller is a fixed-tick state machine separate from React. It selects and validates the category/bin mapping, plans the route and return before motion, moves to pickup, aligns and attempts grasp, lifts only after grasp success and Rapier attachment confirmation, transports, releases, verifies actual package state, returns home and then completes. Figure 8 summarizes the normal path and fault exits.")
     add_figure("08-controller-state.svg","Figure 8. Controller state flow. A successful sort requires the correct accepted placement, settling window and Completed return.",6.45)
-    add_body("A failed grasp gets one bounded retry. An unreachable route faults before motion; lost attachment stops transport; wrong/outside-bin placement and an 8 s placement timeout fault; exceptions/invalid transitions are logged. Abort is available during motion and grasp/release/verification phases. Reset clears the attachment and package/cycle state before a new run. The faults campaign matched three trials per class; some classes use controller hooks or validation-only pose setup and are not natural physics failures.")
+    add_body("A failed grasp gets one bounded retry. The fault campaign exercised 12 classes ×3: unreachable route, misaligned grasp, lost attachment, release failure, incorrect bin, outside bin, placement timeout, abort at pickup, transport, release and verification, and invalid transition. All 36 outcomes matched expectation with no false success; reset and nominal rerun were clean in 36/36. Some classes use controller hooks or validation-only pose setup and are not natural physics failures. Lost attachment stops transport; invalid transitions are logged; abort/reset leave the controller in a defined stopped/idle state.")
     add_heading("Placement acceptance",2)
     add_body("The detached package centre must lie inside the intended bin interior after shrinking XY by the package's projected half-extents plus a 5 mm margin. Centre Z must be at least floor + half-height −12 mm and no higher than lip − half-height −10 mm. Linear speed must remain <.04 m/s and angular speed <.12 rad/s for .25 simulated seconds. Timeout is 8 s. The classifier reads Rapier package state, not a camera. Only accepted target classification followed by return-home `completed` counts as successful sorting.")
 
@@ -583,16 +606,19 @@ def build_report():
 
     # References and appendix
     add_page(); add_heading("References",1)
-    add_body("[R1] Kevin M. Lynch and Frank C. Park, Modern Robotics: Mechanics, Planning, and Control. Cambridge University Press, 2017. DOI 10.1017/9781316661239. Chapters 4 (Forward Kinematics), 6 (Inverse Kinematics), 9 (Trajectory Generation). Cambridge University Press book record: https://www.cambridge.org/core/books/modern-robotics/57C3BB1C6D5CB40320FA96E5FA3BCEC6. Accessed 18 October 2026.")
-    add_body("[R2] Northwestern University, Modern Robotics, Chapters 9.1–9.2, “Point-to-Point Trajectories (Part 2 of 2),” cubic time scaling lesson: https://modernrobotics.northwestern.edu/nu-gm-book-resource/9-1-and-9-2-point-to-point-trajectories-part-2-of-2/. Accessed 18 October 2026.")
-    add_body("[R3] Dimforge, Rapier JavaScript User Guide, “Determinism”: https://rapier.rs/docs/user_guides/javascript/determinism/. Same simulation conditions require equal parameters and body/collider/joint construction and mutation order; code inputs can still limit reproducibility. Accessed 18 October 2026.")
-    add_body("[R4] Dimforge, Rapier JavaScript User Guide, “Rigid-body type”: https://rapier.rs/docs/user_guides/javascript/rigid_body_type/. Kinematic bodies ignore contact force; application-level handling is needed. Accessed 18 October 2026.")
-    add_body("[R5] U.S. Occupational Safety and Health Administration, “Industrial Robot Systems and Industrial Robot System Safety,” OSHA Technical Manual, Section IV, Chapter 4: https://www.osha.gov/otm/section-4-safety-hazards/chapter-4. Consulted for robot system components, hazards, risk assessment and safeguards. Accessed 18 October 2026.")
-    add_body("[R6] Robotics - Individual Design Project, BCA UG Semester VII, supplied course brief, Option 01 and common minimum requirements. Source inspected at /Users/lochan/Downloads/Robotics Course Project Brief.docx; not modified.")
-    add_body("[R7] SortLab project source and records: `src/engineering/config.ts`, `kinematics.ts`, `routes.ts`, `trajectory.ts`, `packagePhysics.ts`, `sortingController.ts`; `validation/results/`; Phase 1–7 documentation. Version audited 18 October 2026.")
+    add_reference("[R1] Kevin M. Lynch and Frank C. Park, Modern Robotics: Mechanics, Planning, and Control. Cambridge University Press, 2017. DOI 10.1017/9781316661239. Chapters 4 (Forward Kinematics), 6 (Inverse Kinematics), 9 (Trajectory Generation). Cambridge University Press book record: https://www.cambridge.org/core/books/modern-robotics/57C3BB1C6D5CB40320FA96E5FA3BCEC6. Accessed 18 October 2026.")
+    add_reference("[R2] Northwestern University, Modern Robotics, Chapters 9.1–9.2, “Point-to-Point Trajectories (Part 2 of 2),” cubic time scaling lesson: https://modernrobotics.northwestern.edu/nu-gm-book-resource/9-1-and-9-2-point-to-point-trajectories-part-2-of-2/. Accessed 18 October 2026.")
+    add_reference("[R3] Dimforge, Rapier JavaScript User Guide, “Determinism”: https://rapier.rs/docs/user_guides/javascript/determinism/. Same simulation conditions require equal parameters and body/collider/joint construction and mutation order; code inputs can still limit reproducibility. Accessed 18 October 2026.")
+    add_reference("[R4] Dimforge, Rapier JavaScript User Guide, “Rigid-body type”: https://rapier.rs/docs/user_guides/javascript/rigid_body_type/. Kinematic bodies ignore contact force; application-level handling is needed. Accessed 18 October 2026.")
+    add_reference("[R5] U.S. Occupational Safety and Health Administration, “Industrial Robot Systems and Industrial Robot System Safety,” OSHA Technical Manual, Section IV, Chapter 4: https://www.osha.gov/otm/section-4-safety-hazards/chapter-4. Consulted for robot system components, hazards, risk assessment and safeguards. Accessed 18 October 2026.")
+    add_reference("[R6] Robotics - Individual Design Project, BCA UG Semester VII, supplied course brief, Option 01 and common minimum requirements. Source inspected at /Users/lochan/Downloads/Robotics Course Project Brief.docx; not modified.")
+    add_reference("[R7] SortLab project source and records: src/engineering/config.ts, kinematics.ts, routes.ts, trajectory.ts, packagePhysics.ts, sortingController.ts; validation/results; Phase 1–7 documentation. Version audited 18 October 2026.")
     add_page(); add_heading("Appendices",1)
     add_heading("A · Reproduction and evidence files",2)
-    add_body("From the project root, install the JavaScript dependencies from package-lock.json, then run `SORTLAB_CAMPAIGN_LABEL=phase7-grip-fix npm run validate:campaign`. This uses the production controller and Rapier path; it writes campaign artifacts into validation/results, not deliverables-2. The checked-in raw inputs used to build this report are `nominal-phase7-grip-fix.json`, its summary, `faults-phase7-grip-fix-summary.json`, `numerics.json` and `physics.json`.")
+    add_body("The validation command uses the production controller and Rapier path, with the campaign label shown below. It writes artifacts to validation/results. This report build reads the checked-in records in deliverables-2/source-data.")
+    code=doc.add_paragraph(); code.alignment=WD_ALIGN_PARAGRAPH.LEFT; code.paragraph_format.left_indent=Inches(.25); code.paragraph_format.space_after=Pt(5)
+    rr=code.add_run("SORTLAB_CAMPAIGN_LABEL=phase7-grip-fix npm run validate:campaign"); rr.font.name="Menlo"; rr.font.size=Pt(8)
+    add_body("The checked-in source data are nominal-phase7-grip-fix.json and its summary, faults-phase7-grip-fix-summary.json, numerics.json and physics.json.")
     add_heading("B · Assumptions and limitations",2)
     for text in [
       "Package dimensions, masses, shapes, friction, gravity and gripper virtual capacity are configured assumptions. The pouch is a rigid rounded-cuboid proxy.",

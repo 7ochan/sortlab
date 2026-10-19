@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="700" viewBox="0 0 900 700">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 7, 0 7" fill="#17324D"/>
+    </marker>
+    <marker id="arrow-rev" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto">
+      <polygon points="10 0, 0 3.5, 10 7" fill="#17324D"/>
+    </marker>
+    <marker id="arrow-teal" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 7, 0 7" fill="#168C8C"/>
+    </marker>
+    <marker id="arrow-red" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 7, 0 7" fill="#C94040"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="900" height="700" fill="#FAFAFA"/>
+
+  <!-- Title -->
+  <text x="450" y="32" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="bold" fill="#17324D" text-anchor="middle">Fig. V1-3: Workspace Layout — Top View (X-Y Plane)</text>
+  <text x="450" y="52" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#5C6B78" text-anchor="middle">Scale: 1 m = 380 px  |  Origin at shoulder (J1) axis  |  Reach envelope is analytic (link lengths only); joint limits and obstacles further constrain reach.</text>
+
+  <!-- ===== WORKSPACE AREA ===== -->
+  <!-- Workspace bounding box -->
+  <rect x="70" y="68" width="760" height="590" rx="5" fill="#F8FAFB" stroke="#C8D8E0" stroke-width="1.5"/>
+
+  <!-- Grid lines at 0.1m = 38px intervals -->
+  <!-- SVG origin: (450, 400) -->
+  <!-- X grid: from -1.0m to +1.0m => SVG x from 70 to 830 -->
+  <!-- Y grid: from -0.8m to +0.8m => SVG y from 96 to 704 -->
+  <g stroke="#E8EEF0" stroke-width="0.8" fill="none">
+    <!-- Vertical grid lines (constant X) -->
+    <line x1="450" y1="70" x2="450" y2="655"/> <!-- x=0 -->
+    <line x1="488" y1="70" x2="488" y2="655"/>
+    <line x1="526" y1="70" x2="526" y2="655"/>
+    <line x1="564" y1="70" x2="564" y2="655"/>
+    <line x1="602" y1="70" x2="602" y2="655"/>
+    <line x1="640" y1="70" x2="640" y2="655"/>
+    <line x1="678" y1="70" x2="678" y2="655"/>
+    <line x1="716" y1="70" x2="716" y2="655"/>
+    <line x1="754" y1="70" x2="754" y2="655"/>
+    <line x1="792" y1="70" x2="792" y2="655"/>
+    <line x1="412" y1="70" x2="412" y2="655"/>
+    <line x1="374" y1="70" x2="374" y2="655"/>
+    <line x1="336" y1="70" x2="336" y2="655"/>
+    <line x1="298" y1="70" x2="298" y2="655"/>
+    <line x1="260" y1="70" x2="260" y2="655"/>
+    <line x1="222" y1="70" x2="222" y2="655"/>
+    <line x1="184" y1="70" x2="184" y2="655"/>
+    <line x1="146" y1="70" x2="146" y2="655"/>
+    <line x1="108" y1="70" x2="108" y2="655"/>
+    <!-- Horizontal grid lines (constant Y) -->
+    <line x1="72" y1="400" x2="828" y2="400"/> <!-- y=0 -->
+    <line x1="72" y1="362" x2="828" y2="362"/>
+    <line x1="72" y1="324" x2="828" y2="324"/>
+    <line x1="72" y1="286" x2="828" y2="286"/>
+    <line x1="72" y1="248" x2="828" y2="248"/>
+    <line x1="72" y1="210" x2="828" y2="210"/>
+    <line x1="72" y1="172" x2="828" y2="172"/>
+    <line x1="72" y1="134" x2="828" y2="134"/>
+    <line x1="72" y1="96" x2="828" y2="96"/>
+    <line x1="72" y1="438" x2="828" y2="438"/>
+    <line x1="72" y1="476" x2="828" y2="476"/>
+    <line x1="72" y1="514" x2="828" y2="514"/>
+    <line x1="72" y1="552" x2="828" y2="552"/>
+    <line x1="72" y1="590" x2="828" y2="590"/>
+    <line x1="72" y1="628" x2="828" y2="628"/>
+  </g>
+
+  <!-- Axis lines (slightly bolder) -->
+  <line x1="72" y1="400" x2="828" y2="400" stroke="#C0CCCC" stroke-width="1.2"/>
+  <line x1="450" y1="70" x2="450" y2="658" stroke="#C0CCCC" stroke-width="1.2"/>
+
+  <!-- ===== REACH ARCS ===== -->
+  <!-- Outer reach: 0.55m = 209px -->
+  <circle cx="450" cy="400" r="209" fill="none" stroke="#168C8C" stroke-width="2" stroke-dasharray="10,6"/>
+  <!-- Inner dead zone: 0.05m = 19px -->
+  <circle cx="450" cy="400" r="19" fill="none" stroke="#C94040" stroke-width="1.5" stroke-dasharray="5,4"/>
+
+  <!-- Outer reach label (top) -->
+  <text x="450" y="184" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#168C8C" text-anchor="middle" font-style="italic">Max reach 0.55 m</text>
+  <line x1="450" y1="189" x2="450" y2="192" stroke="#168C8C" stroke-width="1"/>
+
+  <!-- Dead zone label -->
+  <text x="477" y="397" font-family="Arial, Helvetica, sans-serif" font-size="9" fill="#C94040">Dead zone</text>
+  <text x="477" y="409" font-family="Arial, Helvetica, sans-serif" font-size="9" fill="#C94040">~0.05 m</text>
+
+  <!-- ===== CONVEYOR ===== -->
+  <!-- Centred at (+0.34, 0): SVG x=450+0.34*380=579.2, y=400; size 171px×76px -->
+  <!-- So rect: x=579-85=494, y=400-38=362, w=171, h=76 -->
+  <rect x="494" y="362" width="171" height="76" rx="4" fill="#D6EBF5" stroke="#246A8A" stroke-width="2"/>
+  <text x="580" y="395" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="bold" fill="#246A8A" text-anchor="middle">Conveyor</text>
+  <text x="580" y="410" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#246A8A" text-anchor="middle">(pkg input)</text>
+  <!-- Conveyor direction arrows -->
+  <line x1="665" y1="400" x2="635" y2="400" stroke="#246A8A" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="665" y1="390" x2="635" y2="390" stroke="#246A8A" stroke-width="1" stroke-dasharray="3,2"/>
+
+  <!-- ===== PICKUP POINT P at (+0.30, 0) SVG (564, 400) ===== -->
+  <!-- Home point H is above P: show as teal dot just above -->
+  <!-- Home: slightly above pickup in SVG Y -->
+  <circle cx="564" cy="400" r="9" fill="#E9A34C" stroke="#C07820" stroke-width="2"/>
+  <text x="564" y="427" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="bold" fill="#C07820" text-anchor="middle">P (pickup)</text>
+  <text x="564" y="440" font-family="Arial, Helvetica, sans-serif" font-size="9" fill="#5C6B78" text-anchor="middle">(+0.30, 0) m</text>
+
+  <!-- Home H (same XY as P, shown above) -->
+  <circle cx="564" cy="375" r="7" fill="#168C8C" stroke="#0A5A5A" stroke-width="2"/>
+  <text x="564" y="365" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="bold" fill="#168C8C" text-anchor="middle">H (home TCP above P)</text>
+  <text x="564" y="354" font-family="Arial, Helvetica, sans-serif" font-size="9" fill="#5C6B78" text-anchor="middle">TCP Z=0.56 m (assumed)</text>
+
+  <!-- ===== BIN B1 at (-0.24, +0.25): SVG (359, 305) ===== -->
+  <!-- Bin exterior 0.24×0.22 m = 91×84 px; centred at (359,305) -->
+  <!-- Rect: x=359-45=314, y=305-42=263, w=91, h=84 -->
+  <rect x="314" y="263" width="91" height="84" rx="3" fill="#D6EFEF" stroke="#168C8C" stroke-width="2.5"/>
+  <!-- Interior slightly inset (0.20×0.18m = 76×68px) -->
+  <rect x="321" y="271" width="76" height="68" rx="2" fill="#E9F8F8" stroke="#168C8C" stroke-width="1" stroke-dasharray="3,2"/>
+  <text x="359" y="300" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="bold" fill="#0A5A5A" text-anchor="middle">B1</text>
+  <text x="359" y="316" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#0A5A5A" text-anchor="middle">Small pkg</text>
+  <text x="359" y="330" font-family="Arial, Helvetica, sans-serif" font-size="9" fill="#5C6B78" text-anchor="middle">(−0.24, +0.25)</text>
+  <!-- B1 label (orange small box) -->
+  <rect x="318" y="265" width="14" height="10" rx="1" fill="#E9A34C"/>
+
+  <!-- ===== BIN B2 at (-0.24, 0.00): SVG (359, 400) ===== -->
+  <rect x="314" y="358" width="91" height="84" rx="3" fill="#D6EFEF" stroke="#168C8C" stroke-width="2.5"/>
+  <rect x="321" y="366" width="76" height="68" rx="2" fill="#E9F8F8" stroke="#168C8C" stroke-width="1" stroke-dasharray="3,2"/>
+  <text x="359" y="395" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="bold" fill="#0A5A5A" text-anchor="middle">B2</text>
+  <text x="359" y="411" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#0A5A5A" text-anchor="middle">Medium pkg</text>
+  <text x="359" y="425" font-family="Arial, Helvetica, sans-serif" font-size="9" fill="#5C6B78" text-anchor="middle">(−0.24, 0.00)</text>
+  <rect x="318" y="360" width="14" height="10" rx="1" fill="#59AD9A"/>
+
+  <!-- ===== BIN B3 at (-0.24, -0.25): SVG (359, 495) ===== -->
+  <rect x="314" y="453" width="91" height="84" rx="3" fill="#D6EFEF" stroke="#168C8C" stroke-width="2.5"/>
+  <rect x="321" y="461" width="76" height="68" rx="2" fill="#E9F8F8" stroke="#168C8C" stroke-width="1" stroke-dasharray="3,2"/>
+  <text x="359" y="490" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="bold" fill="#0A5A5A" text-anchor="middle">B3</text>
+  <text x="359" y="506" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#0A5A5A" text-anchor="middle">Large pkg</text>
+  <text x="359" y="520" font-family="Arial, Helvetica, sans-serif" font-size="9" fill="#5C6B78" text-anchor="middle">(−0.24, −0.25)</text>
+  <rect x="318" y="455" width="14" height="10" rx="1" fill="#738FD2"/>
+
+  <!-- ===== BASE CIRCLE at origin ===== -->
+  <circle cx="450" cy="400" r="30" fill="#17324D" stroke="#0A1E2E" stroke-width="2.5"/>
+  <circle cx="450" cy="400" r="10" fill="#EAF2F5"/>
+  <text x="450" y="445" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="bold" fill="#17324D" text-anchor="middle">Origin / J1</text>
+
+  <!-- ===== AXES WITH ARROWS ===== -->
+  <!-- X axis -->
+  <line x1="450" y1="400" x2="790" y2="400" stroke="#17324D" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="798" y="404" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="bold" fill="#17324D">+X</text>
+  <!-- X negative -->
+  <line x1="450" y1="400" x2="115" y2="400" stroke="#17324D" stroke-width="2" marker-end="url(#arrow-rev)"/>
+  <text x="82" y="404" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="bold" fill="#17324D">−X</text>
+  <!-- Y axis -->
+  <line x1="450" y1="400" x2="450" y2="90" stroke="#17324D" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="438" y="82" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="bold" fill="#17324D">+Y</text>
+  <!-- Y negative -->
+  <line x1="450" y1="400" x2="450" y2="648" stroke="#17324D" stroke-width="2"/>
+  <text x="438" y="660" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="bold" fill="#17324D">−Y</text>
+
+  <!-- Axis tick labels at 0.2m intervals -->
+  <text x="526" y="416" font-family="Arial, Helvetica, sans-serif" font-size="9" fill="#5C6B78" text-anchor="middle">0.2</text>
+  <text x="602" y="416" font-family="Arial, Helvetica, sans-serif" font-size="9" fill="#5C6B78" text-anchor="middle">0.4</text>
+  <text x="678" y="416" font-family="Arial, Helvetica, sans-serif" font-size="9" fill="#5C6B78" text-anchor="middle">0.6</text>
+  <text x="374" y="416" font-family="Arial, Helvetica, sans-serif" font-size="9" fill="#5C6B78" text-anchor="middle">−0.2</text>
+  <text x="298" y="416" font-family="Arial, Helvetica, sans-serif" font-size="9" fill="#5C6B78" text-anchor="middle">−0.4</text>
+  <text x="440" y="325" font-family="Arial, Helvetica, sans-serif" font-size="9" fill="#5C6B78" text-anchor="end">0.2</text>
+  <text x="440" y="248" font-family="Arial, Helvetica, sans-serif" font-size="9" fill="#5C6B78" text-anchor="end">0.4</text>
+  <text x="440" y="476" font-family="Arial, Helvetica, sans-serif" font-size="9" fill="#5C6B78" text-anchor="end">−0.2</text>
+  <text x="440" y="552" font-family="Arial, Helvetica, sans-serif" font-size="9" fill="#5C6B78" text-anchor="end">−0.4</text>
+
+  <!-- ===== SCALE BAR ===== -->
+  <line x1="720" y1="620" x2="796" y2="620" stroke="#17324D" stroke-width="2.5"/>
+  <line x1="720" y1="614" x2="720" y2="626" stroke="#17324D" stroke-width="2.5"/>
+  <line x1="796" y1="614" x2="796" y2="626" stroke="#17324D" stroke-width="2.5"/>
+  <text x="758" y="638" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#17324D" text-anchor="middle">0.2 m</text>
+  <text x="758" y="610" font-family="Arial, Helvetica, sans-serif" font-size="9" fill="#5C6B78" text-anchor="middle">Scale: 1 m = 380 px</text>
+
+  <!-- ===== LEGEND ===== -->
+  <rect x="79" y="570" width="222" height="86" rx="4" fill="#F8FAFB" stroke="#C8D8E0" stroke-width="1.5"/>
+  <text x="89" y="586" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="bold" fill="#17324D">Legend</text>
+  <circle cx="96" cy="598" r="6" fill="#17324D"/>
+  <text x="107" y="602" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#17324D">Origin / J1 base</text>
+  <circle cx="96" cy="613" r="6" fill="#E9A34C" stroke="#C07820" stroke-width="1.5"/>
+  <text x="107" y="617" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#17324D">P – Pickup point</text>
+  <circle cx="96" cy="628" r="6" fill="#168C8C"/>
+  <text x="107" y="632" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#17324D">H – Home TCP position</text>
+  <rect x="89" y="640" width="12" height="10" rx="1" fill="#D6EFEF" stroke="#168C8C" stroke-width="1.5"/>
+  <text x="107" y="649" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#17324D">Sort Bins B1/B2/B3</text>
+
+  <!-- Package colour legend -->
+  <rect x="310" y="570" width="200" height="84" rx="4" fill="#F8FAFB" stroke="#C8D8E0" stroke-width="1.5"/>
+  <text x="320" y="586" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="bold" fill="#17324D">Package Types</text>
+  <rect x="320" y="593" width="14" height="10" rx="1" fill="#E9A34C"/>
+  <text x="339" y="602" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#17324D">S – Small carton → B1</text>
+  <rect x="320" y="609" width="14" height="10" rx="1" fill="#59AD9A"/>
+  <text x="339" y="618" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#17324D">M – Medium cylinder → B2</text>
+  <rect x="320" y="625" width="14" height="10" rx="1" fill="#738FD2"/>
+  <text x="339" y="634" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#17324D">L – Large pouch → B3</text>
+  <text x="320" y="649" font-family="Arial, Helvetica, sans-serif" font-size="9" fill="#5C6B78">(configured, not measured)</text>
+</svg>

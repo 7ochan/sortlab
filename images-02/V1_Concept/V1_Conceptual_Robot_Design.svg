@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="700" viewBox="0 0 900 700">
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 7, 0 7" fill="#17324D"/>
+    </marker>
+    <marker id="arrowhead-rev" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto">
+      <polygon points="10 0, 0 3.5, 10 7" fill="#17324D"/>
+    </marker>
+    <marker id="arrowhead-dim" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 6, 0 6" fill="#5C6B78"/>
+    </marker>
+    <marker id="arrowhead-dim-rev" markerWidth="8" markerHeight="6" refX="0" refY="3" orient="auto">
+      <polygon points="8 0, 0 3, 8 6" fill="#5C6B78"/>
+    </marker>
+    <marker id="arrowhead-teal" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 7, 0 7" fill="#168C8C"/>
+    </marker>
+    <marker id="arrowhead-teal-rev" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto">
+      <polygon points="10 0, 0 3.5, 10 7" fill="#168C8C"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="900" height="700" fill="#FAFAFA"/>
+
+  <!-- Title -->
+  <text x="450" y="34" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="bold" fill="#17324D" text-anchor="middle">Fig. V1-1: Conceptual SCARA-style Robot — Orthographic Views</text>
+  <text x="450" y="54" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#5C6B78" text-anchor="middle">Preliminary concept stage — all values provisional</text>
+
+  <!-- ===== FRONT VIEW PANEL ===== -->
+  <!-- Panel background -->
+  <rect x="20" y="68" width="340" height="480" rx="4" fill="#F8FAFB" stroke="#C8D8E0" stroke-width="1.5"/>
+  <text x="190" y="90" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="bold" fill="#246A8A" text-anchor="middle">FRONT VIEW</text>
+
+  <!-- Table surface -->
+  <rect x="50" y="500" width="280" height="14" rx="2" fill="#B0BEC5" stroke="#78909C" stroke-width="1.5"/>
+  <text x="190" y="530" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#5C6B78" text-anchor="middle">Table surface</text>
+
+  <!-- Base column -->
+  <rect x="162" y="420" width="46" height="80" rx="2" fill="#EAF2F5" stroke="#17324D" stroke-width="2.5"/>
+  <text x="275" y="460" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#5C6B78">Base column</text>
+  <line x1="270" y1="460" x2="210" y2="460" stroke="#5C6B78" stroke-width="1" stroke-dasharray="3,2"/>
+
+  <!-- J3 prismatic annotation (double-headed arrow on left side of column) -->
+  <line x1="145" y1="360" x2="145" y2="500" stroke="#168C8C" stroke-width="1.5" marker-start="url(#arrowhead-teal-rev)" marker-end="url(#arrowhead-teal)"/>
+  <text x="138" y="423" font-family="Arial, Helvetica, sans-serif" font-size="9" fill="#168C8C" text-anchor="middle" transform="rotate(-90,138,423)">J3: Z 0.30–0.58 m</text>
+
+  <!-- J1 shoulder (at top of column) - y=420 -->
+  <circle cx="185" cy="420" r="13" fill="#EAF2F5" stroke="#17324D" stroke-width="2.5"/>
+  <circle cx="185" cy="420" r="5" fill="#17324D"/>
+  <text x="205" y="416" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="bold" fill="#17324D">J1</text>
+
+  <!-- Link 1: from J1 shoulder going right (horizontal) -->
+  <!-- In front view, arm extends horizontally; link 1 from (185,420) to (185+120,420) -->
+  <line x1="185" y1="420" x2="305" y2="420" stroke="#246A8A" stroke-width="5" stroke-linecap="round"/>
+
+  <!-- J2 elbow at end of link 1 -->
+  <circle cx="305" cy="420" r="11" fill="#EAF2F5" stroke="#17324D" stroke-width="2.5"/>
+  <circle cx="305" cy="420" r="4" fill="#17324D"/>
+  <text x="316" y="416" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="bold" fill="#17324D">J2</text>
+
+  <!-- Link 2: from J2, slightly angled down -->
+  <!-- Show link 2 going right and slightly up to TCP -->
+  <line x1="305" y1="420" x2="305" y2="360" stroke="#246A8A" stroke-width="5" stroke-linecap="round"/>
+
+  <!-- J4 wrist at TCP -->
+  <circle cx="305" cy="360" r="10" fill="#EAF2F5" stroke="#17324D" stroke-width="2.5"/>
+  <circle cx="305" cy="360" r="4" fill="#168C8C"/>
+  <text x="316" y="356" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="bold" fill="#17324D">J4</text>
+
+  <!-- Gripper jaws at TCP -->
+  <rect x="291" y="340" width="10" height="18" rx="1" fill="#5C6B78" stroke="#17324D" stroke-width="1.5"/>
+  <rect x="305" y="340" width="10" height="18" rx="1" fill="#5C6B78" stroke="#17324D" stroke-width="1.5"/>
+  <!-- Small package between jaws -->
+  <rect x="299" y="344" width="8" height="12" rx="1" fill="#E9A34C" stroke="#C07820" stroke-width="1"/>
+  <text x="330" y="365" font-family="Arial, Helvetica, sans-serif" font-size="9" fill="#E9A34C">pkg</text>
+
+  <!-- Dimension lines for Link 1 -->
+  <line x1="185" y1="445" x2="305" y2="445" stroke="#5C6B78" stroke-width="1" marker-start="url(#arrowhead-dim-rev)" marker-end="url(#arrowhead-dim)"/>
+  <line x1="185" y1="422" x2="185" y2="448" stroke="#5C6B78" stroke-width="1"/>
+  <line x1="305" y1="422" x2="305" y2="448" stroke="#5C6B78" stroke-width="1"/>
+  <text x="245" y="458" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#5C6B78" text-anchor="middle">L1 = 0.30 m</text>
+
+  <!-- Dimension line for Link 2 (vertical) -->
+  <line x1="326" y1="360" x2="326" y2="420" stroke="#5C6B78" stroke-width="1" marker-start="url(#arrowhead-dim-rev)" marker-end="url(#arrowhead-dim)"/>
+  <line x1="307" y1="360" x2="328" y2="360" stroke="#5C6B78" stroke-width="1"/>
+  <line x1="307" y1="420" x2="328" y2="420" stroke="#5C6B78" stroke-width="1"/>
+  <text x="342" y="393" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#5C6B78">L2=</text>
+  <text x="342" y="405" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#5C6B78">0.25 m</text>
+
+  <!-- Front view label -->
+  <text x="190" y="560" font-family="Arial, Helvetica, sans-serif" font-size="9" fill="#5C6B78" text-anchor="middle">(configured values, not measured)</text>
+
+  <!-- ===== TOP VIEW PANEL ===== -->
+  <rect x="380" y="68" width="500" height="480" rx="4" fill="#F8FAFB" stroke="#C8D8E0" stroke-width="1.5"/>
+  <text x="630" y="90" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="bold" fill="#246A8A" text-anchor="middle">TOP VIEW (X-Y Plane)</text>
+
+  <!-- Coordinate labels -->
+  <text x="635" y="112" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#5C6B78" text-anchor="middle">Origin at J1 shoulder axis</text>
+
+  <!-- Scale: 1m = 220px in top view -->
+  <!-- Centre of top view: cx=590, cy=310 -->
+  <g id="topview">
+    <!-- Reach arcs -->
+    <!-- Outer reach: L1+L2=0.55m => 0.55*220=121px -->
+    <circle cx="590" cy="310" r="121" fill="none" stroke="#168C8C" stroke-width="1.5" stroke-dasharray="8,5"/>
+    <!-- Inner dead zone: ~0.05m => 11px -->
+    <circle cx="590" cy="310" r="11" fill="none" stroke="#C94040" stroke-width="1.5" stroke-dasharray="5,4"/>
+
+    <!-- Reach envelope label -->
+    <text x="590" y="183" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#168C8C" text-anchor="middle">Max reach 0.55 m</text>
+    <line x1="590" y1="186" x2="590" y2="190" stroke="#168C8C" stroke-width="1"/>
+
+    <!-- Dead zone label -->
+    <text x="640" y="308" font-family="Arial, Helvetica, sans-serif" font-size="9" fill="#C94040">Dead zone</text>
+    <text x="640" y="319" font-family="Arial, Helvetica, sans-serif" font-size="9" fill="#C94040">~0.05 m</text>
+
+    <!-- Arm pose: elbow-up configuration -->
+    <!-- J1 base at (590,310) -->
+    <!-- Link 1: to (590+66,310-66)=(656,244) -->
+    <!-- Link 2: from (656,244) to (656+55,244-55)=(711,189) — but keep in panel -->
+    <!-- Use a typical elbow pose for illustration -->
+    <!-- J1 → J2: link 1 at ~45° -->
+    <!-- Link 1 endpoint: (590 + 121*0.6, 310 - 121*0.6) = (590+73,310-73)=(663,237) — scale link1=0.30m=66px -->
+    <line x1="590" y1="310" x2="648" y2="252" stroke="#246A8A" stroke-width="6" stroke-linecap="round"/>
+    <!-- Link 2 at slightly different angle -->
+    <line x1="648" y1="252" x2="682" y2="203" stroke="#246A8A" stroke-width="6" stroke-linecap="round"/>
+
+    <!-- Base J1 -->
+    <circle cx="590" cy="310" r="15" fill="#17324D" stroke="#FAFAFA" stroke-width="2"/>
+    <text x="568" y="333" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="bold" fill="#17324D">J1</text>
+
+    <!-- J2 elbow -->
+    <circle cx="648" cy="252" r="10" fill="#EAF2F5" stroke="#17324D" stroke-width="2"/>
+    <text x="655" y="248" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="bold" fill="#17324D">J2</text>
+
+    <!-- TCP / J4 -->
+    <circle cx="682" cy="203" r="9" fill="#EAF2F5" stroke="#168C8C" stroke-width="2"/>
+    <text x="689" y="199" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="bold" fill="#17324D">J4/TCP</text>
+
+    <!-- Axes -->
+    <line x1="520" y1="310" x2="680" y2="310" stroke="#5C6B78" stroke-width="1" marker-end="url(#arrowhead)"/>
+    <text x="685" y="314" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#5C6B78">+X</text>
+    <line x1="590" y1="380" x2="590" y2="185" stroke="#5C6B78" stroke-width="1" marker-end="url(#arrowhead)"/>
+    <text x="594" y="182" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#5C6B78">+Y</text>
+
+    <!-- Scale bar -->
+    <line x1="740" y1="440" x2="784" y2="440" stroke="#5C6B78" stroke-width="2"/>
+    <line x1="740" y1="435" x2="740" y2="445" stroke="#5C6B78" stroke-width="2"/>
+    <line x1="784" y1="435" x2="784" y2="445" stroke="#5C6B78" stroke-width="2"/>
+    <text x="762" y="456" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#5C6B78" text-anchor="middle">0.20 m</text>
+
+    <!-- Scale label -->
+    <text x="743" y="422" font-family="Arial, Helvetica, sans-serif" font-size="9" fill="#5C6B78">Scale: 1 m = 220 px</text>
+
+    <!-- Reach envelope label box -->
+    <rect x="392" y="440" width="200" height="30" rx="3" fill="#EAF2F5" stroke="#C8D8E0" stroke-width="1"/>
+    <text x="492" y="452" font-family="Arial, Helvetica, sans-serif" font-size="9" fill="#168C8C" text-anchor="middle">--- Outer reach arc (0.55 m)</text>
+    <text x="492" y="465" font-family="Arial, Helvetica, sans-serif" font-size="9" fill="#C94040" text-anchor="middle">--- Dead zone arc (~0.05 m)</text>
+  </g>
+
+  <!-- ===== SIDE VIEW PANEL (bottom) ===== -->
+  <rect x="20" y="565" width="860" height="110" rx="4" fill="#F8FAFB" stroke="#C8D8E0" stroke-width="1.5"/>
+  <text x="450" y="582" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="bold" fill="#246A8A" text-anchor="middle">SIDE VIEW (Silhouette)</text>
+  <!-- Table -->
+  <rect x="200" y="640" width="500" height="10" rx="2" fill="#B0BEC5" stroke="#78909C" stroke-width="1.5"/>
+  <!-- Column side view -->
+  <rect x="425" y="600" width="30" height="40" rx="2" fill="#EAF2F5" stroke="#17324D" stroke-width="2"/>
+  <!-- Arm extending into page (shown as flat horizontal line in side view) -->
+  <line x1="440" y1="600" x2="530" y2="600" stroke="#246A8A" stroke-width="5" stroke-linecap="round"/>
+  <circle cx="440" cy="600" r="8" fill="#EAF2F5" stroke="#17324D" stroke-width="2"/>
+  <circle cx="530" cy="600" r="7" fill="#EAF2F5" stroke="#168C8C" stroke-width="2"/>
+  <!-- Gripper jaws side view -->
+  <rect x="523" y="590" width="6" height="10" rx="1" fill="#5C6B78" stroke="#17324D" stroke-width="1.5"/>
+  <rect x="533" y="590" width="6" height="10" rx="1" fill="#5C6B78" stroke="#17324D" stroke-width="1.5"/>
+  <text x="330" y="625" font-family="Arial, Helvetica, sans-serif" font-size="9" fill="#5C6B78">Side view shows arm extending horizontally (into depth)</text>
+  <text x="330" y="638" font-family="Arial, Helvetica, sans-serif" font-size="9" fill="#5C6B78">Z-axis travel (J3) shown by column height</text>
+
+  <!-- ===== LEGEND ===== -->
+  <rect x="22" y="580" width="200" height="82" rx="3" fill="#F8FAFB" stroke="#C8D8E0" stroke-width="1"/>
+  <text x="32" y="596" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="bold" fill="#17324D">Legend (Joints)</text>
+  <circle cx="38" cy="610" r="5" fill="#EAF2F5" stroke="#17324D" stroke-width="2"/>
+  <text x="48" y="614" font-family="Arial, Helvetica, sans-serif" font-size="9" fill="#17324D">J1 – Shoulder revolute (±150°)</text>
+  <circle cx="38" cy="625" r="5" fill="#EAF2F5" stroke="#17324D" stroke-width="2"/>
+  <text x="48" y="629" font-family="Arial, Helvetica, sans-serif" font-size="9" fill="#17324D">J2 – Elbow revolute (±160°)</text>
+  <line x1="33" y1="640" x2="43" y2="640" stroke="#168C8C" stroke-width="2" marker-end="url(#arrowhead-teal)"/>
+  <text x="48" y="644" font-family="Arial, Helvetica, sans-serif" font-size="9" fill="#17324D">J3 – Vertical prismatic (Z, 0.28 m travel)</text>
+  <circle cx="38" cy="657" r="5" fill="#EAF2F5" stroke="#168C8C" stroke-width="2"/>
+  <text x="48" y="661" font-family="Arial, Helvetica, sans-serif" font-size="9" fill="#17324D">J4 – Wrist yaw revolute (±180°)</text>
+</svg>

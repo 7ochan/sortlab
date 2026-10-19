@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="520" viewBox="0 0 1280 520">
+<defs><marker id="arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0 0 L10 4 L0 8 Z" fill="#246A8A"/></marker><marker id="tealArrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0 0 L10 4 L0 8 Z" fill="#168C8C"/></marker></defs>
+<rect width="100%" height="100%" fill="#FFFFFF"/>
+<style>text{font-family:Arial,sans-serif;fill:#24313D}.title{font-size:28px;font-weight:700;fill:#17324D}.label{font-size:24px}.small{font-size:21px}.tiny{font-size:18px}.axis{stroke:#5C6B78;stroke-width:2}.arm{stroke:#246A8A;stroke-width:16;stroke-linecap:round}.joint{fill:#FFFFFF;stroke:#17324D;stroke-width:4}.path{fill:none;stroke:#168C8C;stroke-width:5;stroke-dasharray:12 8}.solid{fill:#EAF2F5;stroke:#246A8A;stroke-width:2}.concept{fill:#F8FAFB;stroke:#738594;stroke-width:2;stroke-dasharray:8 6}.bin{fill:#EAF2F5;stroke:#246A8A;stroke-width:3}.package{fill:#E5A842;stroke:#9A6722;stroke-width:2}.muted{fill:#5C6B78}.good{fill:#168C8C}.bad{fill:#B45A4A}</style>
+<text x="38" y="42" class="title">Implemented software path and conceptual physical system</text>
+<rect x="40" y="95" width="200" height="105" rx="12" class="solid"/>
+<text x="52" y="133" class="small">Simulated ID</text>
+<text x="52" y="167" class="tiny">select S / M / L</text>
+<rect x="285" y="95" width="200" height="105" rx="12" class="solid"/>
+<text x="297" y="133" class="small">Controller FSM</text>
+<text x="297" y="167" class="tiny">fixed Δt = 1/60 s</text>
+<rect x="530" y="95" width="200" height="105" rx="12" class="solid"/>
+<text x="542" y="133" class="small">IK + route</text>
+<text x="542" y="167" class="tiny">cubic joint samples</text>
+<rect x="775" y="95" width="200" height="105" rx="12" class="solid"/>
+<text x="787" y="133" class="small">Robot view</text>
+<text x="787" y="167" class="tiny">kinematic links / TCP</text>
+<rect x="1020" y="95" width="200" height="105" rx="12" class="concept"/>
+<text x="1032" y="133" class="small">Drive concept</text>
+<text x="1032" y="167" class="tiny">electric R/P axes</text>
+<rect x="40" y="300" width="200" height="105" rx="12" class="solid"/>
+<text x="52" y="338" class="small">UI + event log</text>
+<text x="52" y="372" class="tiny">controls / export</text>
+<rect x="285" y="300" width="200" height="105" rx="12" class="solid"/>
+<text x="297" y="338" class="small">Placement check</text>
+<text x="297" y="372" class="tiny">pose / speed window</text>
+<rect x="530" y="300" width="200" height="105" rx="12" class="solid"/>
+<text x="542" y="338" class="small">Rapier world</text>
+<text x="542" y="372" class="tiny">dynamic package / bins</text>
+<rect x="775" y="300" width="200" height="105" rx="12" class="solid"/>
+<text x="787" y="338" class="small">Gripper model</text>
+<text x="787" y="372" class="tiny">pad gates / fixed joint</text>
+<rect x="1020" y="300" width="200" height="105" rx="12" class="concept"/>
+<text x="1032" y="338" class="small">Power / sensors</text>
+<text x="1032" y="372" class="tiny">supply / feedback</text>
+<line x1="240" y1="148" x2="280" y2="148" stroke="#246A8A" stroke-width="3" marker-end="url(#arrow)"/>
+<line x1="485" y1="148" x2="525" y2="148" stroke="#246A8A" stroke-width="3" marker-end="url(#arrow)"/>
+<line x1="730" y1="148" x2="770" y2="148" stroke="#246A8A" stroke-width="3" marker-end="url(#arrow)"/>
+<line x1="875" y1="200" x2="875" y2="300" stroke="#246A8A" stroke-width="3" marker-end="url(#arrow)"/>
+<line x1="775" y1="352" x2="735" y2="352" stroke="#246A8A" stroke-width="3" marker-end="url(#arrow)"/>
+<line x1="530" y1="352" x2="490" y2="352" stroke="#246A8A" stroke-width="3" marker-end="url(#arrow)"/>
+<line x1="285" y1="352" x2="245" y2="352" stroke="#246A8A" stroke-width="3" marker-end="url(#arrow)"/>
+<line x1="385" y1="300" x2="385" y2="200" stroke="#246A8A" stroke-width="3" marker-end="url(#arrow)"/>
+<line x1="975" y1="148" x2="1015" y2="148" stroke="#738594" stroke-width="3" stroke-dasharray="7 6" marker-end="url(#arrow)"/>
+<line x1="1120" y1="200" x2="1120" y2="300" stroke="#738594" stroke-width="3" stroke-dasharray="7 6" marker-end="url(#arrow)"/>
+<text x="40" y="465" class="tiny">Solid = implemented simulation/software · dashed = conceptual hardware</text>
+<text x="40" y="492" class="tiny muted">No camera, encoder, drive or supply is installed; robot links are commanded kinematically.</text>
+</svg>

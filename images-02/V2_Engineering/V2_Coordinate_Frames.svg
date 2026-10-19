@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1050" height="750" viewBox="0 0 1050 750">
+  <defs>
+    <marker id="arr" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#17324D"/>
+    </marker>
+    <marker id="arr-red" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#C0392B"/>
+    </marker>
+    <marker id="arr-blue" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#246A8A"/>
+    </marker>
+    <marker id="arr-teal" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#168C8C"/>
+    </marker>
+    <marker id="arr-amber" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#E5A842"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1050" height="750" fill="#FAFAFA"/>
+
+  <!-- Title -->
+  <text x="525" y="36" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="bold" fill="#17324D" text-anchor="middle">Fig. V2-2: Coordinate Frames and Two-Link Planar Kinematics</text>
+  <text x="525" y="55" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#5C6B78" text-anchor="middle">SCARA R-R arm — J3 (Z) and J4 (yaw) are decoupled and solved independently</text>
+
+  <!-- Panel divider -->
+  <line x1="620" y1="68" x2="620" y2="730" stroke="#C8D6E0" stroke-width="1.5" stroke-dasharray="6,4"/>
+
+  <!-- ===== LEFT PANEL: ARM DIAGRAM ===== -->
+
+  <!-- Grid / background light -->
+  <rect x="30" y="68" width="580" height="660" rx="4" fill="#F8FAFB"/>
+
+  <!-- World frame at origin (shoulder) -->
+  <!-- Origin point -->
+  <circle cx="200" cy="460" r="7" fill="#17324D"/>
+
+  <!-- World X-axis -->
+  <line x1="200" y1="460" x2="420" y2="460" stroke="#246A8A" stroke-width="2.5" marker-end="url(#arr-blue)"/>
+  <text x="428" y="464" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="bold" fill="#246A8A">X</text>
+
+  <!-- World Y-axis -->
+  <line x1="200" y1="460" x2="200" y2="200" stroke="#C0392B" stroke-width="2.5" marker-end="url(#arr-red)"/>
+  <text x="195" y="190" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="bold" fill="#C0392B">Y</text>
+
+  <!-- World frame label -->
+  <text x="175" y="482" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="bold" fill="#17324D">{W}</text>
+
+  <!-- J1 angle arc -->
+  <path d="M 260 460 A 60 60 0 0 0 230 395" stroke="#E5A842" stroke-width="2" fill="rgba(229,168,66,0.12)" stroke-dasharray="none"/>
+  <text x="268" y="432" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#E5A842" font-style="italic">q1 (J1)</text>
+
+  <!-- J1 joint circle -->
+  <circle cx="200" cy="460" r="18" fill="#EAF2F5" stroke="#17324D" stroke-width="3"/>
+  <circle cx="200" cy="460" r="5" fill="#17324D"/>
+  <text x="200" y="456" font-family="Arial, Helvetica, sans-serif" font-size="9" font-weight="bold" fill="#17324D" text-anchor="middle">J1</text>
+
+  <!-- Link 1: q1 = 30° so endpoint at 200+150*cos30, 460-150*sin30 = 330, 385 -->
+  <line x1="200" y1="460" x2="330" y2="385" stroke="#246A8A" stroke-width="12" stroke-linecap="round" opacity="0.85"/>
+  <!-- L1 label along link -->
+  <text x="256" y="406" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="white" text-anchor="middle" font-weight="bold" transform="rotate(-30 256 406)">L1 = 0.30 m</text>
+
+  <!-- Elbow point at (330, 385) -->
+  <!-- Elbow frame axes -->
+  <line x1="330" y1="385" x2="390" y2="385" stroke="#246A8A" stroke-width="1.8" marker-end="url(#arr-blue)" stroke-dasharray="5,3"/>
+  <text x="395" y="389" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#246A8A">xe</text>
+  <line x1="330" y1="385" x2="330" y2="328" stroke="#C0392B" stroke-width="1.8" marker-end="url(#arr-red)" stroke-dasharray="5,3"/>
+  <text x="322" y="322" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#C0392B">ye</text>
+  <text x="302" y="406" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="bold" fill="#17324D">{E}</text>
+
+  <!-- J2 angle arc -->
+  <path d="M 390 385 A 60 60 0 0 0 366 328" stroke="#E5A842" stroke-width="2" fill="rgba(229,168,66,0.12)"/>
+  <text x="395" y="352" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#E5A842" font-style="italic">q2 (J2)</text>
+
+  <!-- J2 elbow joint -->
+  <circle cx="330" cy="385" r="15" fill="#EAF2F5" stroke="#246A8A" stroke-width="2.5"/>
+  <circle cx="330" cy="385" r="4" fill="#246A8A"/>
+  <text x="330" y="381" font-family="Arial, Helvetica, sans-serif" font-size="8" font-weight="bold" fill="#17324D" text-anchor="middle">J2</text>
+
+  <!-- Link 2: q1+q2 = 30-20=10° so endpoint 330+125*cos10, 385-125*sin10 → 453, 363 -->
+  <!-- For visual clarity use q2= -40° from elbow: endpoint at 330+125*cos(-10°)=453, 385+125*sin(-10°)=363 -->
+  <line x1="330" y1="385" x2="453" y2="363" stroke="#168C8C" stroke-width="10" stroke-linecap="round" opacity="0.85"/>
+  <text x="388" y="366" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="white" text-anchor="middle" font-weight="bold" transform="rotate(-10 388 366)">L2 = 0.25 m</text>
+
+  <!-- TCP point at (453, 363) -->
+  <line x1="453" y1="340" x2="453" y2="386" stroke="#C0392B" stroke-width="2.5"/>
+  <line x1="430" y1="363" x2="476" y2="363" stroke="#C0392B" stroke-width="2.5"/>
+  <circle cx="453" cy="363" r="6" fill="none" stroke="#C0392B" stroke-width="2.5"/>
+  <text x="480" y="358" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="bold" fill="#C0392B">TCP (x, y)</text>
+
+  <!-- Dashed projection lines from TCP to axes -->
+  <line x1="453" y1="363" x2="453" y2="460" stroke="#5C6B78" stroke-width="1.2" stroke-dasharray="6,4"/>
+  <line x1="200" y1="363" x2="453" y2="363" stroke="#5C6B78" stroke-width="1.2" stroke-dasharray="6,4"/>
+
+  <!-- x coordinate label -->
+  <line x1="200" y1="480" x2="453" y2="480" stroke="#5C6B78" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="326" y="496" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#5C6B78" text-anchor="middle" font-style="italic">x (TCP world X)</text>
+
+  <!-- y coordinate label -->
+  <line x1="168" y1="460" x2="168" y2="363" stroke="#5C6B78" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="120" y="412" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#5C6B78" text-anchor="middle" font-style="italic">y (TCP world Y)</text>
+
+  <!-- Vertical dashed from TCP to x-axis marker -->
+  <circle cx="453" cy="460" r="4" fill="#5C6B78"/>
+  <circle cx="200" cy="363" r="4" fill="#5C6B78"/>
+
+  <!-- Annotation: q1+q2 angle at world frame -->
+  <path d="M 280 460 A 80 80 0 0 0 259 388" stroke="#168C8C" stroke-width="1.8" fill="none" stroke-dasharray="4,3"/>
+  <text x="290" y="450" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#168C8C" font-style="italic">q1+q2</text>
+
+  <!-- Left panel note -->
+  <text x="50" y="710" font-family="Arial, Helvetica, sans-serif" font-size="9.5" fill="#5C6B78">Shown with q1 ≈ 30°, q2 ≈ −20° for illustration</text>
+  <text x="50" y="722" font-family="Arial, Helvetica, sans-serif" font-size="9.5" fill="#5C6B78">J3 (Z-height) and J4 (Yaw) are decoupled from this planar solution.</text>
+
+  <!-- ===== RIGHT PANEL: EQUATIONS ===== -->
+
+  <!-- FK equations box -->
+  <rect x="636" y="80" width="390" height="160" rx="6" fill="#EAF2F5" stroke="#246A8A" stroke-width="2"/>
+  <text x="831" y="102" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="bold" fill="#17324D" text-anchor="middle">Forward Kinematics (FK)</text>
+  <line x1="648" y1="108" x2="1016" y2="108" stroke="#246A8A" stroke-width="1"/>
+
+  <text x="652" y="126" font-family="Arial, Helvetica, sans-serif" font-size="11.5" fill="#17324D">x  =  L1·cos(q1)  +  L2·cos(q1+q2)</text>
+  <text x="652" y="144" font-family="Arial, Helvetica, sans-serif" font-size="11.5" fill="#17324D">y  =  L1·sin(q1)  +  L2·sin(q1+q2)</text>
+  <text x="652" y="162" font-family="Arial, Helvetica, sans-serif" font-size="11.5" fill="#5C6B78">z  =  q3  (TCP world Z, prismatic)</text>
+  <text x="652" y="180" font-family="Arial, Helvetica, sans-serif" font-size="11.5" fill="#5C6B78">yaw  =  q1 + q2 + q4  (about Z-axis)</text>
+  <text x="652" y="200" font-family="Arial, Helvetica, sans-serif" font-size="9.5" fill="#5C6B78" font-style="italic">J3 and J4 are decoupled from planar solution.</text>
+  <text x="652" y="232" font-family="Arial, Helvetica, sans-serif" font-size="9.5" fill="#E5A842" font-style="italic">configured  |  L1=0.30 m, L2=0.25 m</text>
+
+  <!-- Worked example box -->
+  <rect x="636" y="252" width="390" height="170" rx="6" fill="#FFF8EC" stroke="#E5A842" stroke-width="2"/>
+  <text x="831" y="274" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="bold" fill="#E5A842" text-anchor="middle">Worked Example</text>
+  <line x1="648" y1="280" x2="1016" y2="280" stroke="#E5A842" stroke-width="1"/>
+
+  <text x="652" y="298" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#17324D">Given: q1 = 0°, q2 = −20°</text>
+  <text x="652" y="314" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#17324D">L1 = 0.30 m, L2 = 0.25 m</text>
+  <line x1="648" y1="320" x2="1016" y2="320" stroke="#E5A842" stroke-width="0.8" stroke-dasharray="4,3"/>
+  <text x="652" y="337" font-family="Arial, Helvetica, sans-serif" font-size="10.5" fill="#246A8A">x = 0.30·cos(0°) + 0.25·cos(−20°)</text>
+  <text x="652" y="353" font-family="Arial, Helvetica, sans-serif" font-size="10.5" fill="#246A8A">  = 0.300 + 0.235 = 0.535 m</text>
+  <text x="652" y="372" font-family="Arial, Helvetica, sans-serif" font-size="10.5" fill="#168C8C">y = 0.30·sin(0°) + 0.25·sin(−20°)</text>
+  <text x="652" y="388" font-family="Arial, Helvetica, sans-serif" font-size="10.5" fill="#168C8C">  = 0.000 − 0.086 = −0.086 m</text>
+  <text x="652" y="408" font-family="Arial, Helvetica, sans-serif" font-size="9.5" fill="#5C6B78" font-style="italic">⚑ computed from configured parameter values</text>
+
+  <!-- IK box -->
+  <rect x="636" y="436" width="390" height="210" rx="6" fill="#F8FAFB" stroke="#168C8C" stroke-width="2"/>
+  <text x="831" y="458" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="bold" fill="#168C8C" text-anchor="middle">Inverse Kinematics (IK)</text>
+  <line x1="648" y1="464" x2="1016" y2="464" stroke="#168C8C" stroke-width="1"/>
+
+  <text x="652" y="482" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#17324D">r²  =  x²  +  y²</text>
+  <text x="652" y="500" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#17324D">cos(q2)  =  (r² − L1² − L2²) / (2·L1·L2)</text>
+  <text x="652" y="518" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#17324D">sin(q2)  =  ±√(1 − cos²(q2))</text>
+  <text x="652" y="540" font-family="Arial, Helvetica, sans-serif" font-size="10.5" fill="#246A8A">q1 = atan2(y, x)</text>
+  <text x="652" y="556" font-family="Arial, Helvetica, sans-serif" font-size="10.5" fill="#246A8A">      − atan2(L2·sin(q2),  L1 + L2·cos(q2))</text>
+  <line x1="648" y1="566" x2="1016" y2="566" stroke="#168C8C" stroke-width="0.8" stroke-dasharray="4,3"/>
+  <!-- Two branches -->
+  <rect x="648" y="573" width="165" height="36" rx="3" fill="#EAF2F5" stroke="#246A8A" stroke-width="1.5"/>
+  <text x="730" y="588" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#246A8A" text-anchor="middle" font-weight="bold">Elbow-Up (+q2)</text>
+  <text x="730" y="602" font-family="Arial, Helvetica, sans-serif" font-size="9.5" fill="#5C6B78" text-anchor="middle">sin(q2) &gt; 0 branch</text>
+  <rect x="826" y="573" width="165" height="36" rx="3" fill="#EAF2F5" stroke="#168C8C" stroke-width="1.5"/>
+  <text x="909" y="588" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#168C8C" text-anchor="middle" font-weight="bold">Elbow-Down (−q2)</text>
+  <text x="909" y="602" font-family="Arial, Helvetica, sans-serif" font-size="9.5" fill="#5C6B78" text-anchor="middle">sin(q2) &lt; 0 branch</text>
+  <text x="652" y="636" font-family="Arial, Helvetica, sans-serif" font-size="9.5" fill="#5C6B78" font-style="italic">Both solutions checked against joint limits before use.</text>
+
+  <!-- Note box bottom right -->
+  <rect x="636" y="658" width="390" height="60" rx="5" fill="#FFF8EC" stroke="#E5A842" stroke-width="1.5"/>
+  <text x="831" y="676" font-family="Arial, Helvetica, sans-serif" font-size="10.5" font-weight="bold" fill="#E5A842" text-anchor="middle">Note</text>
+  <text x="650" y="692" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#5C6B78">J3 (Z) and J4 (yaw) are decoupled from planar</text>
+  <text x="650" y="706" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#5C6B78">kinematics and solved independently.</text>
+</svg>

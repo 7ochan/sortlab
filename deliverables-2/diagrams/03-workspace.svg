@@ -1,23 +1,25 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="380" viewBox="0 0 1200 380">
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="430" viewBox="0 0 1200 430">
 <defs><marker id="arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0 0 L10 4 L0 8 Z" fill="#246A8A"/></marker><marker id="tealArrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0 0 L10 4 L0 8 Z" fill="#168C8C"/></marker></defs>
 <rect width="100%" height="100%" fill="#FFFFFF"/>
-<style>text{font-family:Arial,sans-serif;fill:#24313D}.title{font-size:25px;font-weight:700;fill:#17324D}.label{font-size:18px}.small{font-size:15px}.tiny{font-size:13px}.axis{stroke:#5C6B78;stroke-width:2}.arm{stroke:#246A8A;stroke-width:16;stroke-linecap:round}.joint{fill:#FFFFFF;stroke:#17324D;stroke-width:4}.path{fill:none;stroke:#168C8C;stroke-width:5;stroke-dasharray:12 8}.solid{fill:#EAF2F5;stroke:#246A8A;stroke-width:2}.concept{fill:#F8FAFB;stroke:#738594;stroke-width:2;stroke-dasharray:8 6}.bin{fill:#EAF2F5;stroke:#246A8A;stroke-width:3}.package{fill:#E5A842;stroke:#9A6722;stroke-width:2}.muted{fill:#5C6B78}.good{fill:#168C8C}.bad{fill:#B45A4A}</style>
+<style>text{font-family:Arial,sans-serif;fill:#24313D}.title{font-size:28px;font-weight:700;fill:#17324D}.label{font-size:24px}.small{font-size:21px}.tiny{font-size:18px}.axis{stroke:#5C6B78;stroke-width:2}.arm{stroke:#246A8A;stroke-width:16;stroke-linecap:round}.joint{fill:#FFFFFF;stroke:#17324D;stroke-width:4}.path{fill:none;stroke:#168C8C;stroke-width:5;stroke-dasharray:12 8}.solid{fill:#EAF2F5;stroke:#246A8A;stroke-width:2}.concept{fill:#F8FAFB;stroke:#738594;stroke-width:2;stroke-dasharray:8 6}.bin{fill:#EAF2F5;stroke:#246A8A;stroke-width:3}.package{fill:#E5A842;stroke:#9A6722;stroke-width:2}.muted{fill:#5C6B78}.good{fill:#168C8C}.bad{fill:#B45A4A}</style>
 <text x="38" y="42" class="title">XY reach guides and configured station targets</text>
-<circle cx="445" cy="220" r="165.0" fill="#F8FAFB" stroke="#246A8A" stroke-width="3" stroke-dasharray="9 6"/>
-<circle cx="445" cy="220" r="32.241" fill="none" stroke="#168C8C" stroke-width="3" stroke-dasharray="7 5"/>
-<line x1="445" y1="220" x2="302.1" y2="302.5" stroke="#B45A4A" stroke-width="2" stroke-dasharray="6 6"/>
-<line x1="445" y1="220" x2="302.1" y2="137.5" stroke="#B45A4A" stroke-width="2" stroke-dasharray="6 6"/>
-<circle cx="535.0" cy="220.0" r="8" fill="#E5A842"/><text x="545.0" y="212.0" class="small">Pick (0.30,+0.00)</text>
-<circle cx="373.0" cy="145.0" r="8" fill="#246A8A"/><text x="383.0" y="137.0" class="small">B1 (-0.24,+0.25)</text>
-<circle cx="373.0" cy="220.0" r="8" fill="#246A8A"/><text x="383.0" y="212.0" class="small">B2 (-0.24,+0.00)</text>
-<circle cx="373.0" cy="295.0" r="8" fill="#246A8A"/><text x="383.0" y="287.0" class="small">B3 (-0.24,-0.25)</text>
-<circle cx="610.0" cy="220.0" r="8" fill="#168C8C"/><text x="620.0" y="212.0" class="small">Home TCP (0.55,+0.00)</text>
-<text x="95" y="106" class="small">Link-only annulus: 0.05–0.55 m</text>
-<text x="95" y="134" class="small">With J2 ±160°: inner radial limit ≈0.1075 m</text>
-<text x="95" y="162" class="small">J1 limits ±150°; shown rays are angular limits</text>
-<text x="710" y="150" class="small">These are reach guides, not a collision map.</text>
-<text x="710" y="180" class="small">Grid evidence: 3,968 / 6,561 IK-reachable</text>
-<text x="710" y="210" class="small">Measured at configured home Z=.56 m and yaw=0</text>
-<text x="710" y="260" class="tiny muted">TCP workspace; links, tool, package and obstacles not swept.</text>
-<line x1="195" y1="220" x2="695" y2="220" class="axis"/><line x1="445" y1="350" x2="445" y2="75" class="axis"/><text x="685" y="242" class="small">+X</text><text x="455" y="75" class="small">+Y</text>
+<circle cx="330" cy="220" r="126.50000000000001" fill="#F8FAFB" stroke="#246A8A" stroke-width="3" stroke-dasharray="9 6"/>
+<circle cx="330" cy="220" r="24.7181" fill="none" stroke="#168C8C" stroke-width="3" stroke-dasharray="7 5"/>
+<line x1="330" y1="220" x2="220.4" y2="283.2" stroke="#B45A4A" stroke-width="2" stroke-dasharray="6 6"/>
+<line x1="330" y1="220" x2="220.4" y2="156.8" stroke="#B45A4A" stroke-width="2" stroke-dasharray="6 6"/>
+<circle cx="399.0" cy="220.0" r="8" fill="#E5A842"/><text x="409.0" y="212.0" class="small">Pick</text>
+<circle cx="274.8" cy="162.5" r="8" fill="#246A8A"/><text x="284.8" y="154.5" class="small">B1</text>
+<circle cx="274.8" cy="220.0" r="8" fill="#246A8A"/><text x="284.8" y="212.0" class="small">B2</text>
+<circle cx="274.8" cy="277.5" r="8" fill="#246A8A"/><text x="284.8" y="269.5" class="small">B3</text>
+<circle cx="456.5" cy="220.0" r="8" fill="#168C8C"/><text x="466.5" y="212.0" class="small">Home TCP</text>
+<rect x="650" y="88" width="520" height="300" rx="12" fill="#F8FAFB" stroke="#C5D1D8" stroke-width="2"/>
+<text x="680" y="126" class="label">Stations in W · (x,y), m</text>
+<text x="680" y="164" class="small">B1 (−.24,+.25)   B2 (−.24,0)</text>
+<text x="680" y="196" class="small">B3 (−.24,−.25)   P (+.30,0)   H (+.55,0)</text>
+<text x="680" y="246" class="small">Link-only reach: r=.05–.55 m</text>
+<text x="680" y="278" class="small">With J2 limits: inner reach ≈.1075 m</text>
+<text x="680" y="322" class="small">Grid at z=.56 m, yaw 0:</text>
+<text x="680" y="352" class="small">3,968 / 6,561 targets IK-reachable</text>
+<text x="680" y="378" class="tiny muted">Not a collision map; links/tool not swept.</text>
+<line x1="190" y1="220" x2="575" y2="220" class="axis"/><line x1="330" y1="350" x2="330" y2="75" class="axis"/><text x="577" y="242" class="small">+X</text><text x="340" y="75" class="small">+Y</text>
 </svg>

@@ -1,32 +1,52 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1280" height="560" viewBox="0 0 1280 560">
 <defs><marker id="arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0 0 L10 4 L0 8 Z" fill="#246A8A"/></marker><marker id="tealArrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0 0 L10 4 L0 8 Z" fill="#168C8C"/></marker></defs>
 <rect width="100%" height="100%" fill="#FFFFFF"/>
-<style>text{font-family:Arial,sans-serif;fill:#24313D}.title{font-size:25px;font-weight:700;fill:#17324D}.label{font-size:18px}.small{font-size:15px}.tiny{font-size:13px}.axis{stroke:#5C6B78;stroke-width:2}.arm{stroke:#246A8A;stroke-width:16;stroke-linecap:round}.joint{fill:#FFFFFF;stroke:#17324D;stroke-width:4}.path{fill:none;stroke:#168C8C;stroke-width:5;stroke-dasharray:12 8}.solid{fill:#EAF2F5;stroke:#246A8A;stroke-width:2}.concept{fill:#F8FAFB;stroke:#738594;stroke-width:2;stroke-dasharray:8 6}.bin{fill:#EAF2F5;stroke:#246A8A;stroke-width:3}.package{fill:#E5A842;stroke:#9A6722;stroke-width:2}.muted{fill:#5C6B78}.good{fill:#168C8C}.bad{fill:#B45A4A}</style>
+<style>text{font-family:Arial,sans-serif;fill:#24313D}.title{font-size:28px;font-weight:700;fill:#17324D}.label{font-size:24px}.small{font-size:21px}.tiny{font-size:18px}.axis{stroke:#5C6B78;stroke-width:2}.arm{stroke:#246A8A;stroke-width:16;stroke-linecap:round}.joint{fill:#FFFFFF;stroke:#17324D;stroke-width:4}.path{fill:none;stroke:#168C8C;stroke-width:5;stroke-dasharray:12 8}.solid{fill:#EAF2F5;stroke:#246A8A;stroke-width:2}.concept{fill:#F8FAFB;stroke:#738594;stroke-width:2;stroke-dasharray:8 6}.bin{fill:#EAF2F5;stroke:#246A8A;stroke-width:3}.package{fill:#E5A842;stroke:#9A6722;stroke-width:2}.muted{fill:#5C6B78}.good{fill:#168C8C}.bad{fill:#B45A4A}</style>
 <text x="38" y="42" class="title">SortLab workcell · configured geometry, world frame W</text>
 <text x="72" y="92" class="label">Plan view (X–Y), metres</text>
-<circle cx="420" cy="315" r="264.0" fill="#F8FAFB" stroke="#A9B9C4" stroke-width="2" stroke-dasharray="8 6"/>
-<circle cx="420" cy="315" r="51.6" fill="none" stroke="#168C8C" stroke-width="2" stroke-dasharray="7 5"/>
-<rect x="475.2" y="267.0" width="216.0" height="96.0" rx="8" fill="#EDF2F4" stroke="#8FA1AE" stroke-width="2"/>
-<text x="511.2" y="322" class="small">Infeed</text>
-<circle cx="420" cy="315" r="38.4" fill="#17324D"/><text x="436" y="345" class="small">J1 / base O(0,0)</text>
-<rect class="bin" x="264.8" y="171.0" width="80" height="48" rx="5"/><text x="270.8" y="201.0" class="small">B1 / S</text>
-<text x="239.8" y="240.0" class="tiny">(-0.24, +0.25)</text>
-<rect class="bin" x="264.8" y="291.0" width="80" height="48" rx="5"/><text x="270.8" y="321.0" class="small">B2 / M</text>
-<text x="239.8" y="360.0" class="tiny">(-0.24, +0.00)</text>
-<rect class="bin" x="264.8" y="411.0" width="80" height="48" rx="5"/><text x="270.8" y="441.0" class="small">B3 / L</text>
-<text x="239.8" y="480.0" class="tiny">(-0.24, -0.25)</text>
-<rect class="package" x="545.0" y="299.0" width="38" height="32" rx="4"/><text x="526.0" y="354" class="small">Pick (.30,0)</text>
-<circle cx="684.0" cy="315.0" r="9" fill="#168C8C"/><text x="624.0" y="295" class="tiny">Home TCP (.55,0)</text>
-<polyline points="564.0,315.0 564.0,123.0 477.6,123.0 304.8,195.0" class="path" marker-end="url(#tealArrow)"/>
+<text x="72" y="122" class="tiny">P = pick station · H = home TCP · B1–B3 = bins</text>
+<circle cx="420" cy="315" r="233.8" fill="#F8FAFB" stroke="#A9B9C4" stroke-width="2" stroke-dasharray="8 6"/>
+<circle cx="420" cy="315" r="45.7" fill="none" stroke="#168C8C" stroke-width="2" stroke-dasharray="7 5"/>
+<rect x="468.9" y="272.5" width="191.2" height="85.0" rx="8" fill="#EDF2F4" stroke="#8FA1AE" stroke-width="2"/>
+<text x="500.8" y="322" class="small">Infeed</text>
+<circle cx="420" cy="315" r="34.0" fill="#17324D"/><text x="345" y="393" class="small">Base O (0,0)</text>
+<rect class="bin" x="278.0" y="184.8" width="80" height="48" rx="5"/><text x="284.0" y="214.8" class="small">B1 / S</text>
+<text x="253.0" y="253.8" class="tiny">(-0.24, +0.25)</text>
+<rect class="bin" x="278.0" y="291.0" width="80" height="48" rx="5"/><text x="284.0" y="321.0" class="small">B2 / M</text>
+<text x="253.0" y="360.0" class="tiny">(-0.24, +0.00)</text>
+<rect class="bin" x="278.0" y="397.2" width="80" height="48" rx="5"/><text x="284.0" y="427.2" class="small">B3 / L</text>
+<text x="253.0" y="466.2" class="tiny">(-0.24, -0.25)</text>
+<rect class="package" x="528.5" y="299.0" width="38" height="32" rx="4"/><text x="538.5" y="321" class="small">P</text>
+<circle cx="653.8" cy="315.0" r="9" fill="#168C8C"/><text x="645.8" y="297" class="small">H</text>
+<polyline points="547.5,315.0 547.5,145.0 471.0,145.0 318.0,208.8" class="path" marker-end="url(#tealArrow)"/>
 <line x1="420" y1="315" x2="515" y2="315" class="axis" marker-end="url(#arrow)"/><text x="520" y="320" class="small">+X</text>
 <line x1="420" y1="315" x2="420" y2="230" class="axis" marker-end="url(#arrow)"/><text x="402" y="221" class="small">+Y</text>
 <rect x="855" y="83" width="370" height="420" rx="12" fill="#F8FAFB" stroke="#C5D1D8" stroke-width="2"/>
 <text x="880" y="116" class="label">Side view · configured Z levels</text>
-<line x1="890" y1="283.8" x2="1195" y2="283.8" stroke="#8295A2" stroke-width="8"/><text x="1095" y="308.8" class="small">Table z=.25</text>
-<line x1="920" y1="255.5" x2="1190" y2="255.5" stroke="#246A8A" stroke-width="6"/><text x="1090" y="275.5" class="tiny">Bin floor .30</text>
-<line x1="920" y1="165.1" x2="1190" y2="165.1" stroke="#E5A842" stroke-width="5"/><text x="1090" y="157.1" class="tiny">Lip .46</text>
-<line x1="920" y1="119.9" x2="1190" y2="119.9" stroke="#168C8C" stroke-width="4"/><text x="1090" y="112.9" class="tiny">Place TCP .54</text>
-<circle cx="960" cy="108.6" r="8" fill="#17324D"/><text x="979" y="114.6" class="tiny">Clearance / home .56</text>
-<circle cx="960" cy="204.7" r="7" fill="#E5A842"/><text x="979" y="210.7" class="tiny">Pick centre .37–.39 (S/M/L)</text>
-<text x="880" y="480" class="tiny muted">Radial rings are reach guides only; no swept-link clearance.</text>
+<line x1="900" y1="310.0" x2="900" y2="161.2" stroke="#8295A2" stroke-width="4"/>
+<line x1="888" y1="161.2" x2="918" y2="161.2" stroke="#17324D" stroke-width="5"/>
+<path d="M 918 161.2 L 945 165" fill="none" stroke="#17324D" stroke-width="2"/>
+<circle cx="945" cy="165" r="4" fill="#17324D"/>
+<text x="960" y="171" class="tiny">.56 m  Clearance / home</text>
+<line x1="888" y1="170.8" x2="918" y2="170.8" stroke="#168C8C" stroke-width="5"/>
+<path d="M 918 170.8 L 945 197" fill="none" stroke="#168C8C" stroke-width="2"/>
+<circle cx="945" cy="197" r="4" fill="#168C8C"/>
+<text x="960" y="203" class="tiny">.54 m  Place TCP</text>
+<line x1="888" y1="209.2" x2="918" y2="209.2" stroke="#E5A842" stroke-width="5"/>
+<path d="M 918 209.2 L 945 229" fill="none" stroke="#E5A842" stroke-width="2"/>
+<circle cx="945" cy="229" r="4" fill="#E5A842"/>
+<text x="960" y="235" class="tiny">.46 m  Bin lip</text>
+<line x1="888" y1="247.6" x2="918" y2="247.6" stroke="#E5A842" stroke-width="5"/>
+<path d="M 918 247.6 L 945 268" fill="none" stroke="#E5A842" stroke-width="2"/>
+<circle cx="945" cy="268" r="4" fill="#E5A842"/>
+<text x="960" y="274" class="tiny">.37–.39 m  Package centres</text>
+<line x1="888" y1="286.0" x2="918" y2="286.0" stroke="#246A8A" stroke-width="5"/>
+<path d="M 918 286.0 L 945 309" fill="none" stroke="#246A8A" stroke-width="2"/>
+<circle cx="945" cy="309" r="4" fill="#246A8A"/>
+<text x="960" y="315" class="tiny">.30 m  Bin floor</text>
+<line x1="888" y1="310.0" x2="918" y2="310.0" stroke="#8295A2" stroke-width="5"/>
+<path d="M 918 310.0 L 945 350" fill="none" stroke="#8295A2" stroke-width="2"/>
+<circle cx="945" cy="350" r="4" fill="#8295A2"/>
+<text x="960" y="356" class="tiny">.25 m  Table</text>
+<text x="880" y="480" class="tiny muted">Z ticks schematic · no swept clearance</text>
 </svg>

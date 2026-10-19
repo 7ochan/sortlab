@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="390" viewBox="0 0 1200 390">
+<defs><marker id="arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0 0 L10 4 L0 8 Z" fill="#246A8A"/></marker><marker id="tealArrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0 0 L10 4 L0 8 Z" fill="#168C8C"/></marker></defs>
+<rect width="100%" height="100%" fill="#FFFFFF"/>
+<style>text{font-family:Arial,sans-serif;fill:#24313D}.title{font-size:28px;font-weight:700;fill:#17324D}.label{font-size:24px}.small{font-size:21px}.tiny{font-size:18px}.axis{stroke:#5C6B78;stroke-width:2}.arm{stroke:#246A8A;stroke-width:16;stroke-linecap:round}.joint{fill:#FFFFFF;stroke:#17324D;stroke-width:4}.path{fill:none;stroke:#168C8C;stroke-width:5;stroke-dasharray:12 8}.solid{fill:#EAF2F5;stroke:#246A8A;stroke-width:2}.concept{fill:#F8FAFB;stroke:#738594;stroke-width:2;stroke-dasharray:8 6}.bin{fill:#EAF2F5;stroke:#246A8A;stroke-width:3}.package{fill:#E5A842;stroke:#9A6722;stroke-width:2}.muted{fill:#5C6B78}.good{fill:#168C8C}.bad{fill:#B45A4A}</style>
+<text x="38" y="42" class="title">Four-axis SCARA-style mechanism · R–R–P–R</text>
+<rect x="95" y="265" width="190" height="62" rx="8" fill="#17324D"/><text x="146" y="302" fill="#FFFFFF" style="fill:#FFFFFF;font-size:20px;font-weight:700">Base / J1</text>
+<line x1="190" y1="265" x2="470" y2="170" class="arm"/><line x1="470" y1="170" x2="710" y2="260" class="arm"/>
+<circle cx="190" cy="265" r="18" class="joint"/>
+<circle cx="470" cy="170" r="18" class="joint"/>
+<circle cx="710" cy="260" r="18" class="joint"/>
+<line x1="710" y1="260" x2="820" y2="260" stroke="#168C8C" stroke-width="8"/><circle cx="820" cy="260" r="9" fill="#E5A842"/>
+<text x="260" y="168" class="label">Link 1 · L₁=.30 m</text><text x="490" y="205" class="label">Link 2 · L₂=.25 m</text>
+<text x="120" y="224" class="small">J1: rotary about +Z</text><text x="390" y="118" class="small">J2: relative rotary about +Z</text>
+<text x="680" y="306" class="small">J3: TCP world-Z slide</text><text x="740" y="225" class="small">J4 yaw</text><text x="837" y="267" class="small">TCP</text>
+<line x1="680" y1="340" x2="680" y2="285" stroke="#168C8C" stroke-width="4" marker-end="url(#tealArrow)"/><text x="694" y="336" class="small">+Z / q₃</text>
+<path d="M250 262 A60 60 0 0 0 238 220" fill="none" stroke="#E5A842" stroke-width="4"/><text x="220" y="210" class="small">q₁</text>
+<path d="M510 190 A55 55 0 0 1 540 220" fill="none" stroke="#E5A842" stroke-width="4"/><text x="535" y="183" class="small">q₂</text>
+<rect x="930" y="92" width="220" height="225" rx="12" fill="#EAF2F5" stroke="#C5D1D8"/><text x="956" y="130" class="label">Independent axes</text><text x="956" y="172" class="small">J1 · shoulder R · ±150°</text><text x="956" y="208" class="small">J2 · elbow R · ±160°</text><text x="956" y="244" class="small">J3 · vertical P · .30–.58 m</text><text x="956" y="280" class="small">J4 · tool yaw R · ±180°</text><text x="956" y="305" class="tiny">4 axes; no 6D pose</text>
+</svg>
