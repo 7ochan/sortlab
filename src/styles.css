@@ -26,10 +26,10 @@ input {
   font: inherit;
 }
 .app-shell {
-  max-width: 1540px;
+  max-width: 1800px;
   min-height: 100vh;
   margin: 0 auto;
-  padding: 0 38px;
+  padding: 0 28px;
 }
 .topbar {
   height: 70px;
@@ -132,7 +132,7 @@ input {
   display: flex;
   align-items: end;
   justify-content: space-between;
-  padding: 31px 0 25px;
+  padding: 20px 0 16px;
 }
 .eyebrow {
   color: #80918d;
@@ -179,17 +179,29 @@ h1 {
 }
 .workspace-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 345px;
+  grid-template-columns: minmax(0, 1.15fr) minmax(640px, 0.95fr);
   gap: 16px;
   align-items: stretch;
 }
-.viewport-card,
+.viewport-card {
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: rgba(26, 37, 41, 0.94);
+  box-shadow: 0 14px 38px #00000014;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
 .inspector {
   overflow: hidden;
   border: 1px solid var(--line);
   border-radius: 9px;
   background: rgba(26, 37, 41, 0.94);
   box-shadow: 0 14px 38px #00000014;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 .viewport-heading {
   display: flex;
@@ -224,8 +236,8 @@ h1 {
 }
 .viewport {
   position: relative;
-  height: min(62vh, 625px);
-  min-height: 420px;
+  flex: 1;
+  min-height: 480px;
   background: #151f24;
 }
 .viewport canvas {
@@ -310,6 +322,7 @@ h1 {
 }
 .control-column {
   display: grid;
+  grid-template-columns: repeat(2, minmax(300px, 1fr));
   align-content: start;
   gap: 12px;
   min-width: 0;
@@ -479,6 +492,9 @@ input[type='range'] {
   border-radius: 9px;
   background: rgba(26, 37, 41, 0.94);
   box-shadow: 0 14px 38px #00000014;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 .route-badge {
   color: #d8b17a;
@@ -620,12 +636,18 @@ input[type='range'] {
   border-radius: 6px;
   background: linear-gradient(145deg, rgba(31, 45, 48, 0.97), rgba(24, 35, 39, 0.98));
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.16);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 .autonomous-panel {
   padding: 16px 18px;
   border: 1px solid rgba(112, 197, 167, 0.25);
   border-radius: 6px;
   background: linear-gradient(145deg, rgba(27, 42, 42, 0.98), rgba(22, 34, 38, 0.98));
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 .autonomous-panel.has-fault {
   border-color: rgba(224, 130, 102, 0.48);
@@ -756,15 +778,13 @@ input[type='range'] {
 }
 .operations-dashboard {
   display: grid;
-  grid-template-columns: minmax(0, 1.4fr) minmax(260px, 0.8fr);
-  gap: 14px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
   margin-top: 16px;
-  align-items: start;
+  align-items: stretch;
 }
 .dashboard-column {
-  display: grid;
-  gap: 14px;
-  min-width: 0;
+  display: contents;
 }
 .dashboard-card {
   min-width: 0;
@@ -772,6 +792,9 @@ input[type='range'] {
   border: 1px solid var(--line);
   border-radius: 9px;
   background: rgba(26, 37, 41, 0.94);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 .dashboard-title {
   display: flex;
@@ -901,13 +924,14 @@ input[type='range'] {
 }
 .event-card {
   height: 100%;
-  max-height: 790px;
   display: flex;
   flex-direction: column;
 }
 .event-list {
+  flex: 1;
   overflow: auto;
-  min-height: 170px;
+  min-height: 160px;
+  max-height: 320px;
 }
 .event-row {
   display: grid;
@@ -935,13 +959,29 @@ input[type='range'] {
   color: var(--muted);
   font-size: 11px;
 }
+.telemetry-grid > div:last-child {
+  grid-column: 1 / -1;
+}
+@media (max-width: 1200px) {
+  .workspace-layout {
+    grid-template-columns: minmax(0, 1.05fr) minmax(560px, 0.95fr);
+    gap: 12px;
+  }
+  .control-column {
+    grid-template-columns: repeat(2, minmax(270px, 1fr));
+    gap: 10px;
+  }
+}
 @media (max-width: 1050px) {
   .app-shell {
     padding: 0 20px;
   }
   .workspace-layout {
-    grid-template-columns: minmax(0, 1fr) 310px;
-    gap: 11px;
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+  .control-column {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   .cell-legend {
     gap: 10px;
@@ -949,11 +989,11 @@ input[type='range'] {
     font-size: 8px;
   }
   .viewport {
-    height: 58vh;
+    height: 52vh;
     min-height: 380px;
   }
   .operations-dashboard {
-    grid-template-columns: minmax(0, 1fr) minmax(235px, 0.7fr);
+    grid-template-columns: 1fr;
   }
   .metric-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
